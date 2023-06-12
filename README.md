@@ -145,7 +145,7 @@ C#异步编程模型的本质是利用异步操作来提高程序的响应性和
 对于 I/O 绑定代码，等待一个在 async 方法中返回 Task 或 Task<T> 的操作。  
 对于 CPU 绑定代码，等待一个使用 Task.Run 方法在后台线程启动的操作。  
 
-详情：[异步编程MSDN链接]([https://www.markdownguide.org](https://learn.microsoft.com/zh-cn/dotnet/csharp/asynchronous-programming/async-scenarios)).
+详情：[异步编程MSDN链接](https://learn.microsoft.com/zh-cn/dotnet/csharp/asynchronous-programming/async-scenarios).
 
   
 
