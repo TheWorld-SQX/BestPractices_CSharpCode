@@ -12,6 +12,7 @@
 - [操作系统怎么知道要给每个进程分配多少计算机资源的](#操作系统怎么知道要给每个进程分配多少计算机资源的)
 - [谁可以创建或者说划分出一个进程或线程](#谁可以创建或者说划分出一个进程或线程)
 - [CLR为什么可以管理进程和线程](#CLR为什么可以管理进程和线程)
+- [C#异步编程](#C#异步编程)
 
 ## 面向对象编程思想
 <a name="面向对象编程思想"></a>
@@ -135,14 +136,16 @@ CLR能够有效地管理进程和线程的原因主要有两个方面：
 
 因此，CLR并不管理进程和线程的底层细节，它更关注于提供托管代码的执行环境和资源管理功能，以便程序员可以更方便地编写和执行托管代码。
 
+<a name="C#异步编程"></a>
 ## C#异步编程
 C#异步编程模型的本质是利用异步操作来提高程序的响应性和性能，以避免阻塞主线程并充分利用系统资源。
 
 异步编程的核心是 Task 和 Task<T> 对象，这两个对象对异步操作建模。 它们受关键字 async 和 await 的支持。 在大多数情况下模型十分简单：
 
-对于 I/O 绑定代码，等待一个在 async 方法中返回 Task 或 Task<T> 的操作。
-对于 CPU 绑定代码，等待一个使用 Task.Run 方法在后台线程启动的操作。
-详情：*[异步编程MSDN链接]([https://www.markdownguide.org](https://learn.microsoft.com/zh-cn/dotnet/csharp/asynchronous-programming/async-scenarios))*.
+对于 I/O 绑定代码，等待一个在 async 方法中返回 Task 或 Task<T> 的操作。  
+对于 CPU 绑定代码，等待一个使用 Task.Run 方法在后台线程启动的操作。  
+
+详情：[异步编程MSDN链接]([https://www.markdownguide.org](https://learn.microsoft.com/zh-cn/dotnet/csharp/asynchronous-programming/async-scenarios)).
 
   
 
