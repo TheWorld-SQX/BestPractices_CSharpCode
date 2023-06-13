@@ -162,9 +162,22 @@ C#异步编程模型的本质是利用异步操作来提高程序的响应性和
 因此，如果在 `async` 方法中没有使用 `await` 关键字，它们将永远不会暂停执行，而是会在调用点同步地执行完成，可能会导致一些意外的行为和性能问题。因此，在编写 `async` 方法时，务必在方法主体中使用 `await` 关键字来处理异步操作，以确保正确的异步执行和控制流程。  
 
 详情：  
-  [异步编程MSDN链接](https://learn.microsoft.com/zh-cn/dotnet/csharp/asynchronous-programming/async-scenarios)  
-  [异步编程MSDN链接](https://learn.microsoft.com/zh-cn/dotnet/csharp/asynchronous-programming/task-asynchronous-programming-model)
+  [异步编程场景MSDN链接1](https://learn.microsoft.com/zh-cn/dotnet/csharp/asynchronous-programming/async-scenarios)  
+  [异步编程模型MSDN链接2](https://learn.microsoft.com/zh-cn/dotnet/csharp/asynchronous-programming/task-asynchronous-programming-model)
 
+
+补充:  
+  移植后台线程和创建线程是不同的概念。
+
+创建线程是指显式地使用线程创建函数或类来创建一个新的线程。在传统的多线程编程中，我们可以使用线程池、Thread类等来创建和管理线程。
+
+而移植后台线程是指通过使用异步方法中的Task.Run或Task.Factory.StartNew等方法，将工作任务放在后台线程上执行。这些方法实际上会利用线程池中的线程来执行工作，而不需要我们显式地创建和管理线程。
+
+在C#中，async和await关键字并不会创建额外的线程。异步方法本身并不负责线程的创建和管理，而是利用异步编程模型和任务调度机制来实现非阻塞的执行。当使用await等待一个任务时，它会将执行控制权返回给调用方，而不会阻塞当前线程。当任务完成后，它会通过回调或状态机的方式恢复执行。
+
+使用Task.Run或Task.Factory.StartNew方法可以将工作任务移至后台线程上执行，这些后台线程是从线程池中获取的，并且可以帮助我们实现并行执行和提高程序的性能。但是需要注意的是，后台线程并不会改变等待结果的进程的可用性。在等待任务的结果时，仍然需要等待该任务完成，无论它是在后台线程还是在主线程中执行。
+
+因此，异步方法通过利用异步编程模型和任务调度机制，实现了非阻塞的执行，并提供了更好的性能和响应性，而不需要我们显式地创建额外的线程。
   
 
 
