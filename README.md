@@ -161,7 +161,7 @@ C#异步编程模型的本质是利用异步操作来提高程序的响应性和
 `如果在 async 方法中没有使用 await 关键字，那么该方法会像普通的同步方法一样，按顺序执行其中的代码，不会有任何的异步行为。这意味着这个方法的执行不会在遇到耗时的操作时暂停等待，而是会一直执行下去，直到方法的所有代码都执行完成。`
 因此，如果在 `async` 方法中没有使用 `await` 关键字，它们将永远不会暂停执行，而是会在调用点同步地执行完成，可能会导致一些意外的行为和性能问题。因此，在编写 `async` 方法时，务必在方法主体中使用 `await` 关键字来处理异步操作，以确保正确的异步执行和控制流程。  
 
-详情：
+详情：  
   [异步编程MSDN链接](https://learn.microsoft.com/zh-cn/dotnet/csharp/asynchronous-programming/async-scenarios)  
   [异步编程MSDN链接](https://learn.microsoft.com/zh-cn/dotnet/csharp/asynchronous-programming/task-asynchronous-programming-model)
 
