@@ -145,6 +145,15 @@ C#异步编程模型的本质是利用异步操作来提高程序的响应性和
 对于 I/O 绑定代码，等待一个在 async 方法中返回 Task 或 Task<T> 的操作。  
 对于 CPU 绑定代码，等待一个使用 Task.Run 方法在后台线程启动的操作。  
 
+- 异步方法和关键字 async：  
+  C# 中的异步方法使用 async 关键字进行标识。async 关键字告诉编译器该方法是一个异步方法，并且在方法内部可以使用 await 关键字来等待异步操作的完成。
+
+- Task 和 'Task<T>'：  
+  Task 和 'Task<T>' 是表示异步操作的类型。异步方法通常会返回一个 Task 或 'Task<T>' 对象，用于表示异步操作的进行和完成。
+
+- await 表达式：  
+  await 关键字用于等待异步操作的完成。当执行到 await 表达式时，控制权会返回给调用者，而异步操作会在后台继续执行。一旦异步操作完成，await 表达式会返回其结果，然后程序继续执行下一步操作。
+  
 详情：[异步编程MSDN链接](https://learn.microsoft.com/zh-cn/dotnet/csharp/asynchronous-programming/async-scenarios).
 
   
