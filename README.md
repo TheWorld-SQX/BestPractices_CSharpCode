@@ -609,7 +609,91 @@ class Client
 
 以上示例展示了工厂模式的基本结构，通过抽象工厂和具体工厂来创建不同的产品对象，并由客户端代码使用。这样可以将对象的创建与使用代码分离，提高了代码的灵活性和可维护性。
 
+* 简单工厂模式（Simple Factory Pattern）是一种创建型设计模式，它提供了一个统一的工厂类，用于根据客户端传入的参数来创建不同的产品对象，隐藏了对象的创建逻辑。
 
+在简单工厂模式中，通常会有一个抽象产品类或接口，定义了产品对象的共同属性和方法，然后有多个具体产品类，实现了抽象产品类的接口，表示不同的具体产品。
+
+工厂类负责根据客户端的请求创建相应的产品对象。它通常包含一个静态方法，根据传入的参数进行判断，并创建对应的产品对象。
+
+下面是一个简单工厂模式的示例：
+
+```csharp
+// 抽象产品类
+public abstract class Product
+{
+    public abstract void Operation();
+}
+
+// 具体产品类A
+public class ConcreteProductA : Product
+{
+    public override void Operation()
+    {
+        Console.WriteLine("ConcreteProductA operation");
+    }
+}
+
+// 具体产品类B
+public class ConcreteProductB : Product
+{
+    public override void Operation()
+    {
+        Console.WriteLine("ConcreteProductB operation");
+    }
+}
+
+// 简单工厂类
+public class SimpleFactory
+{
+    public Product CreateProduct(string type)
+    {
+        if (type == "A")
+        {
+            return new ConcreteProductA();
+        }
+        else if (type == "B")
+        {
+            return new ConcreteProductB();
+        }
+        else
+        {
+            throw new ArgumentException("Invalid product type.");
+        }
+    }
+}
+
+// 客户端代码
+SimpleFactory factory = new SimpleFactory();
+Product productA = factory.CreateProduct("A");
+productA.Operation(); // 输出 "ConcreteProductA operation"
+
+Product productB = factory.CreateProduct("B");
+productB.Operation(); // 输出 "ConcreteProductB operation"
+```
+
+在上面的示例中，抽象产品类 `Product` 定义了产品对象的共同操作方法。具体产品类 `ConcreteProductA` 和 `ConcreteProductB` 分别实现了抽象产品类，表示不同的具体产品。
+
+简单工厂类 `SimpleFactory` 提供了一个静态方法 `CreateProduct`，根据客户端传入的参数类型创建对应的产品对象。客户端可以通过简单工厂类来创建产品对象，无需直接与具体产品类进行耦合。
+
+简单工厂模式的优点是客户端代码与具体产品类解耦，通过工厂类来创建产品对象，增加新的产品只需要修改工厂类即可。然而，缺点是如果需要添加新的产品类型，需要修改工厂类的代码，不符合开闭原则。
+
+* 在简单工厂模式中，工厂类通常使用静态方法来创建产品对象。使用静态方法的主要原因有以下几点：
+
+1. 统一访问：静态方法可以在不创建工厂类的实例的情况下直接调用，方便客户端访问工厂类的功能。
+
+2. 简化调用：静态方法可以直接通过类名调用，无需创建工厂类的实例对象，简化了调用的代码。
+
+3. 隐藏细节：静态方法可以在工厂类内部处理对象的创建逻辑，将对象的创建细节隐藏在工厂类内部，对客户端透明。
+
+4. 无状态：静态方法不依赖于工厂类的实例状态，可以直接调用，减少了对对象状态的管理和维护。
+
+需要注意的是，使用静态方法可能会带来一些限制和不利之处：
+
+1. 静态方法无法被继承和重写，因此工厂类的创建逻辑是固定的，不容易扩展和修改。
+
+2. 静态方法在多线程环境下可能存在并发访问的问题，需要进行线程安全的处理。
+
+总而言之，静态方法在简单工厂模式中的使用主要是为了简化调用、隐藏细节和统一访问的目的。但同时也需要权衡使用静态方法所带来的限制和不便之处。根据具体的场景和需求，您可以选择是否使用静态方法来实现简单工厂模式。
 
 
 
