@@ -497,6 +497,100 @@ public class Singleton
 
 * 工厂模式
 
+工厂模式是一种创建型设计模式，用于创建对象的过程中，将对象的创建逻辑封装在一个工厂类中。它提供了一种统一的接口，用于实例化对象，而不需要直接在代码中使用具体的类进行实例化。通过工厂模式，可以将对象的创建与使用代码解耦，使代码更加灵活、可扩展和可维护。
+
+工厂模式通常涉及以下几个角色：
+
+1. 抽象产品（Abstract Product）：定义产品的接口，具体产品都要实现这个接口。
+
+2. 具体产品（Concrete Product）：实现抽象产品接口，是工厂模式中具体的产品对象。
+
+3. 抽象工厂（Abstract Factory）：定义创建产品的接口，可以有多个方法用于创建不同类型的产品。
+
+4. 具体工厂（Concrete Factory）：实现抽象工厂接口，负责具体的产品实例化。
+
+工厂模式的核心思想是通过工厂类来创建对象，而不是在客户端代码中直接实例化对象。这样可以提供更大的灵活性和可扩展性，因为客户端只需要与抽象工厂和抽象产品交互，而不需要了解具体的实现细节。
+
+使用工厂模式的优点包括：
+
+- 封装对象的创建过程，使客户端代码与具体类解耦，降低了代码的依赖性。
+- 提供了一种灵活的扩展机制，可以方便地添加新的产品类，而不需要修改现有的代码。
+- 通过工厂类统一管理对象的创建，可以实现更好的控制和管理对象的生命周期。
+- 可以根据具体的需求，选择不同的具体工厂来创建对象，实现了一定程度的配置和变化的灵活性。
+
+以下是一个简单的示例代码，演示了工厂模式的基本结构：
+
+```csharp
+// 抽象产品
+interface IProduct
+{
+    void Operation();
+}
+
+// 具体产品A
+class ConcreteProductA : IProduct
+{
+    public void Operation()
+    {
+        Console.WriteLine("Concrete Product A Operation");
+    }
+}
+
+// 具体产品B
+class ConcreteProductB : IProduct
+{
+    public void Operation()
+    {
+        Console.WriteLine("Concrete Product B Operation");
+    }
+}
+
+// 抽象工厂
+interface IFactory
+{
+    IProduct CreateProduct();
+}
+
+// 具体工厂A
+class ConcreteFactoryA : IFactory
+{
+    public IProduct CreateProduct()
+    {
+        return new ConcreteProductA();
+    }
+}
+
+// 具体工厂B
+class ConcreteFactoryB : IFactory
+{
+    public IProduct CreateProduct()
+    {
+        return new ConcreteProductB();
+    }
+}
+
+// 客户端代码
+class Client
+{
+    public void Main()
+    {
+        // 使用具体工厂A创建产品
+        IFactory factoryA = new ConcreteFactoryA();
+
+
+        IProduct productA = factoryA.CreateProduct();
+        productA.Operation();
+
+        // 使用具体工厂B创建产品
+        IFactory factoryB = new ConcreteFactoryB();
+        IProduct productB = factoryB.CreateProduct();
+        productB.Operation();
+    }
+}
+```
+
+以上示例展示了工厂模式的基本结构，通过抽象工厂和具体工厂来创建不同的产品对象，并由客户端代码使用。这样可以将对象的创建与使用代码分离，提高了代码的灵活性和可维护性。
+
 
 
 
