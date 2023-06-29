@@ -388,6 +388,111 @@ void MyMethod()
 2. 异步编程：异步编程适用于需要响应性和高吞吐量的任务，特别是那些涉及到I/O操作（如网络请求、数据库查询等）或需要等待外部资源的任务。异步编程允许任务在等待耗时操作完成的同时释放线程资源，提高系统的并发性能。使用异步关键字（async/await）可以使代码更加简洁和易于理解。
 
 综上所述，如果任务是计算密集型且需要并发执行，可以选择使用线程。如果任务涉及到I/O操作或需要等待外部资源，并且需要更好的响应性和并发性能，可以选择使用异步编程。在实际开发中，可以根据具体的需求和场景来选择适合的方式，有时也可以将线程和异步编程结合使用，以发挥各自的优势。
+
+## 设计模式
+
+* 在C#开发中，可以应用以下设计原则来指导设计模式的使用：
+
+1. 单一职责原则（Single Responsibility Principle，SRP）：一个类应该只有一个引起它变化的原因。每个类应该只负责一项职责，这样可以提高类的内聚性。
+
+2. 开放封闭原则（Open-Closed Principle，OCP）：软件实体（类、模块、函数等）应该对扩展开放，对修改关闭。通过使用抽象和多态等特性，使得系统的变化不会影响到已有的代码。
+
+3. 里氏替换原则（Liskov Substitution Principle，LSP）：子类必须能够替换掉它们的基类，而不会影响程序的正确性。任何基类出现的地方，都可以使用其子类来替换。
+
+4. 接口隔离原则（Interface Segregation Principle，ISP）：客户端不应该强迫依赖它们不使用的接口。一个类不应该依赖于它不需要的接口。将接口拆分为更小的部分，可以避免类依赖不必要的接口。
+
+5. 依赖倒置原则（Dependency Inversion Principle，DIP）：高层模块不应该依赖于低层模块，它们应该依赖于抽象。抽象不应该依赖于具体实现细节，具体实现细节应该依赖于抽象。
+
+这些设计原则可以指导开发人员编写可维护、可扩展和灵活的代码。通过遵循这些原则，可以使系统更具可测试性、可扩展性和可重用性，从而提高软件开发的质量和效率。在使用设计模式时，可以结合这些原则进行设计和实现。
+
+* 以下是一些常见的设计模式：
+
+1. 单例模式（Singleton Pattern）：确保一个类只有一个实例，并提供全局访问点。
+
+2. 工厂模式（Factory Pattern）：通过工厂类创建对象，而不是直接使用new关键字实例化对象，从而实现对象的解耦和灵活性。
+
+3. 观察者模式（Observer Pattern）：定义了对象之间的一对多依赖关系，当一个对象状态发生改变时，它的所有依赖者都会收到通知并自动更新。
+
+4. 策略模式（Strategy Pattern）：定义了一系列算法，并将每个算法封装起来，使它们可以互相替换，使得算法可以独立于使用它们的客户端而变化。
+
+5. 装饰者模式（Decorator Pattern）：动态地将责任附加到对象上，提供了一种灵活的方式来扩展对象的功能。
+
+6. 适配器模式（Adapter Pattern）：将一个类的接口转换成客户端所期望的另一个接口，从而使得原本不兼容的类能够合作。
+
+7. MVC模式（Model-View-Controller Pattern）：将应用程序分为三个组件：模型（Model）、视图（View）和控制器（Controller），实现了数据、显示和用户交互的分离。
+
+以上只是一小部分常见的设计模式，每个模式都有其特定的用途和适用场景。选择适当的设计模式可以帮助开发人员更好地组织和设计代码，提高软件的可维护性和可扩展性。
+
+* 单例模式是一种创建对象的设计模式，它确保一个类只有一个实例，并提供一个全局访问点来访问该实例。在 C# 中，可以通过以下方式实现单例模式：
+
+1. 懒汉式单例：
+```csharp
+public class Singleton
+{
+    private static Singleton instance;
+    private static readonly object lockObject = new object();
+
+    private Singleton() { }
+
+    public static Singleton GetInstance()
+    {
+        if (instance == null)
+        {
+            lock (lockObject)
+            {
+                if (instance == null)
+                {
+                    instance = new Singleton();
+                }
+            }
+        }
+        return instance;
+    }
+}
+```
+
+在懒汉式单例中，实例的创建是在第一次调用 `GetInstance()` 方法时进行的，确保延迟加载。使用双重检查锁定（double-checked locking）的方式，在多线程环境下保证线程安全。
+
+2. 饿汉式单例：
+```csharp
+public class Singleton
+{
+    private static readonly Singleton instance = new Singleton();
+
+    private Singleton() { }
+
+    public static Singleton GetInstance()
+    {
+        return instance;
+    }
+}
+```
+
+在饿汉式单例中，实例的创建是在类加载时进行的，因此在多线程环境下也是线程安全的。缺点是无法实现延迟加载。
+
+3. 线程安全的懒汉式单例（使用静态构造函数）：
+```csharp
+public class Singleton
+{
+    private static readonly Singleton instance = null;
+
+    private Singleton() { }
+
+    static Singleton()
+    {
+        instance = new Singleton();
+    }
+
+    public static Singleton GetInstance()
+    {
+        return instance;
+    }
+}
+```
+
+在这种方式中，使用了类的静态构造函数来实例化对象，并确保在第一次访问 `GetInstance()` 方法之前进行初始化，从而实现延迟加载并保证`线程安全`。
+
+这些是常见的实现单例模式的方式，根据具体需求和线程安全性要求选择适合的方式。
   
 
 
