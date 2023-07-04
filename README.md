@@ -903,6 +903,80 @@ public class PdfTemplateFactory
 
 以上是一些常用的反射编码技巧和写法，可以根据具体的需求和场景进行使用。同时，在使用反射时也要注意性能问题，尽量避免过多的反射操作，合理使用缓存和其他优化手段来提升性能。
 
+## 熟练使用ADO.NET和LINQ进行数据库查询和操作，掌握关系型数据库基本知识
+
+* ADO.NET 是一组向NET Framework 程席员公开数据访问服务的类。ADO.NET 为创建分布式数据共享应用程序提供了一组丰富的组件。它提供了对关系数据、XML 和应用程序数据的访问，因此是.NETFramework 中不可缺少的一部分。ADO.NET 支持多种开发需求，包括创建由应用程序、工具、语言或Internet 浏览器使用的前端数据库客户端和中间层业务对象。
+* ADO.NET 使用Connection 对象来连接数据库，使用Command 或DataAdapter对象来执行SQL语句，并将执行的结果返回给DataReader 或 DataAdapter ,然后再使用取得的DataReader 或DataAdapter 对象操作数据结果。
+* C# 中使用 ADO.NET 访问数据库的基本步骤如下：
+
+1. 导入命名空间：在代码文件的顶部，添加 `using` 语句以导入 ADO.NET 相关的命名空间，例如 `using System.Data.SqlClient;`。
+
+2. 创建数据库连接对象：使用适当的数据库连接类（如 `SqlConnection`）创建一个数据库连接对象，并提供数据库连接字符串作为参数。
+
+3. 打开数据库连接：调用连接对象的 `Open()` 方法，打开与数据库的连接。
+
+4. 创建数据库命令对象：使用适当的数据库命令类（如 `SqlCommand`）创建一个数据库命令对象，并设置命令对象的属性，如命令文本、命令类型等。
+
+5. 执行数据库命令：调用命令对象的执行方法（如 `ExecuteNonQuery()`、`ExecuteScalar()`、`ExecuteReader()`）来执行相应的数据库操作。
+
+6. 处理查询结果（如果有）：如果执行的是查询操作，通过读取返回的数据，可以使用 `DataReader` 对象来逐行读取查询结果。
+
+7. 关闭数据库连接：在完成数据库操作后，调用连接对象的 `Close()` 方法，关闭数据库连接。
+
+以下是一个简单的示例代码，演示了如何使用 ADO.NET 连接到数据库并执行查询操作：
+
+```csharp
+using System;
+using System.Data.SqlClient;
+
+class Program
+{
+    static void Main()
+    {
+        // 数据库连接字符串
+        string connectionString = "Data Source=serverName;Initial Catalog=databaseName;User ID=username;Password=password";
+
+        // 创建数据库连接对象
+        using (SqlConnection connection = new SqlConnection(connectionString))
+        {
+            try
+            {
+                // 打开数据库连接
+                connection.Open();
+
+                // 创建数据库命令对象
+                string sqlQuery = "SELECT * FROM TableName";
+                using (SqlCommand command = new SqlCommand(sqlQuery, connection))
+                {
+                    // 执行查询操作
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        // 处理查询结果
+                        while (reader.Read())
+                        {
+                            // 读取数据行的字段值
+                            int id = (int)reader["ID"];
+                            string name = (string)reader["Name"];
+
+                            Console.WriteLine($"ID: {id}, Name: {name}");
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+            }
+        }
+    }
+}
+```
+
+请注意，这只是一个简单示例，实际的数据库访问可能涉及更多的错误处理、参数化查询、事务管理等。具体的数据库访问步骤和技术取决于所使用的数据库类型和提供程序。
+
+[githubNetGuide]
+(https://www.yuque.com/ysgstudyhard/da6e0c/nci8t5)
+
 
 
 
