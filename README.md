@@ -978,6 +978,8 @@ class Program
 
 [githubNetGuide]
 (https://www.yuque.com/ysgstudyhard/da6e0c/nci8t5)
+[MSDN：ADO.NET]
+(https://learn.microsoft.com/zh-cn/dotnet/framework/data/adonet/)
 
 
 
