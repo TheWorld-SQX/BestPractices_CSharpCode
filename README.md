@@ -1146,6 +1146,88 @@ TCP的三次握手和四次挥手的设计是为了确保可靠的数据传输�
 4. 连接的可靠关闭：四次挥手确保了双方都完成了数据传输并准备关闭连接。关闭连接前，双方都能进行最后一次的数据传输和确认，避免了数据丢失或未完成传输的情况。此外，四次挥手还允许在关闭连接之后一段时间内，确保网络中未处理完的数据包得到处理，防止数据的残留。
 
 综上所述，TCP的三次握手和四次挥手的设计考虑了网络中的可靠性、数据的完整性以及资源的合理利用，以确保稳定的数据传输和连接的正常关闭。
+
+## Modbus 工控通信协议
+Modbus是一种常用的通信协议，用于在工业自动化系统中实现设备之间的通信和数据交换。它是一种开放的串行通信协议，最初由Modicon（现在是施耐德电气公司的一部分）于1979年开发，用于连接PLC（可编程逻辑控制器）和其他工业设备。
+
+Modbus协议支持多种物理层和传输介质，包括串行通信（如RS-232、RS-485）和以太网。它基于主从架构，其中一个设备充当主机（通常是上位机或PLC），而其他设备充当从机。主机可以通过Modbus协议向从机发送请求，从机则响应这些请求并返回数据。
+
+Modbus协议包括几种常见的数据格式和功能码：
+1. 数据格式：
+   - 传输模式：包括ASCII、RTU（二进制）和TCP/IP等不同的传输模式。
+   - 数据格式：定义了数据的编码和解码方式，例如位、字节、寄存器和浮点数等。
+
+2. 功能码：
+   - 读取和写入操作：包括读取线圈状态、读取输入状态、读取保持寄存器和读取输入寄存器等操作。
+   - 执行控制操作：包括写入单个线圈、写入单个保持寄存器和写入多个寄存器等操作。
+
+使用Modbus协议，可以实现以下功能：
+- 监控和控制设备状态：通过读取和写入不同的寄存器和状态，可以监控和控制设备的状态，例如开关状态、传感器数据等。
+- 数据交换：不同的设备可以通过Modbus协议进行数据交换，实现信息共享和系统集成。
+- 配置和调试：可以通过Modbus协议对设备进行配置和调试，例如设定参数、修改设置等。
+
+在C#工控编程中，可以使用第三方的Modbus库或开源库来实现Modbus通信。这些库提供了C#的类和方法，用于建立与Modbus设备之间的连接，发送和接收Modbus请求，并解析和处理Modbus数据。通过使用这些库，开发人员可以方便地在C#应用程序中实现与Modbus设备的通信和数据交换。
+
+## Modbus示例
+当使用NModbus库进行Modbus通信时，通常需要进行以下步骤：建立连接、发送请求、接收响应并处理数据。下面是一个具体的案例，演示了如何使用NModbus库进行Modbus通信，包括注释以便理解代码的功能。
+
+```csharp
+using System;
+using System.IO.Ports;
+using Modbus.Device;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        // 创建串口对象并设置参数
+        using (SerialPort serialPort = new SerialPort("COM1", 9600, Parity.None, 8, StopBits.One))
+        {
+            serialPort.Open();
+
+            // 创建Modbus主机
+            IModbusSerialMaster modbusMaster = ModbusSerialMaster.CreateRtu(serialPort);
+
+            // 读取保持寄存器
+            ushort startAddress = 0;
+            ushort numberOfPoints = 10;
+            ushort[] registers = modbusMaster.ReadHoldingRegisters(1, startAddress, numberOfPoints);
+
+            // 打印结果
+            Console.WriteLine("读取到的保持寄存器值：");
+            for (int i = 0; i < registers.Length; i++)
+            {
+                Console.WriteLine($"寄存器{startAddress + i}的值：{registers[i]}");
+            }
+
+            // 写入保持寄存器
+            ushort writeAddress = 10;
+            ushort writeValue = 100;
+            modbusMaster.WriteSingleRegister(1, writeAddress, writeValue);
+            Console.WriteLine($"写入寄存器{writeAddress}的值为{writeValue}");
+
+            // 读取线圈状态
+            ushort coilAddress = 0;
+            bool[] coilStatus = modbusMaster.ReadCoils(1, coilAddress, 8);
+            Console.WriteLine("读取到的线圈状态：");
+            for (int i = 0; i < coilStatus.Length; i++)
+            {
+                Console.WriteLine($"线圈{coilAddress + i}的状态：{coilStatus[i]}");
+            }
+        }
+    }
+}
+```
+
+上述代码示例中，我们首先创建了一个SerialPort对象，并设置了串口参数。然后，通过ModbusSerialMaster类创建了一个Modbus主机实例，该实例用于与Modbus设备建立连接和进行通信。接下来，我们使用ReadHoldingRegisters方法读取保持寄存器的值，并将结果存储在registers数组中。然后，我们通过循环打印出读取到的寄存器值。
+
+接下来，我们使用WriteSingleRegister方法向设备的保持寄存器写入一个值。然后，我们使用ReadCoils方法读取线圈状态，并将结果存储在coilStatus数组中。最后，我们通过循环打印出读取到的线圈状态。
+
+请注意，上述代码示例仅供参考，并假设与Modbus设备通信的串口参数已正确配置。在实际的应用中，你需要根据你的设备和通信需求进行相应的配置和调整。
+
+此示例只展示了NModbus库的基本用法，还有许多其他功能和方法可以探索。你可以查阅NModbus库的文档和
+
+示例代码，以了解更多详细信息和使用方法，以满足你的特定需求。
   
 
 
