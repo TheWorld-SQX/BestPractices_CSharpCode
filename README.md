@@ -34,6 +34,7 @@
 - [使用线程还是异步编程取决于具体的场景和需求。下面是一些一般性的指导原则](#使用线程还是异步编程取决于具体的场景和需求。下面是一些一般性的指导原则)
 - [单例模式是一种创建对象的设计模式](#单例模式是一种创建对象的设计模式)
 - [ADO.NET](#使用ADO.NET和LINQ进行数据库查询和操作)
+- [数据库概论](#数据库基础知识)
 
 ## 面向对象编程思想
 <a name="面向对象编程思想"></a>
@@ -1332,7 +1333,138 @@ class Program
 
 4. 全外连接（Full Outer Join）：如果需要返回两个表中所有的数据，则全外连接是一种常见的方式。全外连接可以用于检查两个表之间的完整性和一致性，或者用于分析两个表之间的差异。
 
-## 
+## 存储过程
+SQL Server 存储过程是一组预编译的 SQL 语句，以命名方式保存在数据库中，并可以在需要时被调用和执行。存储过程可以接收参数、执行一系列的数据库操作，以及返回结果。  
+
+需要注意的是，存储过程可以包含更复杂的逻辑代码，例如事务处理、异常处理、游标等。编写存储过程时，应根据具体的业务需求和数据库操作选择合适的语句和控制流结构。
+
+存储过程的好处包括提高性能、减少网络流量、提供安全性和代码复用等。通过将常用的数据库操作封装为存储过程，可以减少重复编写相同的 SQL 语句，并提高数据库的效率和可维护性。
+
+* sql Server 存储过程怎么写  比如我要根据时间查询患者信息，C#项目对应的代码如何写
+
+在 SQL Server 中编写存储过程，然后在 C# 项目中调用存储过程来查询患者信息，可以按照以下步骤进行：
+
+1. 创建存储过程：
+   在 SQL Server Management Studio (SSMS) 或其他工具中，编写存储过程来查询患者信息。以下是一个示例存储过程：
+
+   ```sql
+   CREATE PROCEDURE GetPatientByTime
+       @StartDate DATE,
+       @EndDate DATE
+   AS
+   BEGIN
+       SELECT * FROM Patients
+       WHERE AdmissionDate >= @StartDate AND AdmissionDate <= @EndDate;
+   END;
+   ```
+
+   存储过程名为 `GetPatientByTime`，接收两个日期类型的参数 `@StartDate` 和 `@EndDate`，并使用这些参数来查询 `Patients` 表中在指定时间范围内的患者信息。
+
+2. 在 C# 项目中调用存储过程：
+   在 C# 项目中，使用 ADO.NET 来连接到 SQL Server 数据库，并调用存储过程。以下是一个示例代码：
+
+   ```csharp
+   using (SqlConnection connection = new SqlConnection(connectionString))
+   {
+       SqlCommand command = new SqlCommand("GetPatientByTime", connection);
+       command.CommandType = CommandType.StoredProcedure;
+
+       // 添加存储过程的参数
+       command.Parameters.AddWithValue("@StartDate", startDate);
+       command.Parameters.AddWithValue("@EndDate", endDate);
+
+       // 打开数据库连接
+       connection.Open();
+
+       // 执行存储过程
+       SqlDataReader reader = command.ExecuteReader();
+
+       // 读取查询结果
+       while (reader.Read())
+       {
+           // 获取患者信息的列值
+           int patientId = (int)reader["PatientID"];
+           string patientName = (string)reader["PatientName"];
+
+           // 处理查询结果
+           // ...
+       }
+
+       // 关闭连接和读取器
+       reader.Close();
+       connection.Close();
+   }
+   ```
+
+   在上述示例中，`connectionString` 是连接到 SQL Server 数据库的连接字符串，`startDate` 和 `endDate` 是查询的起始日期和结束日期。
+
+   通过创建一个 `SqlConnection` 对象，设置存储过程名称和参数，然后执行 `ExecuteReader()` 方法来调用存储过程并获取查询结果。使用 `SqlDataReader` 对象读取结果集中的每一行，并从每一行中提取患者信息的列值。
+
+   需要注意的是，根据实际情况调整表名、列名、连接字符串以及处理查询结果的代码。
+
+以上代码示例仅供参考，你可以根据实际需求和数据库结构进行调整和扩展，以满足你的具体需求。另外，为了保证安全性和性能，建议在实际项目中使用参数化查询、异常处理、适当的日志记录和错误处理等技术。
+
+## C# sqlserver 如何在实际编码是使用存储过程 使用存储过程实际编码时的常用技巧
+在 C# 中使用 SQL Server 存储过程可以通过 ADO.NET 来实现。下面是使用存储过程的一般步骤和常用技巧：
+
+1. 建立数据库连接：
+   在 C# 中，首先需要建立与 SQL Server 数据库的连接。可以使用 SqlConnection 类来创建连接对象，并指定连接字符串，包括服务器名称、数据库名称、身份验证方式等。
+
+   ```csharp
+   using (SqlConnection connection = new SqlConnection(connectionString))
+   {
+       // 打开数据库连接
+       connection.Open();
+       // 执行存储过程或其他数据库操作
+   }
+   ```
+
+2. 创建 SqlCommand 对象：
+   在连接成功后，使用 SqlCommand 对象来执行存储过程。设置 SqlCommand 对象的 CommandType 属性为 CommandType.StoredProcedure，然后设置存储过程的名称和参数。
+
+   ```csharp
+   using (SqlCommand command = new SqlCommand("存储过程名称", connection))
+   {
+       command.CommandType = CommandType.StoredProcedure;
+
+       // 添加参数
+       command.Parameters.AddWithValue("@参数名", 参数值);
+
+       // 执行存储过程或其他数据库操作
+   }
+   ```
+
+3. 执行存储过程：
+   使用 SqlCommand 对象的 ExecuteNonQuery() 方法来执行存储过程，该方法用于执行不返回结果集的命令（如 INSERT、UPDATE、DELETE 等），或调用存储过程。
+
+   ```csharp
+   command.ExecuteNonQuery();
+   ```
+
+4. 获取存储过程的输出参数：
+   如果存储过程包含输出参数，可以在执行存储过程后读取这些输出参数的值。
+
+   ```csharp
+   var outputValue = command.Parameters["@输出参数名"].Value;
+   ```
+
+   注意：在设置参数时，要将参数的 Direction 属性设置为 ParameterDirection.Output，以指定参数为输出参数。
+
+以上是使用存储过程的一般步骤。在实际编码中，还有一些常用的技巧可以考虑：
+
+- 尽量使用参数化查询：使用 SqlCommand 对象的 Parameters 集合来添加参数，而不是直接将参数值拼接到 SQL 语句中，以避免 SQL 注入攻击和提高执行效率。
+
+- 错误处理和异常捕获：在使用存储过程时，要考虑异常处理和错误处理。可以使用 try-catch 块来捕获异常，并在异常处理代码中处理错误或进行回滚操作。
+
+- 使用事务管理：如果需要在多个存储过程或数据库操作中保持一致性，可以使用事务来管理这些操作，以确保原子性和一致性。
+
+- 日志记录和调试：在开发和调试过程中，可以通过记录日志来跟踪存储过程的执行过程和输出结果，以便排查问题和进行调试。
+
+总的来说，使用存储过程时，要注意安全性、性能和可维护性。合理地设置参数、处理异常和错误，以及使用事务管理和日志记录等技巧，能够提高代码的质量和可靠性。
+
+
+
+
 
 
 
