@@ -1127,9 +1127,7 @@ var person = persons.FirstOrDefault(p => p.Age == 35);
 
 4. 第四次挥手（ACK）：
    - 接收到FIN包的一方收到后，发送一个确认包，称为ACK包。
-   - 接收ACK包
-
-的一方进入"CLOSED"状态，连接正式关闭。
+   - 接收ACK包的一方进入"CLOSED"状态，连接正式关闭。
    - 发送ACK包的一方在等待一段时间后，也进入"CLOSED"状态。
 
 通过这样的握手和挥手过程，TCP确保了数据的可靠传输和连接的正常关闭，保证了网络通信的可靠性和稳定性。
@@ -1228,6 +1226,116 @@ class Program
 此示例只展示了NModbus库的基本用法，还有许多其他功能和方法可以探索。你可以查阅NModbus库的文档和
 
 示例代码，以了解更多详细信息和使用方法，以满足你的特定需求。
+
+<a name="掌握关系型数据库基础知识"></a>
+## 数据库基础知识
+* 三大范式（Normalization）是数据库设计中的规范，用于减少冗余数据、确保数据的一致性和避免更新异常。遵循这些规范有助于建立有效、可靠和易于维护的数据库结构。
+
+下面是对三大范式的简要说明和目的：
+
+1. 第一范式（1NF）：要求数据库中的每个数据项都是原子性的，不可再分。也就是说，每个列（属性）中的值都是不可再分的单一值。这有助于避免数据冗余和数据重复性，确保每个数据项都具有独立性。
+
+2. 第二范式（2NF）：要求数据库中的每个非主键列完全依赖于主键，而不是依赖于主键的一部分。这样可以消除非主键列之间的冗余依赖关系，减少数据冗余，并确保数据的一致性和完整性。
+
+3. 第三范式（3NF）：要求数据库中的每个非主键列之间不存在传递依赖关系。换句话说，非主键列之间不应该有间接依赖关系。通过消除传递依赖，可以进一步减少数据冗余，并提高数据库的弹性和灵活性。
+
+遵循三大范式的设计规范有以下目的和优点：
+
+1. 数据一致性：通过减少数据冗余和依赖关系，确保数据的一致性。每个数据项只需在数据库中存储一次，避免了不一致的数据副本。
+
+2. 数据完整性：通过将数据分解为更小的关系表，可以更好地维护数据的完整性约束。每个表都有清晰定义的主键和非主键列，确保数据的完整性和准确性。
+
+3. 查询性能优化：通过规范化的数据库结构，可以更有效地进行查询和检索操作。不需要大量的冗余数据，查询可以更快速地定位和检索所需的数据。
+
+4. 数据更新异常的避免：通过遵循范式规范，可以减少数据更新异常的发生。例如，插入、更新或删除数据时不会引发不一致的依赖关系。
+
+总之，遵循三大范式的设计原则有助于构建高质量的数据库结构，提高数据的一致性、完整性和性能。这些原则帮助数据库设计师避免了许多与数据冗余和依赖关系相关的问题，确保数据库的可靠性和可维护性。
+
+## 数据库表连接
+在 SQL Server 数据库中，常用的表连接操作包括内连接（INNER JOIN）、左连接（LEFT JOIN）、右连接（RIGHT JOIN）和全连接（FULL JOIN）。下面是这些表连接操作的语法格式和示例：
+
+1. 内连接（INNER JOIN）：
+   ```sql
+   SELECT 列名
+   FROM 表1
+   INNER JOIN 表2
+   ON 表1.列名 = 表2.列名;
+   ```
+
+   示例：
+   ```sql
+   SELECT Orders.OrderID, Customers.CustomerName
+   FROM Orders
+   INNER JOIN Customers
+   ON Orders.CustomerID = Customers.CustomerID;
+   ```
+   上述示例将 Orders 表和 Customers 表进行内连接，基于 CustomerID 列匹配，返回 OrderID 和 CustomerName。
+
+2. 左连接（LEFT JOIN）：
+   ```sql
+   SELECT 列名
+   FROM 表1
+   LEFT JOIN 表2
+   ON 表1.列名 = 表2.列名;
+   ```
+
+   示例：
+   ```sql
+   SELECT Customers.CustomerName, Orders.OrderID
+   FROM Customers
+   LEFT JOIN Orders
+   ON Customers.CustomerID = Orders.CustomerID;
+   ```
+   上述示例将 Customers 表和 Orders 表进行左连接，基于 CustomerID 列匹配，返回 CustomerName 和 OrderID。左连接会返回左表中的所有记录以及与右表匹配的记录。
+
+3. 右连接（RIGHT JOIN）：
+   ```sql
+   SELECT 列名
+   FROM 表1
+   RIGHT JOIN 表2
+   ON 表1.列名 = 表2.列名;
+   ```
+
+   示例：
+   ```sql
+   SELECT Customers.CustomerName, Orders.OrderID
+   FROM Customers
+   RIGHT JOIN Orders
+   ON Customers.CustomerID = Orders.CustomerID;
+   ```
+   上述示例将 Customers 表和 Orders 表进行右连接，基于 CustomerID 列匹配，返回 CustomerName 和 OrderID。右连接会返回右表中的所有记录以及与左表匹配的记录。
+
+4. 全连接（FULL JOIN）：
+   ```sql
+   SELECT 列名
+   FROM 表1
+   FULL JOIN 表2
+   ON 表1.列名 = 表2.列名;
+   ```
+
+   示例：
+   ```sql
+   SELECT Customers.CustomerName, Orders.OrderID
+   FROM Customers
+   FULL JOIN Orders
+   ON Customers.CustomerID = Orders.CustomerID;
+   ```
+   上述示例将 Customers 表和 Orders 表进行全连接，基于 CustomerID 列匹配，返回 CustomerName 和 OrderID。全连接会返回左表和右表中的所有记录。
+
+上述示例中的表名和列名是示意性的，请根据实际情况替换为你的数据库中的表和列名。表连接操作可以根据实际需求进行调整，以满足查询数据的需要。
+
+1. 内连接（Inner Join）：如果需要从两个或多个表中获取匹配的数据，则内连接是一种常见的方式。内连接只返回两个表中都存在的数据，因此对于查询数据的完整性和一致性非常有用。
+
+2. 左连接（Left Join）：如果需要从左边的表中返回所有数据，并仅从右边的表中返回匹配的数据，则左连接是一种常见的方式。左连接通常用于获取带有附加信息的主数据，例如获取某个客户及其订单信息。
+
+3. 右连接（Right Join）：如果需要从右边的表中返回所有数据，并仅从左边的表中返回匹配的数据，则右连接是一种常见的方式。右连接通常用于获取某些信息的附加数据，例如获取所有订单及其对应的客户信息。
+
+4. 全外连接（Full Outer Join）：如果需要返回两个表中所有的数据，则全外连接是一种常见的方式。全外连接可以用于检查两个表之间的完整性和一致性，或者用于分析两个表之间的差异。
+
+## 
+
+
+
   
 
 
