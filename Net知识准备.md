@@ -2504,7 +2504,108 @@ public class RelayCommand : ICommand
 
 使用事件处理程序可以方便地在XAML中声明和处理事件，而使用命令模式可以将用户输入与特定的逻辑进行解耦，提高代码的可重用性和可测试性。具体选择哪种方式取决于具体的应用场景和需求。
 
+## 在WPF中，样式是一种定义和应用控件外观和行为的方式。通过使用样式，我们可以统一定义控件的属性、触发器和模板等，以便在整个应用程序中实现一致的外观和行为。以下是详细说明以及实际应用代码示例：
 
+1. 样式的声明：
+   在XAML中，可以使用`<Style>`元素来定义样式。在样式中，我们可以指定要设置的属性、触发器和模板等。
+
+   ```xaml
+   <Style x:Key="ButtonStyle" TargetType="Button">
+       <Setter Property="Background" Value="LightBlue" />
+       <Setter Property="FontSize" Value="14" />
+       <Setter Property="Foreground" Value="White" />
+       <Setter Property="Template">
+           <Setter.Value>
+               <ControlTemplate TargetType="Button">
+                   <Border Background="{TemplateBinding Background}"
+                           BorderBrush="Gray"
+                           BorderThickness="1"
+                           Padding="5">
+                       <ContentPresenter HorizontalAlignment="Center"
+                                         VerticalAlignment="Center" />
+                   </Border>
+               </ControlTemplate>
+           </Setter.Value>
+       </Setter>
+   </Style>
+   ```
+
+2. 应用样式：
+   可以通过`Style`属性将样式应用到特定的控件或控件容器。
+
+   ```xaml
+   <Button Content="Click Me" Style="{StaticResource ButtonStyle}" />
+   ```
+
+3. 动态样式：
+   样式也可以在代码中动态创建和应用。
+
+   ```csharp
+   Style buttonStyle = new Style(typeof(Button));
+   buttonStyle.Setters.Add(new Setter(Button.BackgroundProperty, Brushes.LightBlue));
+   buttonStyle.Setters.Add(new Setter(Button.FontSizeProperty, 14));
+   buttonStyle.Setters.Add(new Setter(Button.ForegroundProperty, Brushes.White));
+
+   Button button = new Button();
+   button.Content = "Click Me";
+   button.Style = buttonStyle;
+   ```
+
+通过上述代码示例，我们展示了样式的使用方式。在XAML中，我们使用`<Style>`元素来定义样式，并在特定控件上应用样式。样式可以设置控件的属性值，包括背景、字体大小和前景色等。样式还可以定义控件的模板，通过模板可以自定义控件的外观。
+
+使用样式可以实现应用程序中控件的统一外观和行为，提高代码的可维护性和可重用性。通过定义一次样式，我们可以在多个控件上重用，减少了重复的代码编写。
+
+##  路由事件是一种特殊类型的事件，在WPF的控件树中传递。它具有隧道路由和冒泡路由两种类型。隧道事件从根元素向下传递，而冒泡事件从最底层的元素向上冒泡。通过使用路由事件，我们可以在父子元素之间进行交互和通信。以下是详细说明以及实际应用代码示例：
+
+1. 路由事件的定义：
+   路由事件是由`RoutedEventArgs`类派生的特定事件类。可以在自定义控件或已有控件上定义路由事件。
+
+   ```csharp
+   public class MyCustomControl : Control
+   {
+       public static readonly RoutedEvent MyEvent = EventManager.RegisterRoutedEvent(
+           "MyEvent", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(MyCustomControl));
+
+       public event RoutedEventHandler MyEvent
+       {
+           add { AddHandler(MyEvent, value); }
+           remove { RemoveHandler(MyEvent, value); }
+       }
+
+       // 其他控件逻辑...
+   }
+   ```
+
+2. 路由事件的触发：
+   在控件内部的特定情况下，我们可以触发路由事件，并通过调用`RaiseEvent()`方法来引发事件。
+
+   ```csharp
+   protected virtual void OnMyEvent()
+   {
+       RoutedEventArgs args = new RoutedEventArgs(MyEvent);
+       RaiseEvent(args);
+   }
+   ```
+
+3. 路由事件的处理：
+   在父元素或子元素中，可以使用`AddHandler()`方法或XAML中的事件属性来订阅路由事件，并定义事件处理程序来处理路由事件。
+
+   ```csharp
+   myCustomControl.AddHandler(MyCustomControl.MyEvent, new RoutedEventHandler(MyEventHandler));
+
+   private void MyEventHandler(object sender, RoutedEventArgs e)
+   {
+       // 处理路由事件的逻辑
+   }
+   ```
+
+   ```xaml
+   <MyCustomControl MyEvent="MyEventHandler" />
+   ```
+
+通过上述代码示例，我们展示了路由事件的使用方式。在自定义控件中定义路由事件，并通过触发事件和订阅事件的方式来实现父子元素之间的交互和通信。通过路由事件，可以在控件树中沿着隧道路由或冒泡路由传递事件，实现灵活的事件处理和控件之间的协作。
+
+在实际应用中，可以使用路由事件来处理复杂的交互场景，例如父子元素之间的通信、控件的状态同步等。
 
 
 
