@@ -1737,7 +1737,7 @@ SQL Server、Oracle和MySQL是三种常见的关系型数据库管理系统（RD
 
 总结而言，索引的最左前缀原则指出在使用复合索引时，只有索引的最左边列会被用于索引搜索，而后续列将在最左边列匹配的前提下进行进一步的过滤。这个原则的应用可以提高查询的效率和性能。
 
-<a name = "ASP.NET中 MVC路由执行"></a>
+<a name = "ASP.NET中MVC路由执行"></a>
 ## ASP.NET MVC路由执行
 动态服务器页面（动态交互性网页）;  
 ASP.NET Web Forms程序或Active Server Pages程序，URL和页面之间存在一对一的对应关系。  
