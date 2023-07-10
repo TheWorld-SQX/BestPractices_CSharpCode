@@ -1770,8 +1770,43 @@ MvcHandler 对象使用 RequestContext 实例来标识 IControllerFactory 对象
 执行结果：
 典型的操作方法可能会接收用户输入、准备适当的响应数据，然后返回结果类型（ ViewResult (它呈现视图，是最常用的结果类型) 、 RedirectToRouteResult、 RedirectResult、 ContentResult、 JsonResult 和 EmptyResult。）
 
- 
+## 当 ASP.NET MVC 应用程序处理请求时，涉及以下几个关键类和过程：
 
+1. 接受请求和路由解析：
+   - Global.asax.cs 文件中的 Application_Start 方法会在应用程序启动时调用。在该方法中，注册了路由规则，将 URL 映射到控制器和操作。
+   - 路由规则通常是通过 RouteConfig.cs 文件中的 RegisterRoutes 方法进行配置。在这个方法中，可以使用 MapRoute 方法来定义路由规则。
+
+2. 创建控制器和执行操作：
+   - 控制器（Controller）负责处理用户请求，决定返回给用户的响应。控制器类通常继承自 ControllerBase 类，并包含多个操作方法（Action）。
+   - 控制器的创建和操作的执行是由 MvcHandler 类负责的。MvcHandler 类根据请求的路由信息，创建相应的控制器实例，并调用适当的操作方法。
+
+3. 操作方法和结果：
+   - 操作方法（Action）是控制器中的具体方法，用于处理用户请求。操作方法可以接收参数、调用业务逻辑、准备响应数据，并返回 ActionResult 类型的结果。
+   - ActionResult 是表示要发送给客户端的响应的基类。常用的 ActionResult 类型包括 ViewResult（返回视图）、RedirectResult（重定向）、JsonResult（返回 JSON 数据）等。
+
+在处理请求的过程中，具体类和方法的调用顺序如下：
+
+1. 全局事件：
+   - Application_Start 方法：注册路由规则。
+   - Application_BeginRequest 方法：处理每个请求的开始。
+
+2. 路由解析和处理：
+   - RouteTable.Routes：路由表对象，包含注册的路由规则。
+   - RouteCollection.GetRouteData 方法：解析请求的 URL，并获取匹配的路由对象。
+   - RequestContext 类：封装请求上下文的对象，包含请求的路由信息。
+   - MvcHandler 类：根据 RequestContext 对象创建相应的控制器实例，并调用操作方法。
+
+3. 控制器和操作的执行：
+   - 控制器工厂（Controller Factory）：根据控制器名称创建控制器实例。
+   - 控制器的 ActionInvoker：决定执行哪个操作方法。
+   - 操作方法的参数绑定：将请求参数绑定到操作方法的参数上。
+   - 操作方法的执行：调用操作方法，执行业务逻辑，准备响应数据。
+
+4. 结果的处理和呈现：
+   - ActionResult 对象的执行：根据操作方法的返回值执行相应的 ActionResult 对象。
+   - ActionResult 的呈现：根据 ActionResult 对象的类型和内容，将结果呈现给客户端。
+
+需要注意的是，上述过程是一个简化的描述，实际上 ASP.NET MVC 涉及更多的类和中间件，以支持各种功能和扩展。处理请求的具体类和方法可能因应用程序的配置和需求而有所不同。对于更具体的实现细节和流程，建议参考官方文档或深入学习 ASP.NET MVC 框架。
 
 
 
