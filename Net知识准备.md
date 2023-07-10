@@ -40,7 +40,7 @@
 - [ASP.NET MVC和WebAPI](#ASP.NETMVC和WebAPI)
 - [Web API面试题](#WebAPI面试题)
 - [OWIN](#OWIN)
-- [WPF知识块]
+- [WPF知识块](#WPF知识块)
 
 ## 面向对象编程思想
 <a name="面向对象编程思想"></a>
