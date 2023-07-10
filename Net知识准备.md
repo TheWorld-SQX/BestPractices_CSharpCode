@@ -1749,11 +1749,11 @@ URL请求RequestContext;传递RequestContext;使用RequestContext 实例来标�
 
 接受请求：Global.asax文件中，把Route对象(类)添加到RouteTable对象(类)中；
 
-执行路由：
+执行路由：  
 通过（一个 HTTP 模块)UrlRoutingModule对象分析请求，并执行路由选择；  
 选择与当前请求匹配的第一个路由对象；  
-UrlRoutingModue对象（ASP.NET代码抽象的一个类）使用RouteTable集合中的一个Route对象 (路由对象是实现 RouteBase 的类，通常是 Route 类的实例)  
-创建RouteData对象，RouteData对象来创建RequestContext（IHTTPContext）对象；  
+UrlRoutingModue对象（ASP.NET代码抽象的一个类）使用RouteTable集合中的一个Route对象 (路由对象是实现 RouteBase 的类，通常是 Route 类的实例)   
+创建RouteData对象，RouteData对象来创建RequestContext（IHTTPContext）对象；   
 
 创建MVC请求处理程序：  
 MvcRouteHandler对象创建MvcHandler类实例，并传递RequestContex实例
