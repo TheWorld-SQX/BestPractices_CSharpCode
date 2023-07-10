@@ -36,11 +36,11 @@
 - [ADO.NET](#使用ADO.NET和LINQ进行数据库查询和操作)
 - [数据库概论](#数据库基础知识)
 - [数据库索引](#数据库索引)
+- [ASP.NET中 MVC路由执行](#ASP.NET中MVC路由执行)
 - [ASP.NET MVC和WebAPI](#ASP.NETMVC和WebAPI)
 - [Web API面试题](#WebAPI面试题)
 - [OWIN](#OWIN)
-- [](#)
-- [](#)
+- 
 
 ## 面向对象编程思想
 <a name="面向对象编程思想"></a>
@@ -1813,7 +1813,7 @@ MvcHandler 对象使用 RequestContext 实例来标识 IControllerFactory 对象
 
 需要注意的是，上述过程是一个简化的描述，实际上 ASP.NET MVC 涉及更多的类和中间件，以支持各种功能和扩展。处理请求的具体类和方法可能因应用程序的配置和需求而有所不同。对于更具体的实现细节和流程，建议参考官方文档或深入学习 ASP.NET MVC 框架。
 
-<a name="ASP.NET MVC和WebAPI"></a>
+<a name="ASP.NETMVC和WebAPI"></a>
 ## ASP.NET MVC 和 ASP.NET Web API 都是基于 ASP.NET 框架的技术，用于构建 Web 应用程序。它们有一些关键的区别，特别是在设计和用途上。
 
 1. 设计模式：
