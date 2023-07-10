@@ -1770,26 +1770,6 @@ MvcHandler 对象使用 RequestContext 实例来标识 IControllerFactory 对象
 执行结果：
 典型的操作方法可能会接收用户输入、准备适当的响应数据，然后返回结果类型（ ViewResult (它呈现视图，是最常用的结果类型) 、 RedirectToRouteResult、 RedirectResult、 ContentResult、 JsonResult 和 EmptyResult。）
 
-## ASP.NET MVC 和 ASP.NET Web API 都是基于 ASP.NET 框架的技术，用于构建 Web 应用程序。它们有一些关键的区别，特别是在设计和用途上。
-
-1. 设计模式：
-   - ASP.NET MVC：基于 MVC（模型-视图-控制器）设计模式，用于构建具有复杂交互和丰富用户界面的 Web 应用程序。它提供了对用户请求的精细控制，通过控制器来处理用户输入和决定响应。
-   - ASP.NET Web API：基于 REST（表述性状态传输）架构风格，用于构建面向资源和提供数据服务的 Web API。它专注于为客户端提供数据和服务，并支持多种传输格式，如 JSON 和 XML。
-
-2. 类和命名空间：
-   - ASP.NET MVC：核心类在 `System.Web.Mvc` 命名空间下，包括 `Controller`、`ActionResult`、`ViewResult` 等。控制器类继承自 `Controller` 基类，并包含操作方法（Action）。
-   - ASP.NET Web API：核心类在 `System.Web.Http` 命名空间下，包括 `ApiController`、`HttpResponseMessage`、`JsonResult` 等。Web API 的控制器类继承自 `ApiController` 基类，并包含处理 HTTP 请求的动作方法。
-
-3. 路由和 URL 映射：
-   - ASP.NET MVC：路由规则将 URL 映射到控制器的操作方法，通过 `MapRoute` 方法配置在 `RouteConfig` 类中。
-   - ASP.NET Web API：路由规则将 URL 映射到 Web API 控制器的动作方法，通过 `MapHttpRoute` 方法配置在 `WebApiConfig` 类中。
-
-4. 返回类型和结果处理：
-   - ASP.NET MVC：操作方法通常返回 `ActionResult` 或其派生类，如 `ViewResult`、`RedirectResult`、`JsonResult` 等。这些结果类型用于呈现视图、重定向或返回 JSON 数据等。
-   - ASP.NET Web API：动作方法返回类型通常是 `HttpResponseMessage` 对象，该对象包装了 HTTP 响应。Web API 通过内容协商（Content Negotiation）机制自动选择合适的数据格式，并将数据返回给客户端。
-
-总的来说，ASP.NET MVC 适用于构建具有复杂用户界面和交互的 Web 应用程序，它强调视图的渲染和用户体验。而 ASP.NET Web API 则适用于构建面向资源和数据服务的 Web API，它专注于数据的提供和处理。根据项目需求和功能要求，可以选择使用 ASP.NET MVC 或 ASP.NET Web API 或同时使用它们来满足不同的需求。
-
 ## 当 ASP.NET MVC 应用程序处理请求时，涉及以下几个关键类和过程：
 
 1. 接受请求和路由解析：
@@ -1827,6 +1807,27 @@ MvcHandler 对象使用 RequestContext 实例来标识 IControllerFactory 对象
    - ActionResult 的呈现：根据 ActionResult 对象的类型和内容，将结果呈现给客户端。
 
 需要注意的是，上述过程是一个简化的描述，实际上 ASP.NET MVC 涉及更多的类和中间件，以支持各种功能和扩展。处理请求的具体类和方法可能因应用程序的配置和需求而有所不同。对于更具体的实现细节和流程，建议参考官方文档或深入学习 ASP.NET MVC 框架。
+
+## ASP.NET MVC 和 ASP.NET Web API 都是基于 ASP.NET 框架的技术，用于构建 Web 应用程序。它们有一些关键的区别，特别是在设计和用途上。
+
+1. 设计模式：
+   - ASP.NET MVC：基于 MVC（模型-视图-控制器）设计模式，用于构建具有复杂交互和丰富用户界面的 Web 应用程序。它提供了对用户请求的精细控制，通过控制器来处理用户输入和决定响应。
+   - ASP.NET Web API：基于 REST（表述性状态传输）架构风格，用于构建面向资源和提供数据服务的 Web API。它专注于为客户端提供数据和服务，并支持多种传输格式，如 JSON 和 XML。
+
+2. 类和命名空间：
+   - ASP.NET MVC：核心类在 `System.Web.Mvc` 命名空间下，包括 `Controller`、`ActionResult`、`ViewResult` 等。控制器类继承自 `Controller` 基类，并包含操作方法（Action）。
+   - ASP.NET Web API：核心类在 `System.Web.Http` 命名空间下，包括 `ApiController`、`HttpResponseMessage`、`JsonResult` 等。Web API 的控制器类继承自 `ApiController` 基类，并包含处理 HTTP 请求的动作方法。
+
+3. 路由和 URL 映射：
+   - ASP.NET MVC：路由规则将 URL 映射到控制器的操作方法，通过 `MapRoute` 方法配置在 `RouteConfig` 类中。
+   - ASP.NET Web API：路由规则将 URL 映射到 Web API 控制器的动作方法，通过 `MapHttpRoute` 方法配置在 `WebApiConfig` 类中。
+
+4. 返回类型和结果处理：
+   - ASP.NET MVC：操作方法通常返回 `ActionResult` 或其派生类，如 `ViewResult`、`RedirectResult`、`JsonResult` 等。这些结果类型用于呈现视图、重定向或返回 JSON 数据等。
+   - ASP.NET Web API：动作方法返回类型通常是 `HttpResponseMessage` 对象，该对象包装了 HTTP 响应。Web API 通过内容协商（Content Negotiation）机制自动选择合适的数据格式，并将数据返回给客户端。
+
+总的来说，ASP.NET MVC 适用于构建具有复杂用户界面和交互的 Web 应用程序，它强调视图的渲染和用户体验。而 ASP.NET Web API 则适用于构建面向资源和数据服务的 Web API，它专注于数据的提供和处理。根据项目需求和功能要求，可以选择使用 ASP.NET MVC 或 ASP.NET Web API 或同时使用它们来满足不同的需求。
+
 
 ## RESTful API 原则规范 和上面一些详细说明和实践建议： 对应起来
 当编写 RESTful API 时，可以将以下原则和规范与上述详细说明和实践建议相对应：
