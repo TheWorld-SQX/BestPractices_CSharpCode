@@ -1662,6 +1662,7 @@ ADO.NET 提供了以下常用的数据提供程序：
 总之，底层的数据库连接器和驱动程序是特定数据库系统的组件和软件，用于建立与数据库的连接、发送查询和命令，并处理与数据库之间的通信和数据交互。它们实现了与数据库的底层协议和交互逻辑，为开发人员提供了一个抽象的接口，使得连接和操作数据库更加方便和高效。
 
 <a name = "数据库索引">
+
 ## 索引
 SQL Server、Oracle和MySQL是三种常见的关系型数据库管理系统（RDBMS），它们在内置引擎和应用场景上有以下区别：
 
@@ -1731,6 +1732,45 @@ SQL Server、Oracle和MySQL是三种常见的关系型数据库管理系统（RD
 
 总结而言，索引的最左前缀原则指出在使用复合索引时，只有索引的最左边列会被用于索引搜索，而后续列将在最左边列匹配的前提下进行进一步的过滤。这个原则的应用可以提高查询的效率和性能。
 
+<a name = "ASP.NET中WebAPI">
+
+## ASP.NET MVC路由执行
+动态服务器页面（动态交互性网页）;  
+ASP.NET Web Forms程序或Active Server Pages程序，URL和页面之间存在一对一的对应关系。  
+在 ASP.NET MVC 应用程序中，URL 对应于控制器操作，而不是磁盘上的页面。  
+
+Understand ASP.NET MVC Route：  
+When an ASP.NET application first starts, the Application_Start() method is called. this method calls the RegisterRoutes() method and the RegisterRoutes() method creates the default route table.  
+
+UnderStand Controller：  
+A controller is responsible for controlling the way that a user interacts with an MVC application. A controller contains the flow control logic for an ASP.NET MVC application. A controller determines what response to send back to a user when a user makes a browser request.  
+
+URL请求RequestContext;传递RequestContext;使用RequestContext 实例来标识控制器;执行控制器(操作)方法;
+
+接受请求：Global.asax文件中，把Route对象(类)添加到RouteTable对象(类)中；
+
+执行路由：
+通过（一个 HTTP 模块)UrlRoutingModule对象分析请求，并执行路由选择；  
+选择与当前请求匹配的第一个路由对象；  
+UrlRoutingModue对象（ASP.NET代码抽象的一个类）使用RouteTable集合中的一个Route对象 (路由对象是实现 RouteBase 的类，通常是 Route 类的实例)  
+创建RouteData对象，RouteData对象来创建RequestContext（IHTTPContext）对象；  
+
+创建MVC请求处理程序：  
+MvcRouteHandler对象创建MvcHandler类实例，并传递RequestContex实例
+
+创建控制器：  
+MvcHandler 对象使用 RequestContext 实例来标识 IControllerFactory 对象， (通常为 DefaultControllerFactory 类的实例) 创建控制器实例。  
+
+执行控制器：  
+ MvcHandler 实例调用控制器的 Execute 方法。  
+ 
+调用操作：
+大多数控制器继承自 控制器 基类。 对于执行此操作的控制器，与控制器关联的 ControllerActionInvoker 对象确定要调用的控制器类的操作方法，然后调用该方法。
+
+执行结果：
+典型的操作方法可能会接收用户输入、准备适当的响应数据，然后返回结果类型（ ViewResult (它呈现视图，是最常用的结果类型) 、 RedirectToRouteResult、 RedirectResult、 ContentResult、 JsonResult 和 EmptyResult。）
+
+ 
 
 
 
