@@ -2722,6 +2722,108 @@ storyboard.Begin();
 
 通过使用动画和过渡效果，我能够为WPF应用程序添加丰富的界面交互和视觉效果，提升用户体验。这种灵活性和可定制性使得WPF成为构建富客户端应用程序的强大工具。
 
+## 在WPF中，数据验证和错误处理是确保用户输入的有效性和数据完整性的重要方面
+1. 数据注解和验证属性：
+   WPF提供了一组数据注解和验证属性，用于定义和验证数据模型中属性的有效性。常用的注解包括Required、StringLength、Range等。可以在数据模型的属性上应用这些注解，并通过数据绑定将其与界面元素绑定。当用户输入的数据不符合验证规则时，WPF会自动显示相应的错误消息。以下是一个示例，展示了如何在数据模型中使用数据注解和验证属性：
+
+```csharp
+public class Person : INotifyPropertyChanged, IDataErrorInfo
+{
+    private string name;
+
+    [Required(ErrorMessage = "Name is required.")]
+    [StringLength(50, ErrorMessage = "Name should not exceed 50 characters.")]
+    public string Name
+    {
+        get { return name; }
+        set
+        {
+            name = value;
+            OnPropertyChanged(nameof(Name));
+        }
+    }
+
+    // ... other properties
+
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    protected virtual void OnPropertyChanged(string propertyName)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+
+    public string Error { get { return null; } }
+
+    public string this[string columnName]
+    {
+        get
+        {
+            var validationResults = new List<ValidationResult>();
+            var context = new ValidationContext(this) { MemberName = columnName };
+
+            Validator.TryValidateProperty(GetType().GetProperty(columnName).GetValue(this),
+                context, validationResults);
+
+            if (validationResults.Any())
+                return validationResults.First().ErrorMessage;
+
+            return null;
+        }
+    }
+}
+```
+
+在上述示例中，我定义了一个Person类作为数据模型，并在Name属性上应用了Required和StringLength注解。这些注解定义了Name属性的验证规则，如必填和最大长度。通过实现INotifyPropertyChanged接口和IDataErrorInfo接口，我能够通知界面元素属性值的更改，并在界面上显示相应的错误消息。
+
+2. 自定义数据验证逻辑：
+   除了使用数据注解和验证属性，还可以通过实现IDataErrorInfo接口来自定义数据验证逻辑。通过在索引器中对属性进行验证，并返回相应的错误消息，可以捕获和处理用户输入的错误。以下是一个示例，展示了如何实现自定义的数据验证逻辑：
+
+```csharp
+public class Person : INotifyPropertyChanged, IDataErrorInfo
+{
+    private int age;
+
+    public int Age
+    {
+        get { return age; }
+        set
+        {
+            age = value;
+            OnPropertyChanged(nameof(Age));
+        }
+    }
+
+    // ... other properties
+
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    protected virtual void OnPropertyChanged(string propertyName)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+
+    public string Error { get { return null; } }
+
+    public string this[string columnName]
+    {
+        get
+        {
+            if (columnName == nameof(Age))
+            {
+                if (Age < 0 || Age > 120)
+                    return "Age should be between 0 and 120.";
+            }
+
+            return null;
+        }
+    }
+}
+```
+
+在上述示例中，我定义了一个Person类，并在索引器中对Age属性进行了自定义的验证逻辑。如果Age属性的值小于0或大于120，将返回相应的错误消息。
+
+通过使用数据验证和错误处理机制，我能够在WPF应用程序中确保用户输入的有效性，并提供及时的错误反馈。这有助于提高应用程序的可靠性和用户体验。
+
 
 
 
