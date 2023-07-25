@@ -70,9 +70,7 @@ class Program
     static void Main()
     {
         Dog dog = new Dog();
-        dog.Name = "Buddy
-
-";
+        dog.Name = "Buddy";
         dog.Age = 3;
 
         Console.WriteLine($"Name: {dog.Name}, Age: {dog.Age}");
@@ -190,3 +188,45 @@ int main()
 ```
 
 在C#代码中，我们使用`new`关键字动态分配了一个整数数组，并且不需要手动释放内存。而在C++代码中，我们同样使用`new`关键字动态分配了一个整数数组，但是需要手动调用`delete[]`来释放内存，否则会造成内存泄漏。这就是托管语言C#和非托管语言C++在内存管理方面的主要区别。
+
+## 在C#中，你有没有使用过unsafe代码块和指针？请分享你的经验和使用场景。`详细准确回答这些问题，详细说明这部分内容，并给出实际应用代码示例`
+
+在C#中，使用`unsafe`代码块和指针是一种高级特性，主要用于直接访问内存和进行非托管的操作。它通常在需要高性能或与非托管代码交互的场景下使用。`unsafe`代码块允许我们使用指针来操作内存中的数据，但也会增加代码的复杂性和风险，因此在大多数情况下应该避免使用。
+
+下面是一个简单的示例，演示了在C#中使用`unsafe`代码块和指针来交换两个整数的值：
+
+```csharp
+using System;
+
+class Program
+{
+    static unsafe void Swap(int* a, int* b)
+    {
+        int temp = *a;
+        *a = *b;
+        *b = temp;
+    }
+
+    static void Main()
+    {
+        int x = 10;
+        int y = 20;
+
+        Console.WriteLine($"Before swap: x = {x}, y = {y}");
+
+        unsafe
+        {
+            fixed (int* ptrX = &x, ptrY = &y)
+            {
+                Swap(ptrX, ptrY);
+            }
+        }
+
+        Console.WriteLine($"After swap: x = {x}, y = {y}");
+    }
+}
+```
+
+在上述示例中，我们使用了`unsafe`代码块，并在`Swap`方法中传递了两个整数的指针。通过`fixed`关键字，我们将指针固定在内存中，以确保在指针操作期间不会发生垃圾回收导致的内存移动。然后，在`Swap`方法中，我们通过指针交换了两个整数的值。
+
+需要注意的是，使用`unsafe`代码块和指针需要小心，因为它们可以绕过C#的类型安全检查，导致潜在的内存错误和安全漏洞。因此，只有在确实需要直接访问内存并且了解其中风险的情况下，才应该使用`unsafe`代码块和指针。在大多数情况下，可以通过C#提供的类型安全和高级特性来实现所需功能，而不需要使用`unsafe`代码块和指针。
