@@ -71,3 +71,52 @@ class Program
             return signPath;
         }
 ```
+## post第三方接口
+```csharp
+        /// <summary>
+        /// 回传打印次数
+        /// </summary>
+        /// <param name="reqProcId">检查号</param>
+        /// <param name="sourceId">数据源ID</param>
+        /// <param name="hospitalCode">医疗机构代码</param>
+        /// <param name="times">打印次数</param>
+        /// <returns></returns>
+        static void PostBackPrintedCount(string reqProcId, string sourceId, string hospitalCode, string times)
+        {
+            // 构建请求 URL
+            string baseUrl = "http://172.23.8.209:5656";
+            string apiUrl = "/api/PatientSearch/SavePrintTimes";
+            string url = $"{baseUrl}{apiUrl}";
+            // 构建请求参数
+            var requestData = new
+            {
+                reqProcId,
+                sourceId,
+                hospitalCode,
+                times
+            };
+
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    // 使用 JsonConvert 将请求参数转换成 JSON 字符串
+                    string jsonContent = JsonConvert.SerializeObject(requestData);
+                    var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+                    // 发送 POST 请求
+                    var response = client.PostAsync(url, content).Result;
+                    response.EnsureSuccessStatusCode();
+
+                    // 处理响应
+                    var responseBody = response.Content.ReadAsStringAsync().Result;
+                    logger.Debug($"PostBackPrintedCount({jsonContent})=>Response: {responseBody}");
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                logger.Error($"PostBackPrintedCount()=>请求发生错误: {ex.Message}");
+            }
+        }
+
+```
