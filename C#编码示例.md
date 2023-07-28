@@ -165,7 +165,7 @@ class Program
 
 需要注意的是，`DataTable2Object<T>(ds.Tables[0])` 方法没有在这个代码片段中提供，因此无法了解它是如何将 `DataTable` 转换为 `List<T>` 的。这可能是一个自定义方法，根据 `T` 的类型进行相应的映射处理。
 
-
+## PrepareCommand
 ```csharp
         protected override void PrepareCommand(object command, object connection, string cmdText, List<SqlParameter> cmdParms)
         {
@@ -218,3 +218,77 @@ class Program
    - 将处理后的参数添加到 `SqlCommand` 对象的 `Parameters` 集合中。
 
 总体来说，这个方法是用来准备 `SqlCommand` 对象的，并将查询需要的参数添加到命令中。它还负责打开数据库连接，并将连接和文本命令与参数关联起来，以便后续执行数据库查询。
+
+
+## 
+```csharp
+        protected List<T> DataTable2Object<T>(DataTable table) where T : new()
+        {
+            List<T> result = new List<T>();
+            Type itemType = typeof(T);
+            string propertyName = "";
+            try
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    T item = new T();
+                    foreach (DataColumn column in table.Columns)
+                    {
+                        PropertyInfo p = itemType.GetProperty(column.ColumnName);
+                        if (p == null || !p.CanWrite)
+                        {
+                            continue;
+                        }
+                        propertyName = p.Name;
+                        object value = row[column.ColumnName];
+                        value = value is DBNull ? null : value;
+                        p.SetValue(item, value);
+                    }
+                    result.Add(item);
+                }
+            }
+            catch (Exception e)
+            {
+                result.Clear();
+                throw new Exception($"{e.Message}, property name is {propertyName}");
+            }
+            
+            return result;
+        }
+
+```
+这段代码是一个泛型方法 `DataTable2Object<T>`，用于将传入的 `DataTable` 对象转换为类型 `T` 的对象列表。让我们逐步解释这个方法的功能：
+
+1. `protected List<T> DataTable2Object<T>(DataTable table) where T : new()`: 这是一个受保护的泛型方法。它接受一个 `DataTable` 对象 `table` 作为输入参数，并返回一个类型为 `T` 的对象列表 `List<T>`。泛型约束 `where T : new()` 表示类型 `T` 必须有一个无参的公共构造函数。
+
+2. `List<T> result = new List<T>();`: 创建一个空的 `List<T>` 对象 `result`，用于保存转换后的对象列表。
+
+3. `Type itemType = typeof(T);`: 获取类型 `T` 的 `Type` 对象，以便后续使用反射操作。
+
+4. `string propertyName = "";`: 声明一个字符串变量 `propertyName`，用于记录在转换过程中可能发生异常的属性名。
+
+5. 在 `try` 块中，对 `DataTable` 的每一行进行遍历。
+
+6. `T item = new T();`: 在每一行数据开始时，创建一个类型 `T` 的新对象 `item`，该对象将用于存储该行数据转换后的结果。
+
+7. 在内部循环中，对 `DataTable` 的每一列进行遍历。
+
+8. `PropertyInfo p = itemType.GetProperty(column.ColumnName);`: 使用反射获取类型 `T` 中名为 `column.ColumnName` 的属性的 `PropertyInfo` 对象 `p`。
+
+9. `if (p == null || !p.CanWrite) { continue; }`: 检查属性 `p` 是否为 `null` 或不可写入（即没有公共的 set 方法），如果是，则继续下一次循环。
+
+10. `propertyName = p.Name;`: 将当前属性的名称记录到 `propertyName` 变量中，以便在后续可能的异常处理中进行提示。
+
+11. `object value = row[column.ColumnName];`: 获取当前行中名为 `column.ColumnName` 的列的值。
+
+12. `value = value is DBNull ? null : value;`: 检查值是否为 `DBNull`，如果是，则将其替换为 `null`。
+
+13. `p.SetValue(item, value);`: 将获取的值 `value` 设置到对象 `item` 的属性 `p` 中。
+
+14. 将转换后的对象 `item` 添加到 `result` 列表中。
+
+15. 如果在转换过程中发生异常，将清空 `result` 列表，并抛出带有错误信息的异常，其中包含异常发生时的属性名称。
+
+16. 返回包含转换后对象的 `result` 列表。
+
+这个方法使用了反射来动态地将 `DataTable` 中的数据映射到类型 `T` 的对象中，前提是类型 `T` 必须具有一个无参的公共构造函数。它遍历每一行数据，根据列名获取相应的属性，并将数据赋值给属性，最终返回一个由转换后的对象组成的列表。
