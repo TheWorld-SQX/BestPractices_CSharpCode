@@ -164,3 +164,57 @@ class Program
 9. 返回 `result` 列表，其中包含从数据库中查询到的类型为 `T` 的对象列表。
 
 需要注意的是，`DataTable2Object<T>(ds.Tables[0])` 方法没有在这个代码片段中提供，因此无法了解它是如何将 `DataTable` 转换为 `List<T>` 的。这可能是一个自定义方法，根据 `T` 的类型进行相应的映射处理。
+
+
+```csharp
+        protected override void PrepareCommand(object command, object connection, string cmdText, List<SqlParameter> cmdParms)
+        {
+            SqlConnection conn = connection as SqlConnection;
+            SqlCommand cmd = command as SqlCommand;
+            if (conn.State != ConnectionState.Open)
+            {
+                conn.Open();
+            }
+            cmd.Connection = conn;
+            cmd.CommandText = cmdText;
+            cmd.CommandType = CommandType.Text;//cmdType;
+            if (cmdParms != null)
+            {
+                foreach (System.Data.SqlClient.SqlParameter parameter in SqlParameterConverter(cmdParms))
+                {
+                    if ((parameter.Direction == ParameterDirection.InputOutput || parameter.Direction == ParameterDirection.Input) &&
+                        (parameter.Value == null))
+                    {
+                        parameter.Value = DBNull.Value;
+                    }
+                    cmd.Parameters.Add(parameter);
+                }
+            }
+        }
+
+```
+这段代码是一个重写的方法，用于准备一个 SQL 命令（`SqlCommand`）并设置相关的属性，以便执行数据库查询。让我们逐步解释这个方法的功能：
+
+1. `protected override void PrepareCommand(object command, object connection, string cmdText, List<SqlParameter> cmdParms)`: 这是一个受保护的方法，重写了某个基类（或接口）中的方法。它接受四个参数：`command` 是一个 `SqlCommand` 对象，`connection` 是一个 `SqlConnection` 对象，`cmdText` 是要执行的 SQL 命令文本，`cmdParms` 是一个包含 `SqlParameter` 的列表，表示要使用的参数。
+
+2. `SqlConnection conn = connection as SqlConnection;`: 将 `connection` 参数转换为 `SqlConnection` 对象，因为它可能是一个通用的 `object` 类型。
+
+3. `SqlCommand cmd = command as SqlCommand;`: 将 `command` 参数转换为 `SqlCommand` 对象，同样因为它也是一个通用的 `object` 类型。
+
+4. `if (conn.State != ConnectionState.Open) { conn.Open(); }`: 检查连接状态是否不是 `Open`（已打开），如果不是，则打开数据库连接。
+
+5. `cmd.Connection = conn;`: 将 `SqlCommand` 对象的 `Connection` 属性设置为刚刚打开的数据库连接 `conn`。
+
+6. `cmd.CommandText = cmdText;`: 设置 `SqlCommand` 对象的 `CommandText` 属性，将要执行的 SQL 命令文本赋值给它。
+
+7. `cmd.CommandType = CommandType.Text;`: 设置 `SqlCommand` 对象的 `CommandType` 属性为 `CommandType.Text`，表示要执行的命令是一个文本类型的 SQL 命令。
+
+8. `if (cmdParms != null) { ... }`: 检查传入的参数列表 `cmdParms` 是否为非空，如果不为空，则继续处理其中的参数。
+
+9. `foreach (System.Data.SqlClient.SqlParameter parameter in SqlParameterConverter(cmdParms)) { ... }`: 这里使用 `SqlParameterConverter` 方法来将传入的 `cmdParms` 参数列表转换为 `System.Data.SqlClient.SqlParameter` 参数列表。在 `foreach` 循环中，对于每个参数，进行如下处理：
+
+   - 检查参数的 `Direction` 属性，如果是输入输出或输入方向，并且参数的值为 `null`，则将参数的值设置为 `DBNull.Value`，表示数据库中的 NULL 值。
+
+   - 将处理后的参数添加到 `SqlCommand` 对象的 `Parameters` 集合中。
+
+总体来说，这个方法是用来准备 `SqlCommand` 对象的，并将查询需要的参数添加到命令中。它还负责打开数据库连接，并将连接和文本命令与参数关联起来，以便后续执行数据库查询。
