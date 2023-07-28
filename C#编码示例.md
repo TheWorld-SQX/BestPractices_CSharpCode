@@ -120,3 +120,47 @@ class Program
         }
 
 ```
+## 查询数据
+```csharp
+        public override List<T> Query<T>(string sql, List<SqlParameter> cmdParms)
+        {
+            List<T> result = new List<T>() { };
+            using (SqlConnection connection = new SqlConnection(connectStr))
+            using (SqlCommand cmd = new SqlCommand())
+            {
+                PrepareCommand(cmd, connection, sql, cmdParms);
+                using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                using (DataSet ds = new DataSet())
+                {
+                    da.Fill(ds, "ds");
+                    if (ds.Tables[0]?.Rows?.Count == 0)
+                    {
+                        return result;
+                    }
+                    result = DataTable2Object<T>(ds.Tables[0]);
+                }
+            }
+            return result;
+        }
+```
+这个代码片段是一个泛型方法，用于执行 SQL 查询并将结果映射为类型 `T` 的对象列表。我们来逐步解释代码的功能：
+
+1. `public override List<T> Query<T>(string sql, List<SqlParameter> cmdParms)`: 这是一个公共方法，它重写了某个基类（或接口）中的方法，并且是一个泛型方法。它接受一个 SQL 查询字符串 `sql` 和一个包含 `SqlParameter` 的列表 `cmdParms` 作为输入参数，并返回一个类型为 `T` 的对象列表 `List<T>`。
+
+2. `List<T> result = new List<T>() { };`: 在方法开始时，创建一个空的 `List<T>` 对象 `result`，用于保存查询结果。这里的花括号表示集合的初始化器，但因为没有添加任何元素，所以这个列表是空的。
+
+3. 使用 `using` 语句创建 `SqlConnection` 和 `SqlCommand` 对象，并连接到数据库。
+
+4. `PrepareCommand(cmd, connection, sql, cmdParms);`: 调用 `PrepareCommand` 方法，该方法可能是一个自定义的方法，用于设置 `SqlCommand` 对象的属性，包括 SQL 查询字符串和相关的参数。
+
+5. 使用 `using` 语句创建 `SqlDataAdapter` 和 `DataSet` 对象。
+
+6. `da.Fill(ds, "ds");`: 使用 `SqlDataAdapter` 执行 SQL 查询并将结果填充到 `DataSet` 中，其中 "ds" 是数据集的名称。
+
+7. `if (ds.Tables[0]?.Rows?.Count == 0)`: 这里使用了条件语句来检查 `DataSet` 的第一个表是否为空（没有行）。如果为空，则说明查询没有返回任何结果，直接返回空的 `result` 列表。
+
+8. 如果查询结果不为空（即有行数据），则通过调用 `DataTable2Object<T>(ds.Tables[0])` 方法，将 `DataSet` 中的第一个表转换为类型 `T` 的对象列表，并将结果保存在 `result` 变量中。
+
+9. 返回 `result` 列表，其中包含从数据库中查询到的类型为 `T` 的对象列表。
+
+需要注意的是，`DataTable2Object<T>(ds.Tables[0])` 方法没有在这个代码片段中提供，因此无法了解它是如何将 `DataTable` 转换为 `List<T>` 的。这可能是一个自定义方法，根据 `T` 的类型进行相应的映射处理。
