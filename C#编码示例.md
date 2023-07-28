@@ -220,7 +220,7 @@ class Program
 总体来说，这个方法是用来准备 `SqlCommand` 对象的，并将查询需要的参数添加到命令中。它还负责打开数据库连接，并将连接和文本命令与参数关联起来，以便后续执行数据库查询。
 
 
-## 
+## DataTable2Object
 ```csharp
         protected List<T> DataTable2Object<T>(DataTable table) where T : new()
         {
