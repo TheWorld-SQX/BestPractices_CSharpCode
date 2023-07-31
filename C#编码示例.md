@@ -292,3 +292,8 @@ class Program
 16. 返回包含转换后对象的 `result` 列表。
 
 这个方法使用了反射来动态地将 `DataTable` 中的数据映射到类型 `T` 的对象中，前提是类型 `T` 必须具有一个无参的公共构造函数。它遍历每一行数据，根据列名获取相应的属性，并将数据赋值给属性，最终返回一个由转换后的对象组成的列表。
+
+## 比较文件修改时间
+```charp
+(File.GetLastWriteTime(path.Replace(".jpg", string.Format("_{0}.jpg", quality))) < File.GetLastWriteTime(path))
+```
