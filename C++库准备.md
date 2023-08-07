@@ -13,5 +13,12 @@ b2.exe install --prefix="D:\Boost\x64" --build-type=complete --toolset=msvc-14.2
 
 b2.exe install --prefix="D:\Boost\x86" --build-type=complete --toolset=msvc-14.2 threading=multi --build-type=complete address-model=32
 
+## 使用Boost库之前，您需要将源代码编译成适合您的操作系统和编译器的库文件。
+
+通常情况下，Boost库的源代码发行版仅包含头文件和一些源代码文件，它并不包含预编译的库文件。因此，在使用Boost库之前，您需要将源代码编译成适合您的操作系统和编译器的库文件。
+
+"lib64-msvc-14.2" 目录是一个典型的示例，可能是由某人或某个组织自行构建的Boost库的二进制文件（预编译库）目录。它的命名可能是为了反映使用的编译器和操作系统信息，例如MSVC 14.2表示使用Microsoft Visual C++编译器的版本号是14.2，而"lib64"可能表示这些是64位版本的库。
+
+生成Boost库的二进制文件涉及使用适当的编译器和构建工具，在适用的平台上进行编译和链接。因此，这些预编译的库文件可能会因不同的编译选项、操作系统和编译器版本而有所不同。
 
 
