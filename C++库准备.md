@@ -5,3 +5,13 @@ x86通常指的是32位的x86架构。x86是一种基于Intel的微处理器架�
 需要注意的是，随着技术的发展，现代计算机中64位处理器逐渐成为主流，而32位处理器逐渐被淘汰。因此，如果您在现代计算机上使用x86，通常会是64位版本的x86-64。但在一些特定的老旧系统或特定需求下，仍然可能会使用32位的x86。
 
 ## boost库
+b2.exe install --prefix="D:\boost\boost_1_76_0\lib32-msvc-14.2" --build-type=complete --toolset=msvc-14.2 threading=multi --build-type=complete address-model=64
+
+b2.exe install --prefix="D:\boost\boost_1_76_0\lib64-msvc-14.2" --build-type=complete --toolset=msvc-14.2 threading=multi --build-type=complete address-model=32
+
+b2.exe install --prefix="D:\Boost\x64" --build-type=complete --toolset=msvc-14.2 threading=multi --build-type=complete address-model=64
+
+b2.exe install --prefix="D:\Boost\x86" --build-type=complete --toolset=msvc-14.2 threading=multi --build-type=complete address-model=32
+
+
+
