@@ -92,7 +92,7 @@ APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, 
 
 请注意，调用约定的选择会影响函数的调用方式和参数传递方式，因此在编写 Windows 程序时，务必要选择正确的调用约定来声明和定义函数，以确保函数能够正确地被调用和返回。
 
-## C++ 关键字DLL_API
+## C++ 自定义 宏 DLL_API
 `DLL_API` 是一个宏，通常用于在编写动态链接库（DLL）时，标记函数或类的导出和导入。在 Windows 环境中，DLL 文件通常包含可以被其他程序调用的函数和数据。使用 `DLL_API` 宏可以帮助定义哪些函数和类是可以被外部程序访问的。
 
 在不同的编译环境中，`DLL_API` 的具体定义可能会有所不同。通常，它会被定义为适当的关键字，以指示编译器将函数或类标记为可供外部访问的。例如，在 Windows 环境中，`DLL_API` 可能被定义为 `__declspec(dllexport)` 或 `__declspec(dllimport)`，具体取决于是在定义 DLL 时还是在使用 DLL 时。
@@ -117,6 +117,54 @@ DLL_API void MyExportedFunction();
 
 通过使用 `DLL_API` 宏，可以在定义和使用 DLL 时保持一致的接口标记，以确保正确的导入和导出。这有助于在编写可移植的代码时更容易地切换和使用不同的编译器和开发环境。
 
+
+## C++ 在编写 DLL 时，定义了一些宏和函数，以便在其他程序中正确地导入和使用这些函数。
+``` cpp
+#pragma once
+
+#ifdef IOTMODELLIB_EXPORTS
+#define DLL_CLASS extern "C" class __declspec(dllexport)
+#define DLL_API __declspec(dllexport)
+#else
+#define DLL_CLASS extern "C" class __declspec(dllimport)
+#define DLL_API __declspec(dllimport)
+#endif
+
+
+#include <common\interface\ISerialPort.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif // __cplusplus
+
+    /// <summary>
+    /// 获取串口模块实例指针
+    /// </summary>
+    /// <returns></returns>
+    DLL_API common::ISerialPort* ISerialPort_GetInstance(const char* port, unsigned int baudRate);
+
+#ifdef __cplusplus
+}
+#endif // __cplusplus
+
+```
+这段代码看起来是一个用于动态链接库（DLL）导出的头文件，其中包含了一些宏定义和函数声明。以下是对代码的详细解释：
+
+1. `#pragma once`：这是预处理指令，用于确保头文件只被包含一次。
+
+2. `#ifdef IOTMODELLIB_EXPORTS`：这是一个条件编译指令，检查是否定义了 `IOTMODELLIB_EXPORTS` 宏。这通常用于在定义 DLL 时设置导出的宏。
+
+3. `#define DLL_CLASS ...`：这是一个宏定义，根据是否定义了 `IOTMODELLIB_EXPORTS` 宏，来分别定义导出和导入的类和函数宏。
+
+4. `#else`：这是条件编译指令的分支，当没有定义 `IOTMODELLIB_EXPORTS` 宏时执行。
+
+5. `#include <common\interface\ISerialPort.h>`：这是包含外部头文件的指令，用于引入 `ISerialPort` 接口的声明。
+
+6. `#ifdef __cplusplus` 和 `#endif // __cplusplus`：这是条件编译指令，用于在 C++ 环境下将后续代码用 `extern "C"` 包裹，以保证 C++ 和 C 的函数名链接正确。
+
+7. `DLL_API common::ISerialPort* ISerialPort_GetInstance(const char* port, unsigned int baudRate);`：这是一个函数声明，用于在动态链接库中导出获取串口实例的函数。
+
+总体而言，这段代码用于在编写 DLL 时，定义了一些宏和函数，以便在其他程序中正确地导入和使用这些函数。根据不同的编译环境，这些宏会根据需要来调整函数的导出和导入行为，以确保正确的编译和链接。
 
 
 
