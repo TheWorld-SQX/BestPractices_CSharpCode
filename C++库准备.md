@@ -70,5 +70,28 @@ b2.exe install --prefix="D:\Boost\x86" --build-type=complete --toolset=msvc-14.2
 项目属性里   配置属性里  vc++ 目录 和 库目录  
 
 
+## C++ win标准函数调用约定
+`APIENTRY` 是一个宏，用于指定函数的调用约定（calling convention）。在 Windows 操作系统中，函数调用约定是一种规则，用于指定函数参数传递、堆栈管理和寄存器使用等细节，以确保函数能够正确地被调用和返回。
+
+在 Windows 平台上，常见的函数调用约定包括 `__cdecl`、`__stdcall` 和 `__fastcall`。`APIENTRY` 实际上是一个宏，被定义为 `__stdcall`，因此在使用 `APIENTRY` 时，会将函数声明为使用标准调用约定。
+
+标准调用约定（`__stdcall`）的特点包括：
+
+- 参数传递：参数从右向左依次压入堆栈，由调用者负责清理堆栈。
+- 返回值传递：返回值通常通过 EAX 寄存器传递给调用者。
+- 函数名称修饰：函数名后面会添加一个下划线（_）前缀，用于标识函数的调用约定。
+
+在 Windows API 中，通常会使用 `APIENTRY` 或者直接使用 `__stdcall` 来声明 WinAPI 函数，以确保正确的调用约定。例如：
+
+```cpp
+APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+{
+    // WinAPI function implementation
+}
+```
+
+请注意，调用约定的选择会影响函数的调用方式和参数传递方式，因此在编写 Windows 程序时，务必要选择正确的调用约定来声明和定义函数，以确保函数能够正确地被调用和返回。
+
+
 
 
