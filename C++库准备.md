@@ -92,6 +92,31 @@ APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, 
 
 请注意，调用约定的选择会影响函数的调用方式和参数传递方式，因此在编写 Windows 程序时，务必要选择正确的调用约定来声明和定义函数，以确保函数能够正确地被调用和返回。
 
+## C++ 关键字DLL_API
+`DLL_API` 是一个宏，通常用于在编写动态链接库（DLL）时，标记函数或类的导出和导入。在 Windows 环境中，DLL 文件通常包含可以被其他程序调用的函数和数据。使用 `DLL_API` 宏可以帮助定义哪些函数和类是可以被外部程序访问的。
+
+在不同的编译环境中，`DLL_API` 的具体定义可能会有所不同。通常，它会被定义为适当的关键字，以指示编译器将函数或类标记为可供外部访问的。例如，在 Windows 环境中，`DLL_API` 可能被定义为 `__declspec(dllexport)` 或 `__declspec(dllimport)`，具体取决于是在定义 DLL 时还是在使用 DLL 时。
+
+在定义 DLL 中，`DLL_API` 标记了导出的函数和类：
+
+```cpp
+// 在定义 DLL 时
+#define DLL_API __declspec(dllexport)
+
+DLL_API void MyExportedFunction();
+```
+
+在使用 DLL 的代码中，`DLL_API` 标记了导入的函数和类：
+
+```cpp
+// 在使用 DLL 时
+#define DLL_API __declspec(dllimport)
+
+DLL_API void MyExportedFunction();
+```
+
+通过使用 `DLL_API` 宏，可以在定义和使用 DLL 时保持一致的接口标记，以确保正确的导入和导出。这有助于在编写可移植的代码时更容易地切换和使用不同的编译器和开发环境。
+
 
 
 
