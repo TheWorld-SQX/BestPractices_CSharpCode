@@ -31,4 +31,8 @@ b2.exe install --prefix="D:\Boost\x86" --build-type=complete --toolset=msvc-14.2
 
 通常推荐采用第二种，因此需要得到lib文件。把这两个文件放到一个文件夹下，例如E:\VSProjects\Sqlite3Lib,打开Visual Studio的开发人员命令提示，切换到该目录下，执行命令：LIB /def:sqlite3.def
 
+得到lib文件以后，我们就可以在自己的程序中使用了，不过在使用之前，我们还需要头文件支持，这个可以在最新的源代码中找到，这里用到的是第一个文件包sqlite-snapshot-201912260110.tar.gz里面的sqlite3.h文件，把它也放到.dll文件一起。
+
+
+
 
