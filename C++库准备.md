@@ -22,3 +22,13 @@ b2.exe install --prefix="D:\Boost\x86" --build-type=complete --toolset=msvc-14.2
 生成Boost库的二进制文件涉及使用适当的编译器和构建工具，在适用的平台上进行编译和链接。因此，这些预编译的库文件可能会因不同的编译选项、操作系统和编译器版本而有所不同。
 
 
+## sqlite3
+下载的文件包sqlite-dll-win32-x86-3300100.zip里面有两个文件，分别为sqlite3.dll和sqlite3.def。拿到dll文件以后，
+
+直接使用LoadLibrary动态加载；  
+或者  
+生成导入库文件.lib配合.dll文件静态加载。  
+
+通常推荐采用第二种，因此需要得到lib文件。把这两个文件放到一个文件夹下，例如E:\VSProjects\Sqlite3Lib,打开Visual Studio的开发人员命令提示，切换到该目录下，执行命令：LIB /def:sqlite3.def
+
+
