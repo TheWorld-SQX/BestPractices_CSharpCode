@@ -310,7 +310,16 @@ void MyClass::ServerIP(const std::string& value) {
 
 通过将函数的实现放在源文件中，你可以避免在多个源文件中重复定义相同的函数，从而减少编译错误和链接问题。
 
+## 指针和箭头
+```cpp
+    IIoTModel* iotModel = IoTModelLib_GetInstance();
+    iotModel->MainBoardVersion("1.00");
+```
+在C++中，当你有一个指向类的实例的指针时，你需要使用箭头操作符 `->` 来访问该实例的成员。这是因为指针不同于实际的对象，你需要使用箭头操作符来解引用指针并访问成员。
 
+如果你有一个实际的类的实例，而不是指针，那么你可以使用点操作符 `.` 来访问成员。
+
+所以，`iotModel->MainBoardVersion("1.00");` 使用了箭头操作符，表明 `iotModel` 是一个指向类实例的指针，而不是实际的对象。如果 `iotModel` 是一个实际的对象，那么你可以使用 `iotModel.MainBoardVersion("1.00");` 来访问成员。
 
 
 
