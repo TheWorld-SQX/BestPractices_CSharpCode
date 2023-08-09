@@ -195,6 +195,66 @@ extern "C" {
 总体而言，这段代码用于在编写 DLL 时，定义了一些宏和函数，以便在其他程序中正确地导入和使用这些函数。根据不同的编译环境，这些宏会根据需要来调整函数的导出和导入行为，以确保正确的编译和链接。
 
 
+## 
+当分析这行代码的语法时，让我们从内到外逐步解释：
+
+1. `std::function<void(const uint8_t*, size_t)>`：
+   - `std::function`：这是 C++ 标准库中的模板类，用于封装可调用对象，类似于函数指针。
+   - `<void(const uint8_t*, size_t)>`：这是一个模板参数，指定了可调用对象的类型。在这里，它表示可调用对象的签名，即参数类型和返回类型。
+
+2. `void`：
+   - 这是可调用对象的返回类型，表示这个可调用对象没有返回值。
+
+3. `(const uint8_t*, size_t)`：
+   - 这是可调用对象的参数列表，指定了它可以接受两个参数：
+     - `const uint8_t*`：表示一个指向 `uint8_t` 类型的常量指针，即指向字节数组的指针。
+     - `size_t`：表示一个无符号整数类型，用于表示数据的大小或长度。
+
+所以，`std::function<void(const uint8_t*, size_t)>` 表示一个可以存储不返回任何值的可调用对象，这个可调用对象接受一个指向字节数组的常量指针以及一个无符号整数参数。
+
+使用示例：
+
+假设我们有以下的类定义，其中包含了 `ReadCallback` 成员变量：
+
+```cpp
+#include <iostream>
+#include <functional>
+
+class SerialPort {
+public:
+    std::function<void(const uint8_t*, size_t)> ReadCallback;
+};
+```
+
+我们可以在使用 `SerialPort` 类的时候，设置和使用 `ReadCallback`，比如：
+
+```cpp
+void HandleReceivedData(const uint8_t* data, size_t size) {
+    std::cout << "Received data: ";
+    for (size_t i = 0; i < size; ++i) {
+        std::cout << static_cast<int>(data[i]) << " ";
+    }
+    std::cout << std::endl;
+}
+
+int main() {
+    SerialPort serialPort;
+    serialPort.ReadCallback = HandleReceivedData; // 设置处理函数
+
+    uint8_t receivedData[] = { 10, 20, 30, 40 };
+    size_t dataSize = sizeof(receivedData) / sizeof(receivedData[0]);
+
+    if (serialPort.ReadCallback) {
+        serialPort.ReadCallback(receivedData, dataSize); // 调用处理函数
+    }
+
+    return 0;
+}
+```
+
+在这个示例中，我们创建了一个 `SerialPort` 对象，并将 `ReadCallback` 设置为 `HandleReceivedData` 函数。当我们调用 `serialPort.ReadCallback(receivedData, dataSize);` 时，实际上就是在调用我们之前定义的 `HandleReceivedData` 函数，从而处理接收到的数据。
+
+
 
 
 
