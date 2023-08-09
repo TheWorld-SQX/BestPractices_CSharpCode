@@ -274,6 +274,42 @@ virtual void ServerIP(const std::string& value) = 0;
 
 在这里，`= 0` 不是赋值操作，而是一种特殊的语法用于表示这个函数是一个纯虚函数。这意味着基类中声明的纯虚函数没有实际的函数体，而派生类必须提供函数的具体实现，以满足基类的接口要求。
 
+##  头文件和源文件
+这段代码是一个函数的定义，它将服务器的IP地址设置为传递的字符串值，并且它被放置在头文件中。头文件通常用于声明类、函数和变量的接口，以便其他源文件可以使用它们。然而，在头文件中定义函数通常是不推荐的，因为它可能导致多个源文件包含相同的函数定义，从而导致编译错误。
+
+定义函数（非内联函数）通常应该放在源文件（.cpp）中，而在头文件（.h 或 .hpp）中只放置函数的声明。这样可以避免多次定义相同的函数，从而避免重复定义错误。在头文件中，只需要声明函数的签名，如函数名、参数列表和返回类型，而在源文件中实际实现函数的功能。
+
+在头文件中，应该将函数的声明放置在类定义或命名空间中。例如：
+
+**Header File (example.h)**:
+```cpp
+#ifndef EXAMPLE_H
+#define EXAMPLE_H
+
+#include <string>
+
+class MyClass {
+public:
+    void ServerIP(const std::string& value); // 声明函数，不定义实现
+    // 其他成员和函数的声明
+private:
+    std::string serverIP;
+};
+
+#endif
+```
+
+**Source File (example.cpp)**:
+```cpp
+#include "example.h"
+
+void MyClass::ServerIP(const std::string& value) {
+    serverIP.assign(value);
+}
+```
+
+通过将函数的实现放在源文件中，你可以避免在多个源文件中重复定义相同的函数，从而减少编译错误和链接问题。
+
 
 
 
