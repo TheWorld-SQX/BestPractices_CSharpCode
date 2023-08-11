@@ -252,3 +252,62 @@ class Program
 
 然而，尽管 C# 在这些方面提供了更直观和便利的语法，但 C++ 也有其优势，如更高的性能、更广泛的平台支持和更多的编程范式。不同的编程语言在不同的场景中可能更适合特定的需求，具体取决于项目的要求和开发人员的偏好。
 
+## 命名空间的嵌套
+当你需要在 C# 中更细致地组织和管理代码时，命名空间的嵌套是一个非常有用的工具。它可以帮助你将相关的类型和功能放在同一个逻辑单元内，从而提高代码的可读性、可维护性和组织性。以下是一个示例，演示了如何在 C# 中使用命名空间的嵌套：
+
+```csharp
+// 外层命名空间
+namespace MyProject
+{
+    // 内层命名空间
+    namespace Utilities
+    {
+        // 定义一个通用的辅助类
+        public static class Helper
+        {
+            public static void PrintMessage(string message)
+            {
+                Console.WriteLine($"Helper: {message}");
+            }
+        }
+    }
+    
+    // 另一个内层命名空间
+    namespace Models
+    {
+        // 定义一个数据模型
+        public class Person
+        {
+            public string Name { get; set; }
+            public int Age { get; set; }
+        }
+    }
+}
+
+// 在另一个文件或同一个文件中的不同部分
+using System;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        // 使用嵌套命名空间中的类型和成员
+        MyProject.Utilities.Helper.PrintMessage("Hello, from nested namespace!");
+        
+        var person = new MyProject.Models.Person
+        {
+            Name = "Alice",
+            Age = 30
+        };
+        
+        Console.WriteLine($"Person: {person.Name}, Age: {person.Age}");
+    }
+}
+```
+
+在上面的示例中，我们创建了一个外层命名空间 `MyProject`，并在其中嵌套了两个内层命名空间 `Utilities` 和 `Models`。在每个内层命名空间中，我们定义了一些相关的类和功能。
+
+通过这种方式，我们可以将辅助类和数据模型分别放置在不同的命名空间中，以便更好地组织和管理代码。在使用时，只需在外部代码中导入需要的命名空间，然后即可使用其中的类型和成员。
+
+命名空间的嵌套有助于将相关的代码模块分组在一起，使代码更具结构和清晰度。这对于大型项目和团队协作非常有帮助。
+
