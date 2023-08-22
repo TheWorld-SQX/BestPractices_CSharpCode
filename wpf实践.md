@@ -22,6 +22,32 @@
 9. **处理资源释放和生命周期：** 手动管理资源释放和视图模型的生命周期，以避免内存泄漏和不必要的资源占用。
 
 总之，不使用MVVM Light框架意味着你需要手动实现许多与MVVM模式相关的功能，包括属性通知、命令绑定、通信、依赖注入等。这可能会增加开发的工作量和复杂性，特别是在大型项目中。因此，如果你希望更快速地实现MVVM模式，并享受框架提供的便利功能，MVVM Light框架可能是一个更好的选择。
+## vs 创建wpf 项目初始结构
+当你通过Visual Studio 2019创建一个全新的WPF项目时，项目的初始结构通常如下所示：
+
+```
+- YourWpfProject
+  - YourWpfProject
+    - App.xaml
+    - App.xaml.cs
+    - MainWindow.xaml
+    - MainWindow.xaml.cs
+    - Properties
+      - AssemblyInfo.cs
+  - YourWpfProject.sln
+```
+
+在这个初始结构中，`YourWpfProject`文件夹包含了项目的主要内容，如应用程序文件、窗口文件和属性文件。下面是各个文件和文件夹的说明：
+
+- `App.xaml` 和 `App.xaml.cs`：应用程序的入口点，用于全局资源定义和应用程序级别的设置。
+
+- `MainWindow.xaml` 和 `MainWindow.xaml.cs`：主窗口的XAML文件和代码文件，通常是应用程序的主界面。
+
+- `Properties` 文件夹：存放与项目属性相关的文件，如 `AssemblyInfo.cs`。
+
+- `YourWpfProject.sln`：Visual Studio解决方案文件，用于管理项目、项目文件和其他资源。
+
+这个初始结构提供了一个简单的起点，你可以在此基础上逐步添加其他的文件夹、类和资源，以满足项目的需求。
 
 ## `AssemblyInfo.cs`
 `AssemblyInfo.cs` 文件通常用来存放关于程序集（assembly）的元数据和配置信息，这些信息可以包括版本号、公司信息、版权声明等。该文件对于标识和描述程序集的属性非常有用，它会被编译进程序集中。
@@ -73,3 +99,7 @@
 ```
 
 这些示例说明了 `AssemblyInfo.cs` 文件中的一些常见元数据设置。通过在 `AssemblyInfo.cs` 文件中配置这些信息，你可以提供有关程序集的重要信息，帮助其他开发人员了解程序集的用途、版本和所属公司等信息。
+
+
+## 项目组织怎么安排
+
