@@ -297,3 +297,20 @@ class Program
 ```charp
 (File.GetLastWriteTime(path.Replace(".jpg", string.Format("_{0}.jpg", quality))) < File.GetLastWriteTime(path))
 ```
+
+
+## 时间转换
+
+```csharp
+if (!pacsData.UPDATE_DATE.HasValue)
+                {
+                    if (DateTime.TryParseExact(pacsData.ADUITTIME, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime result))
+                    {
+                        pacsData.UPDATE_DATE = result ;
+                    }
+                    else
+                    {
+                        pacsData.UPDATE_DATE = DateTime.MinValue;
+                    }
+                }
+```
