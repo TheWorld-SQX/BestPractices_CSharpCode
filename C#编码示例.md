@@ -36,6 +36,56 @@ class Program
 
 另外，此示例仅演示了连接到数据库的过程，你可以在成功连接后执行你的数据库操作，例如执行查询、插入、更新等操作。根据你的具体需求，你可以在连接成功的代码块中编写相关数据库操作的逻辑。
 
+## 另一个示例
+当你希望查询数据并将结果保存到 `List<string>` 和 `string` 变量中时，你需要使用 `OracleDataReader` 来执行查询并处理查询结果。以下是修改后的示例代码：
+
+```csharp
+using System;
+using System.Collections.Generic;
+using Oracle.ManagedDataAccess.Client;
+
+class Program
+{
+    static void Main()
+    {
+        string connectionString = "Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=10.1.1.6)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=dbm)));User Id=OT;Password=OT;";
+
+        using (OracleConnection connection = new OracleConnection(connectionString))
+        {
+            try
+            {
+                connection.Open();
+                Console.WriteLine("成功连接到Oracle数据库！");
+
+                string queryString = "SELECT COLUMN_NAME FROM YOUR_TABLE_NAME"; // 修改为你的查询语句
+                using (OracleCommand command = new OracleCommand(queryString, connection))
+                {
+                    using (OracleDataReader reader = command.ExecuteReader())
+                    {
+                        List<string> columnNames = new List<string>();
+                        while (reader.Read())
+                        {
+                            string columnName = reader.GetString(0); // 修改为适当的索引，以匹配查询结果的列
+                            columnNames.Add(columnName);
+                        }
+
+                        // 在这里可以处理 columnNames，例如将其保存到 list<string> 和 string 变量中
+                    }
+                }
+
+                connection.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("连接到Oracle数据库时出现错误： " + ex.Message);
+            }
+        }
+    }
+}
+```
+
+在这个示例中，你需要修改 `YOUR_TABLE_NAME` 为你要查询的表的名称，并确保适当地修改索引以匹配你的查询结果的列。在 `OracleDataReader` 的循环内部，你可以读取每一行的数据并将其添加到 `List<string>` 中。请根据你的实际需求进行适当的修改。
+
 
 ## 二进制数据转图片
 ```csharp
