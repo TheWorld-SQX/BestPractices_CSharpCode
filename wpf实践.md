@@ -125,3 +125,66 @@
 10. **持续集成和自动化测试：** 使用持续集成和自动化测试来验证代码的正确性和稳定性，从而提高代码的可靠性。
 
 这些最佳实践可以根据项目需求和团队偏好进行调整和扩展。重要的是要根据项目的规模、复杂性和需求来选择适合的方式来实现良好的架构和代码组织。
+
+## 将 DataContext 设置为多个对象
+在 XAML 中，一个元素的 `DataContext` 属性通常被设置为一个单一的对象，以便该元素可以绑定到该对象的属性。然而，有时候你可能需要将 `DataContext` 设置为多个对象，特别是当你需要在不同的部分中使用不同的数据源时。下面是一些在 XAML 中设置多个 `DataContext` 的方法：
+
+**1. 使用命名空间别名（Namespace Alias）**：
+可以使用命名空间别名来表示不同的数据上下文，并为每个别名设置不同的数据源。这可以通过 XAML 的 `xmlns` 属性实现。
+
+```xml
+<Window x:Class="YourNamespace.YourWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:viewModels="clr-namespace:YourNamespace.ViewModels"
+        xmlns:dataModels="clr-namespace:YourNamespace.DataModels">
+
+    <Window.DataContext>
+        <viewModels:MainViewModel />
+    </Window.DataContext>
+    
+    <Grid>
+        <TextBlock Text="{Binding PropertyInMainViewModel}" />
+
+        <StackPanel DataContext="{Binding InstanceOfAnotherViewModel}">
+            <TextBlock Text="{Binding PropertyInAnotherViewModel}" />
+        </StackPanel>
+
+        <StackPanel DataContext="{x:Static dataModels:SomeDataModel.Instance}">
+            <TextBlock Text="{Binding PropertyInDataModel}" />
+        </StackPanel>
+    </Grid>
+</Window>
+```
+
+**2. 使用资源**：
+可以在 XAML 中定义资源，并将这些资源用作不同部分的数据上下文。
+
+```xml
+<Window x:Class="YourNamespace.YourWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:viewModels="clr-namespace:YourNamespace.ViewModels"
+        xmlns:dataModels="clr-namespace:YourNamespace.DataModels">
+
+    <Window.Resources>
+        <viewModels:MainViewModel x:Key="MainViewModelInstance" />
+        <viewModels:AnotherViewModel x:Key="AnotherViewModelInstance" />
+        <dataModels:SomeDataModel x:Key="DataModelInstance" />
+    </Window.Resources>
+
+    <Grid>
+        <TextBlock Text="{Binding PropertyInMainViewModel, Source={StaticResource MainViewModelInstance}}" />
+
+        <StackPanel DataContext="{StaticResource AnotherViewModelInstance}">
+            <TextBlock Text="{Binding PropertyInAnotherViewModel}" />
+        </StackPanel>
+
+        <StackPanel DataContext="{StaticResource DataModelInstance}">
+            <TextBlock Text="{Binding PropertyInDataModel}" />
+        </StackPanel>
+    </Grid>
+</Window>
+```
+
+这些方法允许你在一个 XAML 文件中设置多个不同的数据上下文。但请注意，过多的数据上下文可能会增加代码的复杂性和难以维护性。在实际使用中，尽量保持数据上下文的清晰和简洁，以确保代码的可读性。
