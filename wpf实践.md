@@ -285,3 +285,245 @@ public class MainViewModel : INotifyPropertyChanged
 `OnPropertyChanged` 方法在属性更改时引发 `PropertyChanged` 事件，这个事件会通知 UI 控件更新显示。
 
 尽管 WinForms 需要手动处理属性更改通知，但这种方法同样有效，并且可以让您实现属性与 UI 控件之间的同步。如果您需要更方便的属性更改通知，也可以考虑使用一些第三方的框架或库来辅助实现，例如 PropertyChanged.Fody 或 PropertyChanged.Better。这些工具可以自动为属性生成属性更改通知代码，减少了手动编写的工作量。
+
+
+## WPF 中将按钮与类里的方法建立联系
+在 WPF 中，将按钮与类里的方法建立联系通常是通过命令（Command）来实现的。命令是一种将用户操作（例如按钮点击）与视图模型（或其他类）中的方法进行绑定的机制，使得用户操作能够触发相应的逻辑处理。
+
+以下是建立按钮与类里方法的联系的基本步骤：
+
+1. **创建命令类或属性**：在您的视图模型类中，您可以创建一个命令类或属性，用于表示按钮点击事件要绑定的方法。这个命令类通常继承自 `ICommand` 接口，或者使用现成的命令类库，例如 `RelayCommand`。
+
+2. **将命令与方法关联**：在视图模型中，将创建的命令与您想要绑定的方法关联起来。这意味着当命令被触发时，关联的方法将被执行。
+
+3. **在 XAML 中绑定命令**：在 XAML 文件中，将按钮的 `Command` 属性绑定到您在视图模型中创建的命令。这样，当按钮被点击时，命令会触发关联的方法。
+
+下面是一个简单的示例：
+
+1. **视图模型类**：
+
+```csharp
+using System.Windows.Input;
+using GalaSoft.MvvmLight.Command;
+
+public class MainViewModel
+{
+    public ICommand MyCommand { get; }
+
+    public MainViewModel()
+    {
+        MyCommand = new RelayCommand(ExecuteMyCommand);
+    }
+
+    private void ExecuteMyCommand()
+    {
+        // 这里是按钮点击后要执行的逻辑
+    }
+}
+```
+
+2. **XAML 文件**：
+
+```xml
+<Window x:Class="WpfApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        xmlns:local="clr-namespace:WpfApp"
+        Title="MainWindow" Height="350" Width="525">
+    <Grid>
+        <Button Content="Click Me" Command="{Binding MyCommand}" />
+    </Grid>
+</Window>
+```
+
+在这个示例中，我们在视图模型中创建了一个 `MyCommand` 属性，使用了 MVVM Light 提供的 `RelayCommand` 类。我们将 `MyCommand` 属性与 `ExecuteMyCommand` 方法关联起来，当按钮点击时，`MyCommand` 命令会触发 `ExecuteMyCommand` 方法。
+
+在 XAML 中，我们使用 `Button` 的 `Command` 属性将按钮与 `MyCommand` 命令进行绑定。这样，当按钮被点击时，与命令关联的方法就会被调用。
+
+通过这种方式，您可以在 WPF 中实现按钮与类里方法的联系，从而实现用户操作和逻辑处理的交互。请根据您的具体需求和框架使用相应的命令实现方式。
+
+
+## MVVMLight框架里
+如果您使用 MVVM Light 框架，建立按钮与类中方法的联系同样是通过命令来实现的。MVVM Light 提供了 `RelayCommand` 类来帮助您创建命令，使按钮与方法建立联系更加简便。
+
+以下是在 MVVM Light 中如何建立按钮与类中方法的联系的示例：
+
+1. **视图模型类**：
+
+```csharp
+using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Command;
+
+public class MainViewModel : ViewModelBase
+{
+    public RelayCommand MyCommand { get; }
+
+    public MainViewModel()
+    {
+        MyCommand = new RelayCommand(ExecuteMyCommand);
+    }
+
+    private void ExecuteMyCommand()
+    {
+        // 这里是按钮点击后要执行的逻辑
+    }
+}
+```
+
+2. **XAML 文件**：
+
+```xml
+<Window x:Class="WpfMVVMLightApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfMVVMLightApp"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="350" Width="525">
+    <Grid>
+        <Button Content="Click Me" Command="{Binding MyCommand}" />
+    </Grid>
+</Window>
+```
+
+在这个示例中，我们使用 MVVM Light 提供的 `RelayCommand` 类来创建命令。在视图模型中，我们创建了一个 `MyCommand` 属性，并在构造函数中将 `RelayCommand` 与 `ExecuteMyCommand` 方法关联起来。
+
+在 XAML 中，我们使用 `Button` 的 `Command` 属性将按钮与 `MyCommand` 命令进行绑定。
+
+总结来说，无论是使用原生的 WPF 命令还是 MVVM Light 提供的 `RelayCommand`，思想是相似的。都是通过创建命令，将按钮与类中方法关联起来，从而实现用户操作和逻辑处理的交互。
+
+
+## CommunityToolkit.Mvvm框架里
+使用 CommunityToolkit.Mvvm 框架同样可以通过命令（Command）将按钮与类中的方法建立联系。CommunityToolkit.Mvvm 为您提供了 `RelayCommand` 类来简化创建命令的过程。以下是在 CommunityToolkit.Mvvm 中如何建立按钮与类中方法的联系的示例：
+
+1. **视图模型类**：
+
+```csharp
+using System.Windows.Input;
+using Microsoft.Toolkit.Mvvm.ComponentModel;
+using Microsoft.Toolkit.Mvvm.Input;
+
+public class MainViewModel : ObservableObject
+{
+    public IRelayCommand MyCommand { get; }
+
+    public MainViewModel()
+    {
+        MyCommand = new RelayCommand(ExecuteMyCommand);
+    }
+
+    private void ExecuteMyCommand()
+    {
+        // 这里是按钮点击后要执行的逻辑
+    }
+}
+```
+
+2. **XAML 文件**：
+
+```xml
+<Window x:Class="WpfCommunityToolkitApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfCommunityToolkitApp"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="350" Width="525">
+    <Grid>
+        <Button Content="Click Me" Command="{Binding MyCommand}" />
+    </Grid>
+</Window>
+```
+
+在上面的示例中，我们使用了 CommunityToolkit.Mvvm 提供的 `RelayCommand` 来创建命令。在视图模型中，我们创建了一个 `MyCommand` 属性，并在构造函数中将 `RelayCommand` 与 `ExecuteMyCommand` 方法关联起来。
+
+在 XAML 中，我们使用 `Button` 的 `Command` 属性将按钮与 `MyCommand` 命令进行绑定。
+
+总的来说，无论是使用原生的 WPF 命令还是 MVVM Light 提供的 `RelayCommand`，还是 CommunityToolkit.Mvvm 提供的 `RelayCommand`，思想都是相似的。都是通过创建命令，将按钮与类中方法关联起来，从而实现用户操作和逻辑处理的交互。
+
+
+## 按钮和类里的方法是如何建立联系的  对于这个问题 winform 和wpf有什么不同
+在 WinForms 和 WPF 中，建立按钮与类中方法的联系都是通过事件处理机制来实现的，但两者有一些不同之处。
+
+### WinForms 中的按钮与方法联系建立：
+
+在 WinForms 中，您可以通过在设计器中或者代码中订阅按钮的事件来建立按钮与类中方法的联系。常见的事件是 `Click` 事件，当按钮被点击时触发。以下是一个在 WinForms 中建立按钮与方法联系的示例：
+
+```csharp
+using System;
+using System.Windows.Forms;
+
+public class MainForm : Form
+{
+    private Button myButton;
+
+    public MainForm()
+    {
+        myButton = new Button();
+        myButton.Text = "Click Me";
+        myButton.Click += MyButton_Click;
+
+        Controls.Add(myButton);
+    }
+
+    private void MyButton_Click(object sender, EventArgs e)
+    {
+        // 这里是按钮点击后要执行的逻辑
+    }
+}
+```
+
+### WPF 中的按钮与方法联系建立：
+
+在 WPF 中，您可以使用命令（Command）的方式来建立按钮与类中方法的联系。按钮的 `Command` 属性绑定到一个命令，当按钮被点击时，命令会触发关联的方法。以下是一个在 WPF 中建立按钮与方法联系的示例：
+
+```xml
+<Window x:Class="WpfApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MainWindow" Height="350" Width="525">
+    <Grid>
+        <Button Content="Click Me" Command="{Binding MyCommand}" />
+    </Grid>
+</Window>
+```
+
+```csharp
+using System;
+using System.Windows.Input;
+using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Command;
+
+public class MainViewModel : ViewModelBase
+{
+    public ICommand MyCommand { get; }
+
+    public MainViewModel()
+    {
+        MyCommand = new RelayCommand(ExecuteMyCommand);
+    }
+
+    private void ExecuteMyCommand()
+    {
+        // 这里是按钮点击后要执行的逻辑
+    }
+}
+```
+
+总体来说，无论是 WinForms 还是 WPF，思想都是相似的：按钮点击会触发关联的方法。不过在 WPF 中，通过使用命令，您可以更轻松地实现按钮与方法的联系，并在 MVVM 架构中实现更好的解耦。
+
+
+
+## WPF中通过使用命令本质上是在使用委托
+是的，WPF 中通过使用命令本质上是在使用委托。命令（Command）实际上是一种委托的抽象，它将某个操作（方法）封装为一个对象，可以在需要的时候执行这个操作。
+
+在 WPF 中，命令是通过实现 `ICommand` 接口的类来表示的。`ICommand` 接口定义了两个方法：`Execute` 和 `CanExecute`。`Execute` 方法表示要执行的操作，而 `CanExecute` 方法表示是否可以执行该操作。
+
+`RelayCommand` 类，以及其他一些类似的实现，将这些委托和方法的管理包装在内部，使您可以轻松地在 XAML 中绑定按钮的 `Command` 属性，以及在 ViewModel 中设置要执行的操作。
+
+总之，WPF 中的命令机制实质上是基于委托，通过抽象和封装，使您能够更方便地在应用程序中管理按钮点击等用户交互操作。
