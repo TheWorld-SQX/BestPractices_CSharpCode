@@ -188,3 +188,59 @@
 ```
 
 这些方法允许你在一个 XAML 文件中设置多个不同的数据上下文。但请注意，过多的数据上下文可能会增加代码的复杂性和难以维护性。在实际使用中，尽量保持数据上下文的清晰和简洁，以确保代码的可读性。
+
+## MVVM Light触发属性更改通知
+在 MVVM Light 框架中，用于触发属性更改通知的方法是 `RaisePropertyChanged`。这个方法可以用于通知 UI 控件属性的值已经发生了变化，需要更新显示。以下是在 MVVM Light 框架中如何使用 `RaisePropertyChanged` 方法的示例：
+
+```csharp
+using GalaSoft.MvvmLight;
+
+public class MainViewModel : ViewModelBase
+{
+    private string myProperty;
+
+    public string MyProperty
+    {
+        get => myProperty;
+        set
+        {
+            if (Set(ref myProperty, value))
+            {
+                RaisePropertyChanged(nameof(MyProperty));
+            }
+        }
+    }
+}
+```
+
+在上面的代码中，我们在属性的 setter 方法中使用了 `Set` 方法来设置属性的值并判断是否需要触发属性更改通知。如果属性的值确实发生了变化，`Set` 方法将返回 `true`，然后我们调用 `RaisePropertyChanged(nameof(MyProperty));` 来触发属性更改通知。这将通知 UI 控件更新显示绑定到 `MyProperty` 属性的数据。
+
+请注意，`RaisePropertyChanged` 方法也可以带有其他参数，例如旧值和新值，以及一个布尔值，用于指示是否广播属性更改事件。根据您的需要，您可以适当地使用这些参数。
+
+通过这种方式，您可以确保在属性值发生变化时，通知 UI 控件及时更新，保持数据和界面的同步。
+
+##  CommunityToolkit.Mvvm触发属性更改通知
+对于 CommunityToolkit.Mvvm，属性更改通知的处理与 MVVM Light 有些不同。CommunityToolkit.Mvvm 提供了 `ObservableObject` 类，您可以继承此类并使用它来实现属性更改通知。以下是在 CommunityToolkit.Mvvm 中如何使用的示例：
+
+首先，确保您已经添加了 CommunityToolkit.Mvvm NuGet 包到您的项目中。
+
+```csharp
+using CommunityToolkit.Mvvm.ComponentModel;
+
+public class MainViewModel : ObservableObject
+{
+    private string myProperty;
+
+    public string MyProperty
+    {
+        get => myProperty;
+        set => SetProperty(ref myProperty, value);
+    }
+}
+```
+
+在上面的代码中，我们的 `MainViewModel` 继承自 `ObservableObject`，这是 CommunityToolkit.Mvvm 提供的基类。在属性的 setter 方法中，我们使用 `SetProperty` 方法来设置属性的值并触发属性更改通知。
+
+`SetProperty` 方法的第一个参数是属性的字段引用（即要设置的属性），第二个参数是新的属性值。如果新值与旧值不相等，`SetProperty` 方法将设置属性值，触发属性更改通知，并返回 `true`，表示属性的值确实发生了变化。
+
+通过这种方式，您可以在 CommunityToolkit.Mvvm 中实现属性更改通知，确保在属性值发生变化时，通知 UI 控件及时更新。
