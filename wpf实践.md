@@ -244,3 +244,44 @@ public class MainViewModel : ObservableObject
 `SetProperty` 方法的第一个参数是属性的字段引用（即要设置的属性），第二个参数是新的属性值。如果新值与旧值不相等，`SetProperty` 方法将设置属性值，触发属性更改通知，并返回 `true`，表示属性的值确实发生了变化。
 
 通过这种方式，您可以在 CommunityToolkit.Mvvm 中实现属性更改通知，确保在属性值发生变化时，通知 UI 控件及时更新。
+
+## winform里的属性更改通知
+是的，WinForms 应用程序也可以实现属性更改通知，以确保在属性值发生变化时及时更新 UI 控件。虽然 WinForms 没有像 WPF 或 UWP 那样内置的数据绑定机制，但您仍然可以采取类似的方法来处理属性更改通知。
+
+在 WinForms 中，您可以手动实现属性更改通知，以下是一个简单的示例：
+
+```csharp
+using System;
+using System.ComponentModel;
+
+public class MainViewModel : INotifyPropertyChanged
+{
+    private string myProperty;
+
+    public string MyProperty
+    {
+        get => myProperty;
+        set
+        {
+            if (myProperty != value)
+            {
+                myProperty = value;
+                OnPropertyChanged(nameof(MyProperty));
+            }
+        }
+    }
+
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    protected virtual void OnPropertyChanged(string propertyName)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+}
+```
+
+在上面的示例中，`MainViewModel` 实现了 `INotifyPropertyChanged` 接口，这是用于属性更改通知的标准接口。在属性的 setter 方法中，我们比较新旧值，如果不相等则设置新值，并调用 `OnPropertyChanged` 方法触发属性更改通知。
+
+`OnPropertyChanged` 方法在属性更改时引发 `PropertyChanged` 事件，这个事件会通知 UI 控件更新显示。
+
+尽管 WinForms 需要手动处理属性更改通知，但这种方法同样有效，并且可以让您实现属性与 UI 控件之间的同步。如果您需要更方便的属性更改通知，也可以考虑使用一些第三方的框架或库来辅助实现，例如 PropertyChanged.Fody 或 PropertyChanged.Better。这些工具可以自动为属性生成属性更改通知代码，减少了手动编写的工作量。
