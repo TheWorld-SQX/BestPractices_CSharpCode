@@ -1,4 +1,4 @@
-## Action<in T> 预定义委托(类型)_public delegate void Action<in T>(T obj);
+## `Action<in T>` 预定义委托(类型)_public delegate void Action<in T>(T obj);
 ```csharp
 
     // 摘要:
@@ -76,7 +76,8 @@ class Program
 
 所以，与自定义的委托相比，预定义的委托如 `Action<T>` 更加简洁，方便，且不需要额外的委托类型声明。它们在特定的场景下非常有用，尤其是在需要声明方法参数和返回类型的情况下。
 
- ## 关于 public delegate TResult Func<in T, out TResult>(T arg);
+
+ ## Func<in T, out TResult>(T arg)  关于 public delegate TResult Func<in T, out TResult>(T arg);
  
  预定义委托 Func<in T, out TResult>(T arg);
  
