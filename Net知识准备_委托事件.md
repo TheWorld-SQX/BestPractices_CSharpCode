@@ -12,7 +12,7 @@
     //   T:
     //     The type of the parameter of the method that this delegate encapsulates.
     public delegate void Action<in T>(T obj);
-
+```
 这段注释是关于 .NET 中的泛型委托 `Action<T>` 的解释。`Action<T>` 是一个预定义的委托类型，用于表示一个具有单个参数并且没有返回值的方法。在这个委托类型中，`T` 是一个类型参数，它指定了方法的参数类型。
 
 具体来说：
@@ -26,7 +26,7 @@
 
 这个委托类型在许多场景下非常有用，例如在异步编程、事件处理等情况下，可以传递不同类型的方法作为参数，从而实现灵活的方法调用。
 
-```
+
 ## 自定义委托和预定义委托不同：
 
 在正常情况下的委托声明和使用以及预定义的委托有以下不同之处：
