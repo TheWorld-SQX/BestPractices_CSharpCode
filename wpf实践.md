@@ -189,6 +189,25 @@
 
 这些方法允许你在一个 XAML 文件中设置多个不同的数据上下文。但请注意，过多的数据上下文可能会增加代码的复杂性和难以维护性。在实际使用中，尽量保持数据上下文的清晰和简洁，以确保代码的可读性。
 
+##
+```csharp
+        BtnCommand = new Command(BtnSave);
+```
+
+···csharp
+/// <summary>
+        /// 匹配这个预定义委托；
+        /// public Command(Action<object> executemy, Func<object, bool> _canExecute = null)
+        /// public delegate void Action<in T>(T obj);
+        /// </summary>
+        /// <param name="obj"></param>
+        private void BtnSave(object obj)
+        {
+
+        }
+···
+
+
 ## MVVM Light触发属性更改通知
 在 MVVM Light 框架中，用于触发属性更改通知的方法是 `RaisePropertyChanged`。这个方法可以用于通知 UI 控件属性的值已经发生了变化，需要更新显示。以下是在 MVVM Light 框架中如何使用 `RaisePropertyChanged` 方法的示例：
 
