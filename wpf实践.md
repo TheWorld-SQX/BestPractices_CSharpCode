@@ -189,12 +189,12 @@
 
 这些方法允许你在一个 XAML 文件中设置多个不同的数据上下文。但请注意，过多的数据上下文可能会增加代码的复杂性和难以维护性。在实际使用中，尽量保持数据上下文的清晰和简洁，以确保代码的可读性。
 
-##
+##  wpf命令绑定 类的行为方法是如何匹配到绑定的命令的
 ```csharp
         BtnCommand = new Command(BtnSave);
 ```
 
-···csharp
+```csharp
 /// <summary>
         /// 匹配这个预定义委托；
         /// public Command(Action<object> executemy, Func<object, bool> _canExecute = null)
@@ -205,7 +205,7 @@
         {
 
         }
-···
+```
 
 
 ## MVVM Light触发属性更改通知
