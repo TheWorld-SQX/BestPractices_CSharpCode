@@ -536,7 +536,82 @@ public class MainViewModel : ViewModelBase
 
 总体来说，无论是 WinForms 还是 WPF，思想都是相似的：按钮点击会触发关联的方法。不过在 WPF 中，通过使用命令，您可以更轻松地实现按钮与方法的联系，并在 MVVM 架构中实现更好的解耦。
 
+## MVVM 属性更改通知，哪些类和对象完成这个功能，具体流程
+在MVVM（Model-View-ViewModel）架构中，属性更改通知是一项重要的功能，它允许ViewModel通知View（用户界面）属性的变化，从而实现数据绑定。以下是实现属性更改通知的主要类和对象，以及它们的工作流程：
 
+1. **INotifyPropertyChanged 接口**：
+
+   `INotifyPropertyChanged` 接口是.NET框架提供的用于实现属性更改通知的标准接口。它包含一个名为 `PropertyChanged` 的事件，该事件在属性更改时触发通知。
+
+   ```csharp
+   public interface INotifyPropertyChanged
+   {
+       event PropertyChangedEventHandler PropertyChanged;
+   }
+   ```
+
+2. **ViewModel 类**：
+
+   在MVVM中，ViewModel类是应用程序的逻辑层，它包含要绑定到View的属性和命令。ViewModel类通常会实现`INotifyPropertyChanged`接口，以便通知View属性的变化。
+
+   ```csharp
+   public class MyViewModel : INotifyPropertyChanged
+   {
+       private string _myProperty;
+
+       public string MyProperty
+       {
+           get { return _myProperty; }
+           set
+           {
+               if (_myProperty != value)
+               {
+                   _myProperty = value;
+                   OnPropertyChanged(nameof(MyProperty));
+               }
+           }
+       }
+
+       public event PropertyChangedEventHandler PropertyChanged;
+
+       protected virtual void OnPropertyChanged(string propertyName)
+       {
+           PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+       }
+   }
+   ```
+
+   在上面的代码中，`MyViewModel` 类实现了 `INotifyPropertyChanged` 接口，当 `MyProperty` 属性的值更改时，它会触发 `PropertyChanged` 事件通知View。
+
+3. **View 类**：
+
+   View类是用户界面的表示，通常是XAML文件和代码。View类通过数据绑定绑定到ViewModel，并通过`PropertyChanged`事件订阅属性更改通知。这样，当ViewModel中的属性更改时，View将自动更新。
+
+   ```xml
+   <TextBlock Text="{Binding MyProperty}" />
+   ```
+
+   在View的代码中，通常会设置DataContext，将ViewModel与View关联起来，以便进行数据绑定。
+
+   ```csharp
+   public MyView()
+   {
+       InitializeComponent();
+       DataContext = new MyViewModel();
+   }
+   ```
+
+流程如下：
+
+1. 用户与View交互，例如输入文本或触发按钮点击事件。
+
+2. ViewModel中的属性或命令被触发。
+
+3. ViewModel内的属性更改时，通过调用 `OnPropertyChanged` 方法触发 `PropertyChanged` 事件。
+
+4. View（XAML）订阅了ViewModel的 `PropertyChanged` 事件，当属性更改时，View中的绑定将自动更新。
+
+这样，ViewModel和View之间的数据绑定和通信就实现了，确保ViewModel的变化能够及时反映在View上。这是MVVM模式的关键部分，帮助实现了分离UI逻辑和业务逻辑，增强了代码的可维护性和可测试性。
 
 ## WPF中通过使用命令本质上是在使用委托
 是的，WPF 中通过使用命令本质上是在使用委托。命令（Command）实际上是一种委托的抽象，它将某个操作（方法）封装为一个对象，可以在需要的时候执行这个操作。
