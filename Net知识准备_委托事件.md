@@ -326,6 +326,87 @@ public class Button
 
 所以，事件的 "发送者" 或 "触发者" 是指引发事件的对象，通常使用 `this` 来表示当前对象是事件的发送者。
 
+## 事件处理程序方法通常接受两个参数：`sender` 和 `e`。这两个参数的具体用途如下：
+
+1. **`sender` 参数**：`sender` 表示事件的发送者，也就是触发事件的对象。通过这个参数，事件处理程序可以确定是哪个对象触发了事件。这对于多个对象共享相同事件处理程序的情况非常有用，因为它允许处理程序区分不同的发送者并采取不同的操作。以下是一个示例：
+
+```csharp
+using System;
+
+public class Button
+{
+    public event EventHandler Click;
+
+    public void ClickButton()
+    {
+        // 触发点击事件
+        Click?.Invoke(this, EventArgs.Empty);
+    }
+}
+
+public class Program
+{
+    static void Main()
+    {
+        Button button1 = new Button();
+        Button button2 = new Button();
+
+        // 订阅按钮1的点击事件
+        button1.Click += ButtonClickHandler;
+
+        // 订阅按钮2的点击事件
+        button2.Click += ButtonClickHandler;
+
+        // 模拟按钮点击
+        button1.ClickButton();
+        button2.ClickButton();
+    }
+
+    static void ButtonClickHandler(object sender, EventArgs e)
+    {
+        // 通过 sender 参数获取触发事件的按钮对象
+        Button clickedButton = (Button)sender;
+
+        Console.WriteLine("按钮被点击了：" + clickedButton);
+    }
+}
+```
+
+在上面的示例中，`ButtonClickHandler` 方法是用来处理按钮点击事件的事件处理程序。通过 `sender` 参数，我们可以确定是哪个按钮触发了事件，并采取相应的操作。
+
+2. **`e` 参数**：`e` 参数通常是一个事件参数对象，用于传递事件的附加信息。这个参数的具体类型和内容取决于事件的设计。例如，在 Windows Forms 中，`MouseEventArgs` 会传递鼠标事件的信息，而在 WPF 中，`RoutedEventArgs` 会传递更多的事件信息。以下是一个示例：
+
+```csharp
+using System;
+using System.Windows.Forms;
+
+public class Program
+{
+    static void Main()
+    {
+        Button button = new Button();
+        button.Click += ButtonClickHandler;
+
+        Application.Run(new Form { Controls = { button } });
+    }
+
+    static void ButtonClickHandler(object sender, EventArgs e)
+    {
+        // 使用 e 参数获取事件的附加信息
+        MouseEventArgs mouseArgs = (MouseEventArgs)e;
+
+        if (mouseArgs != null)
+        {
+            Console.WriteLine("鼠标点击位置：X=" + mouseArgs.X + ", Y=" + mouseArgs.Y);
+        }
+    }
+}
+```
+
+在这个示例中，`ButtonClickHandler` 方法处理按钮的点击事件，并使用 `e` 参数来获取鼠标点击位置的信息。
+
+总之，`sender` 参数用于确定事件的发送者，而 `e` 参数用于传递事件的具体信息，它们允许事件处理程序方法在处理事件时访问有关事件的上下文信息。
+
 
 
 
