@@ -184,6 +184,66 @@ public class ViewModel
 
 这种方式使代码更加灵活，因为它允许您选择是否提供一个方法来检查命令是否可执行，而不是强制要求提供。这符合C#中方法参数的可选性和默认值的特性。
 
+## 事件
+
+在定义事件时，通常在事件的声明处不会包含具体的逻辑。事件本身只是一个委托（delegate）类型的成员，它定义了事件的签名（参数类型和返回类型），但并没有实际的逻辑代码。
+
+然后，通过使用 `+=` 运算符，可以将事件与一个或多个事件处理程序方法关联起来。这些事件处理程序方法包含了实际的逻辑，它们会在事件触发时执行。
+
+当事件需要触发时，通常会调用一个专门的方法，通常被称为 `OnEvent` 或类似的名称，用于触发事件。这个方法会检查事件是否有订阅者（是否为 `null`），然后通过调用事件的委托来执行事件处理程序方法。这个过程确保了事件只有在有订阅者时才会触发。
+
+下面是一个示例，演示了如何在 `MyClass` 类中定义事件、将事件与事件处理程序关联，以及如何触发事件：
+
+```csharp
+using System;
+
+public class MyClass
+{
+    public delegate void MyEventHandler(object sender, EventArgs e);//委托签名 对应 事件处理程序方法； sender事件的发送者，即哪个对象触发了事件
+    // 定义一个事件
+    public event EventHandler MyEvent;
+
+    // 触发事件的方法
+    protected virtual void OnMyEvent()
+    {
+        MyEvent?.Invoke(this, EventArgs.Empty);
+    }
+
+    // 一些其他的逻辑...
+    
+    // 在适当的时候调用 OnMyEvent 来触发事件
+    public void DoSomething()
+    {
+        // 执行其他操作...
+
+        // 触发事件
+        OnMyEvent();
+    }
+}
+
+public class Program
+{
+    static void Main()
+    {
+        MyClass myObject = new MyClass();
+
+        // 订阅事件
+        myObject.MyEvent += MyEventHandler;
+
+        // 调用 DoSomething 方法，它会触发事件
+        myObject.DoSomething();
+    }
+
+    // 事件处理程序方法
+    static void MyEventHandler(object sender, EventArgs e)
+    {
+        //事件被唤醒时 （使用+=给关联到事件上的）这个方法就会被调用
+        Console.WriteLine("事件被触发了！");
+    }
+}
+```
+
+在这个示例中，`MyClass` 类定义了一个事件 `MyEvent` 和一个用于触发事件的 `OnMyEvent` 方法。`DoSomething` 方法中的逻辑会在适当的时候调用 `OnMyEvent` 来触发事件。 `Program` 类订阅了该事件，并且当 `DoSomething` 方法被调用时，事件会被触发，从而执行事件处理程序方法 `MyEventHandler`。这种模式允许你在事件需要触发时执行特定的逻辑。
 
 
 
