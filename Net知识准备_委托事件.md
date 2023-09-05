@@ -245,7 +245,59 @@ public class Program
 
 在这个示例中，`MyClass` 类定义了一个事件 `MyEvent` 和一个用于触发事件的 `OnMyEvent` 方法。`DoSomething` 方法中的逻辑会在适当的时候调用 `OnMyEvent` 来触发事件。 `Program` 类订阅了该事件，并且当 `DoSomething` 方法被调用时，事件会被触发，从而执行事件处理程序方法 `MyEventHandler`。这种模式允许你在事件需要触发时执行特定的逻辑。
 
+## 事件被invoke时，它上面的方法执行顺序是怎样的
+在事件被触发（调用 `Invoke` 方法）时，事件处理程序方法的执行顺序通常取决于事件处理程序的订阅顺序。具体来说，事件处理程序方法按照订阅的顺序依次执行。
 
+例如，在以下示例中，有两个事件处理程序方法 `Handler1` 和 `Handler2`，它们都订阅了同一个事件 `MyEvent`：
+
+```csharp
+using System;
+
+public class MyClass
+{
+    public event EventHandler MyEvent;
+
+    public void DoSomething()
+    {
+        // 触发事件
+        OnMyEvent();
+    }
+
+    protected virtual void OnMyEvent()
+    {
+        MyEvent?.Invoke(this, EventArgs.Empty);
+    }
+}
+
+public class Program
+{
+    static void Main()
+    {
+        MyClass myObject = new MyClass();
+
+        // 订阅事件
+        myObject.MyEvent += Handler1;
+        myObject.MyEvent += Handler2;
+
+        // 调用 DoSomething 方法，触发事件
+        myObject.DoSomething();
+    }
+
+    static void Handler1(object sender, EventArgs e)
+    {
+        Console.WriteLine("Handler1 执行");
+    }
+
+    static void Handler2(object sender, EventArgs e)
+    {
+        Console.WriteLine("Handler2 执行");
+    }
+}
+```
+
+在这个示例中，`Handler1` 和 `Handler2` 的执行顺序将取决于它们被添加到事件的顺序。在这里，它们按照添加的顺序依次执行，因此首先执行 `Handler1`，然后执行 `Handler2`。
+
+如果你在代码中更改了事件处理程序的订阅顺序，那么执行顺序也会相应地改变。需要注意的是，事件处理程序方法的执行是同步的，也就是说一个事件处理程序方法执行完成后，下一个才会开始执行。如果其中一个处理程序方法引发了异常，将会中断事件的执行，并且后续的处理程序方法将不会被执行。因此，在编写事件处理程序时，要确保处理程序方法的执行不会引发不必要的异常。
 
 
 
