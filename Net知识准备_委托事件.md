@@ -407,6 +407,59 @@ public class Program
 
 总之，`sender` 参数用于确定事件的发送者，而 `e` 参数用于传递事件的具体信息，它们允许事件处理程序方法在处理事件时访问有关事件的上下文信息。
 
+## this关键字 ？？
+`this` 关键字是C#中的一个特殊关键字，它用于引用当前对象的实例。在类的方法内部，`this` 表示调用该方法的对象的实例。使用 `this` 可以访问当前对象的成员（字段、属性、方法等）以及调用当前对象的其他方法。
 
+以下是一些常见的用法和示例：
+
+1. **访问实例成员**：使用 `this` 可以访问当前对象的字段和属性。例如：
+
+```csharp
+public class MyClass
+{
+    private int myField;
+
+    public void SetField(int value)
+    {
+        // 使用 this 访问实例字段
+        this.myField = value;
+    }
+}
+```
+
+2. **调用其他方法**：使用 `this` 可以在一个方法内部调用同一对象的其他方法。例如：
+
+```csharp
+public class MyClass
+{
+    public void Method1()
+    {
+        // 调用同一对象的另一个方法
+        this.Method2();
+    }
+
+    public void Method2()
+    {
+        // 执行一些操作
+    }
+}
+```
+
+3. **消除歧义**：在某些情况下，使用 `this` 可以帮助消除名称歧义，特别是当类的成员名称与方法参数名称相同时。例如：
+
+```csharp
+public class MyClass
+{
+    private int value;
+
+    public MyClass(int value)
+    {
+        // 使用 this 消除歧义
+        this.value = value;
+    }
+}
+```
+
+总之，`this` 关键字用于在类的方法内部引用当前对象的实例。它通常用于访问实例成员、调用其他方法或消除名称歧义。
 
 
