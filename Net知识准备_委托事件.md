@@ -1,3 +1,6 @@
+##
+事件发生，执行相关方法（某些跟这个事件有关系的）方法被执行
+
 ## `Action<in T>` 预定义委托(类型)_public delegate void Action<in T>(T obj);
 ```csharp
 
