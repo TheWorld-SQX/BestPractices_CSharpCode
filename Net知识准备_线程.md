@@ -47,6 +47,86 @@ class Program
 
 需要注意的是，`Thread` 类是一种较低级别的多线程实现方式。在实际的应用中，你可能会更多地使用更高级别的多线程构造，例如任务（`Task`）和并行编程库（`Parallel`）。这些构造提供了更多的抽象和便利性，以简化多线程编程。
 
+## Thread   对象里有哪些方法  实际写代码常用组合写法 
+`Thread` 类提供了一些方法，以便于创建、管理和操作线程。以下是 `Thread` 类的一些常用方法和实际写代码时的常用组合写法：
+
+**1. Thread 构造函数**：用于创建 `Thread` 对象，需要传递一个委托（通常是 `ThreadStart` 委托，表示线程的入口点方法）。
+
+```csharp
+Thread thread = new Thread(ThreadEntryPoint);
+```
+
+**2. Thread.Start()**：用于启动线程，开始执行线程的主要操作。
+
+```csharp
+thread.Start();
+```
+
+**3. Thread.Join()**：用于等待线程完成。主线程可以使用 `Join` 方法等待线程的结束。
+
+```csharp
+thread.Join();
+```
+
+**4. Thread.Sleep()**：用于使线程休眠一段时间，模拟延迟或控制线程执行速度。
+
+```csharp
+Thread.Sleep(1000); // 休眠1秒钟
+```
+
+**5. Thread.Abort()**：用于终止线程的执行。请注意，这个方法通常不建议使用，因为它可能导致不稳定的应用程序状态。
+
+```csharp
+thread.Abort();
+```
+
+**6. Thread.IsAlive**：用于检查线程是否仍在运行，以判断线程的状态。
+
+```csharp
+if (thread.IsAlive)
+{
+    // 线程仍在运行
+}
+```
+
+**7. Thread.Priority**：用于设置或获取线程的优先级，以影响线程在多线程环境中的执行顺序。
+
+```csharp
+thread.Priority = ThreadPriority.High; // 设置线程优先级为高
+```
+
+**8. Thread.Name**：用于设置或获取线程的名称，以在调试和日志中跟踪线程。
+
+```csharp
+thread.Name = "MyThread"; // 设置线程名称
+```
+
+**9. Thread.CurrentCulture 和 Thread.CurrentUICulture**：用于设置或获取线程的区域性和用户界面区域性。
+
+```csharp
+Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
+Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-US");
+```
+
+常用的组合写法通常包括创建线程、启动线程、等待线程完成，并在线程中执行某些操作。例如，以下是一个常见的组合写法示例：
+
+```csharp
+Thread workerThread = new Thread(() =>
+{
+    // 在这里执行线程的工作任务
+    Console.WriteLine("Worker thread is doing some work...");
+});
+
+// 启动线程
+workerThread.Start();
+
+// 在主线程等待工作线程完成
+workerThread.Join();
+
+Console.WriteLine("Worker thread has finished.");
+```
+
+这个示例创建了一个工作线程，线程在启动后执行一些工作，然后主线程使用 `Join` 方法等待工作线程完成。这种组合写法常用于需要执行异步任务并等待其完成的情况。
 
 ## 通常，你会将一个方法包装在委托中，然后将该委托传递给 Thread 构造函数，以指定在线程上执行的方法。这可以是一个无参数方法或一个带参数的方法。 除了这样的用法，还有别的吗
 除了将一个方法包装在委托中传递给 `Thread` 构造函数以指定在线程上执行的方法之外，还有其他多种用法和模式来使用 `Thread` 类。以下是一些常见的用法：
