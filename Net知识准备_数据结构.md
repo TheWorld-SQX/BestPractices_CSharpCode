@@ -99,7 +99,137 @@
    - 希尔排序的时间复杂度取决于间隔序列的选择，最坏情况下可以是O(n^2)。
 
 这些都是常见的比较排序算法，它们在不同情况下具有不同的性能特点。选择适当的排序算法通常取决于数据集的大小、性质以及对性能的需求。每个算法都有其优势和限制。
+## 
+在C#中，你可以使用各种排序算法对数组或集合进行排序。下面将详细回答有关C#排序算法的问题，并提供一些示例代码。
 
+**1. 冒泡排序（Bubble Sort）：**
+
+冒泡排序是一种基本的排序算法，它通过多次比较和交换相邻元素来将较大的元素向数组的一端移动。
+
+```csharp
+public static void BubbleSort(int[] arr)
+{
+    int n = arr.Length;
+    for (int i = 0; i < n - 1; i++)
+    {
+        for (int j = 0; j < n - i - 1; j++)
+        {
+            if (arr[j] > arr[j + 1])
+            {
+                int temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+            }
+        }
+    }
+}
+```
+
+**2. 快速排序（Quick Sort）：**
+
+快速排序是一种分治算法，它选择一个基准元素并将较小的元素放在基准元素左侧，较大的元素放在右侧，然后递归地对左右子数组进行排序。
+
+```csharp
+public static void QuickSort(int[] arr, int left, int right)
+{
+    if (left < right)
+    {
+        int pivot = Partition(arr, left, right);
+        QuickSort(arr, left, pivot - 1);
+        QuickSort(arr, pivot + 1, right);
+    }
+}
+
+private static int Partition(int[] arr, int left, int right)
+{
+    int pivot = arr[right];
+    int i = left - 1;
+
+    for (int j = left; j < right; j++)
+    {
+        if (arr[j] < pivot)
+        {
+            i++;
+            int temp = arr[i];
+            arr[i] = arr[j];
+            arr[j] = temp;
+        }
+    }
+
+    int temp2 = arr[i + 1];
+    arr[i + 1] = arr[right];
+    arr[right] = temp2;
+
+    return i + 1;
+}
+```
+
+**3. 归并排序（Merge Sort）：**
+
+归并排序是一种稳定的排序算法，它将数组分为两半，分别排序后再合并。这通常用于对链表进行排序。
+
+```csharp
+public static void MergeSort(int[] arr, int left, int right)
+{
+    if (left < right)
+    {
+        int mid = (left + right) / 2;
+        MergeSort(arr, left, mid);
+        MergeSort(arr, mid + 1, right);
+        Merge(arr, left, mid, right);
+    }
+}
+
+private static void Merge(int[] arr, int left, int mid, int right)
+{
+    int n1 = mid - left + 1;
+    int n2 = right - mid;
+
+    int[] leftArr = new int[n1];
+    int[] rightArr = new int[n2];
+
+    // 将数据拷贝到临时数组
+    for (int i = 0; i < n1; i++)
+        leftArr[i] = arr[left + i];
+    for (int j = 0; j < n2; j++)
+        rightArr[j] = arr[mid + 1 + j];
+
+    // 合并两个子数组
+    int k = left;
+    int i = 0, j = 0;
+
+    while (i < n1 && j < n2)
+    {
+        if (leftArr[i] <= rightArr[j])
+        {
+            arr[k] = leftArr[i];
+            i++;
+        }
+        else
+        {
+            arr[k] = rightArr[j];
+            j++;
+        }
+        k++;
+    }
+
+    // 处理剩余元素
+    while (i < n1)
+    {
+        arr[k] = leftArr[i];
+        i++;
+        k++;
+    }
+    while (j < n2)
+    {
+        arr[k] = rightArr[j];
+        j++;
+        k++;
+    }
+}
+```
+
+这些是一些常见的排序算法的C#示例代码。你可以根据具体的需求和性能要求选择适合的排序算法。C#还提供了内置的`Array.Sort()`方法来对数组进行排序，该方法通常会选择合适的排序算法来进行排序。
 
 
 ## 非比较排序算法
