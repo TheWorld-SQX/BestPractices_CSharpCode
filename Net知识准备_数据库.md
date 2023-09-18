@@ -1,6 +1,50 @@
 ## SQL 优化
 为常用字段创建索引，尽量命中索引，分页避免返回大量数据
 
+## 分页避免大量数据
+是的，你可以使用 OFFSET FETCH 结合来实现每页显示 20 行数据。以下是一个示例 SQL 查询，以实现每页显示 20 行数据：
+
+```sql
+SELECT * FROM Orders
+ORDER BY OrderDate
+OFFSET 0 ROWS FETCH NEXT 20 ROWS ONLY;
+```
+
+这个查询会从 "Orders" 表中按照 "OrderDate" 列的升序排序中，检索前 20 行数据，从第 1 页开始。当用户请求下一页时，你可以通过递增 OFFSET 子句的值来获取下一页的数据。例如：
+
+```sql
+-- 第一页，显示前 20 行
+SELECT * FROM Orders
+ORDER BY OrderDate
+OFFSET 0 ROWS FETCH NEXT 20 ROWS ONLY;
+
+-- 第二页，显示接下来的 20 行
+SELECT * FROM Orders
+ORDER BY OrderDate
+OFFSET 20 ROWS FETCH NEXT 20 ROWS ONLY;
+
+-- 第三页，显示接下来的 20 行
+SELECT * FROM Orders
+ORDER BY OrderDate
+OFFSET 40 ROWS FETCH NEXT 20 ROWS ONLY;
+```
+
+依此类推，通过调整 OFFSET 子句的值，你可以实现分页显示每页 20 行数据的功能。
+
+## 常见数据库管理系统对分页查询的支持
+不是所有的数据库管理系统都支持 `OFFSET` 和 `FETCH` 子句，或者它们可能使用不同的语法。这种分页查询语法通常在支持 ANSI SQL 标准的主流数据库管理系统中可用，如：
+
+- **SQL Server**: SQL Server 支持 `OFFSET` 和 `FETCH` 子句，因此你可以使用上面提到的分页查询语法。
+
+- **MySQL**: MySQL 5.5+ 支持 `LIMIT` 和 `OFFSET` 子句，可以用于分页。
+
+- **PostgreSQL**: PostgreSQL 支持 `OFFSET` 和 `FETCH` 子句，可以用于分页查询。
+
+- **Oracle Database**: Oracle 12c+ 支持 `OFFSET` 和 `FETCH` 子句，用于分页查询。
+
+但是，一些较旧的数据库或非关系型数据库可能不支持这种方式的分页查询。因此，如果你使用的是特定的数据库，最好查看该数据库的文档，了解它是否支持 `OFFSET` 和 `FETCH`，或者查看其它分页技术。在某些情况下，你可能需要使用不同的分页策略。
+
+
 
 ## 视图
 SQL Server中的视图（Views）是一个虚拟表，可以从一个或多个现有的表中检索数据，并将其呈现为一个单独的表。视图提供了一种方便的方式来查询和使用数据，可以隐藏底层表的复杂性，还可以加强安全性，只允许用户访问他们需要的数据。以下是SQL Server中常用的视图语句示例：
