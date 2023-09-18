@@ -17,3 +17,50 @@
 需要注意的是，消息循环机制是由操作系统提供的，并且消息循环的实现是非常高效的。它允许应用程序以事件驱动的方式响应用户输入，而不需要消耗大量的 CPU 资源。同时，消息循环还确保了应用程序的稳定性和可响应性。
 
 总结来说，`Application.Run` 方法通过创建应用程序上下文，并在该上下文中执行一个消息循环，实现了应用程序的消息处理和事件响应机制。这种消息循环机制允许应用程序以事件驱动的方式进行交互，并保持应用程序的可响应性。
+
+
+##  
+第三方控件
+使用DevExpress在WinForms应用程序中的示例包括以下步骤：
+
+1. **安装DevExpress：** 首先，你需要从DevExpress官网下载并安装DevExpress WinForms控件库。安装后，你将能够在Visual Studio中使用这些控件。
+
+2. **创建WinForms项目：** 在Visual Studio中创建一个新的WinForms项目。
+
+3. **添加DevExpress控件：** 在WinForms设计器中，你可以从工具箱中拖放DevExpress控件到窗体上，或者通过代码动态创建这些控件。以下是一个示例，如何在代码中创建DevExpress的Button控件：
+
+```csharp
+using DevExpress.XtraEditors;
+
+// 创建一个简单的WinForms窗体
+public partial class MainForm : XtraForm
+{
+    public MainForm()
+    {
+        InitializeComponent();
+
+        // 创建一个DevExpress按钮
+        SimpleButton devExpressButton = new SimpleButton();
+        devExpressButton.Text = "DevExpress Button";
+        devExpressButton.Size = new System.Drawing.Size(100, 30);
+        devExpressButton.Location = new System.Drawing.Point(50, 50);
+
+        // 添加按钮到窗体
+        this.Controls.Add(devExpressButton);
+
+        // 添加按钮的点击事件处理程序
+        devExpressButton.Click += DevExpressButton_Click;
+    }
+
+    private void DevExpressButton_Click(object sender, EventArgs e)
+    {
+        XtraMessageBox.Show("DevExpress Button Clicked!");
+    }
+}
+```
+
+在这个示例中，我们创建了一个继承自`XtraForm`的窗体，并在构造函数中创建了一个DevExpress按钮。我们设置了按钮的文本、大小和位置，并将其添加到窗体上。然后，我们为按钮的点击事件添加了一个处理程序，以显示一个简单的消息框。
+
+4. **运行应用程序：** 最后，你可以运行应用程序以查看DevExpress控件在WinForms中的效果。
+
+请注意，这只是一个简单的示例，演示如何在WinForms中使用DevExpress控件。DevExpress提供了丰富的控件和功能，以满足各种需求，你可以根据项目的需求来使用它们。同时，DevExpress还提供了详细的文档和示例，以帮助你更好地使用他们的控件库。
