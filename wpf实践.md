@@ -747,3 +747,43 @@ Messenger对象通常用于以下情况：
 Messenger对象的使用方式通常是创建一个消息类，然后通过Messenger对象发送和接收这些消息。这样的做法有助于保持模块之间的松耦合性，使系统更加可维护和可扩展。
 
 虽然Messenger是一种常见的方法，但在某些情况下，也可以考虑使用其他通信机制，如事件和委托，具体取决于应用程序的需求和架构。不同的情况可能需要不同的方法。
+
+
+## CommunityToolkit.Mvvm中实现消息传递 我认为关键是发送者类 和 接受者类 他们都引入了WeakReferenceMessenger 对象所在的命名空间
+如果发送者类和接收者类都引入了 `CommunityToolkit.Mvvm.Messaging` 命名空间，那么你可以在这两个类之间使用 `WeakReferenceMessenger` 进行消息传递。以下是一个示例：
+
+首先，确保在发送者类和接收者类中引入 `CommunityToolkit.Mvvm.Messaging` 命名空间：
+
+```csharp
+// 发送者类
+using CommunityToolkit.Mvvm.Messaging;
+
+// 接收者类
+using CommunityToolkit.Mvvm.Messaging;
+```
+
+接下来，你可以在发送者类中使用 `WeakReferenceMessenger` 来发送消息：
+
+```csharp
+// 在发送者类中发送消息
+WeakReferenceMessenger.Default.Send(new TestMessage());
+```
+
+然后，在接收者类中注册消息处理程序：
+
+```csharp
+// 在接收者类中注册消息处理程序
+WeakReferenceMessenger.Default.Register<TestMessage>(this, HandleMessageFromMPVM);
+```
+
+这样，发送者类就可以使用 `WeakReferenceMessenger` 发送消息，而接收者类可以通过注册来接收并处理消息。
+
+请注意，如果发送者类和接收者类都在相同的命名空间中引入了 `CommunityToolkit.Mvvm.Messaging`，你不需要提供完整的命名空间路径，因为编译器可以正确地识别 `TestMessage` 类型和 `WeakReferenceMessenger` 对象。这简化了代码并提高了可读性。
+
+
+## 为什么是this，可不可以不用
+在 `WeakReferenceMessenger.Default.Register` 方法中，`this` 参数表示将当前对象（通常是当前类的实例）作为消息的接收者注册。这意味着消息将被发送到当前对象（接收者）的处理程序方法（`HandleMessageFromMPVM`）中。
+
+如果你不使用 `this` 参数，而是将其他对象作为接收者注册，那么消息将发送到该对象的处理程序方法。这意味着只有该对象会接收到消息，其他对象不会。如果没有其他对象注册相同类型的消息，消息将被丢弃，没有任何接收者会处理它。
+
+所以，是否使用 `this` 参数取决于你希望哪个对象或类来接收消息。如果你希望当前对象或类接收消息，就使用 `this`；如果希望其他对象或类接收消息，就传递对应的对象作为参数。
