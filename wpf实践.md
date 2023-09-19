@@ -787,3 +787,83 @@ WeakReferenceMessenger.Default.Register<TestMessage>(this, HandleMessageFromMPVM
 如果你不使用 `this` 参数，而是将其他对象作为接收者注册，那么消息将发送到该对象的处理程序方法。这意味着只有该对象会接收到消息，其他对象不会。如果没有其他对象注册相同类型的消息，消息将被丢弃，没有任何接收者会处理它。
 
 所以，是否使用 `this` 参数取决于你希望哪个对象或类来接收消息。如果你希望当前对象或类接收消息，就使用 `this`；如果希望其他对象或类接收消息，就传递对应的对象作为参数。
+
+
+## SimpleIoc 依赖控制器
+如果你的应用程序需要连接多个不同类型的数据库，你可以使用依赖注入容器（如SimpleIoc）来实现依赖项的解析和切换。以下是一种可能的方式，假设你需要连接SQL Server、MySQL和Oracle数据库：
+
+步骤1：定义接口和具体实现类
+
+```csharp
+public interface IDatabaseService
+{
+    void Connect();
+}
+
+public class SqlDatabaseService : IDatabaseService
+{
+    public void Connect()
+    {
+        Console.WriteLine("Connected to SQL Server Database");
+    }
+}
+
+public class MySqlDatabaseService : IDatabaseService
+{
+    public void Connect()
+    {
+        Console.WriteLine("Connected to MySQL Database");
+    }
+}
+
+public class OracleDatabaseService : IDatabaseService
+{
+    public void Connect()
+    {
+        Console.WriteLine("Connected to Oracle Database");
+    }
+}
+```
+
+步骤2：注册依赖项
+
+```csharp
+SimpleIoc.Default.Register<IDatabaseService, SqlDatabaseService>();
+// 或者 SimpleIoc.Default.Register<IDatabaseService, MySqlDatabaseService>();
+// 或者 SimpleIoc.Default.Register<IDatabaseService, OracleDatabaseService>();
+```
+
+在这个步骤中，你可以根据需要选择要注册的数据库服务类。你可以根据配置或其他条件来决定使用哪个数据库服务。
+
+步骤3：在服务类中注入依赖项
+
+```csharp
+public class DataService
+{
+    private readonly IDatabaseService _databaseService;
+
+    public DataService(IDatabaseService databaseService)
+    {
+        _databaseService = databaseService;
+    }
+
+    public void GetData()
+    {
+        _databaseService.Connect();
+        // 获取数据的逻辑
+    }
+}
+```
+
+在`DataService`中注入`IDatabaseService`，这将允许你在服务类中使用不同类型的数据库服务。
+
+步骤4：解析依赖项并使用
+
+在需要使用`DataService`的地方，你可以通过依赖注入容器解析依赖项并使用它：
+
+```csharp
+var dataService = SimpleIoc.Default.GetInstance<DataService>();
+dataService.GetData();
+```
+
+这个示例中，`DataService`将使用在步骤2中注册的数据库服务。你可以在运行时根据需要选择不同的数据库服务，而不需要修改`DataService`的代码。这种方式允许你轻松切换不同类型的数据库服务。
