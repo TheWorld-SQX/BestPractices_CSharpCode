@@ -400,3 +400,48 @@ Parallel.ForEach(numbers, number =>
 根据你的需求，如果你需要确保不同终端之间的请求不会同时访问资源，那么使用 `Mutex` 是合适的选择。如果你只需要在同一进程内的多个线程之间同步访问共享资源，那么可以考虑使用 `lock` 关键字。
 
 总之，`Mutex` 适用于跨进程同步，而 `lock` 关键字适用于同一进程内的多线程同步。在这个特定的情景中，使用 `Mutex` 是为了控制不同终端之间的资源访问。
+
+
+## 使用`SemaphoreSlim`来限制同时访问`GetPatientInfoFromPACS`方法的任务数量为1
+如果您想达到与Mutex类似的效果，即在同一时间只允许一个终端访问某个资源，但不使用Mutex，您可以考虑使用`SemaphoreSlim`。`SemaphoreSlim`是一个轻量级的信号量实现，它可以用于限制同时访问某个资源的线程或任务数量。
+
+以下是使用`SemaphoreSlim`的示例代码：
+
+```csharp
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Web.Http;
+
+public class YourController
+{
+    // 创建一个SemaphoreSlim，初始许可数为1，表示只有一个许可
+    private static SemaphoreSlim semaphore = new SemaphoreSlim(1);
+
+    [HttpGet]
+    public async Task<IHttpActionResult> GetPatientInfoFromPACS(string patientId, string accNo)
+    {
+        try
+        {
+            // 等待获取许可
+            await semaphore.WaitAsync();
+
+            // 在这里执行您的具体资源操作
+
+            // 释放许可
+            semaphore.Release();
+            
+            return Ok("操作成功");
+        }
+        catch (Exception ex)
+        {
+            // 处理异常
+            return InternalServerError(ex);
+        }
+    }
+}
+```
+
+在这个示例中，我们使用`SemaphoreSlim`来限制同时访问`GetPatientInfoFromPACS`方法的任务数量为1。当一个任务进入方法时，它会尝试获取信号量的许可，如果有可用的许可（也就是没有其他任务在执行），则允许执行资源操作，然后释放许可。如果已经有一个任务在执行，则新的任务将等待，直到许可可用。
+
+这种方法与Mutex类似，但更轻量级，可以用于实现同一时间只允许一个终端访问的效果。请注意，使用`await`关键字来等待许可是异步的，这意味着不会阻塞整个线程，从而提高了并发性能。
