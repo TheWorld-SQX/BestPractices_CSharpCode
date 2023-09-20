@@ -273,3 +273,93 @@ Parallel.ForEach(numbers, number =>
 文档还提供了一些`Parallel`类的方法示例，如`Parallel.For`、`Parallel.ForEach`和`Parallel.Invoke`，以及对`ParallelOptions`中的`MaxDegreeOfParallelism`属性的说明。
 
 最后，文档引用了Microsoft官方文档的链接，供查阅详细信息。
+
+
+## mutex   高效实用 用法
+`Mutex`（互斥锁）是一种线程同步的机制，用于确保在任何给定时刻只有一个线程可以访问共享资源。下面是 `Mutex` 的高效实用用法：
+
+1. **创建 Mutex 对象**：
+
+   ```csharp
+   Mutex mutex = new Mutex();
+   ```
+
+   你可以创建一个 `Mutex` 对象，然后在多个线程之间共享它。
+
+2. **等待和释放 Mutex**：
+
+   - 使用 `WaitOne` 方法等待 Mutex，这会阻止线程继续执行，直到它成功获取 Mutex。
+   - 使用 `ReleaseMutex` 方法释放 Mutex，允许其他线程获取它。
+
+   ```csharp
+   // 在某个线程中等待 Mutex
+   mutex.WaitOne();
+
+   // 在完成工作后释放 Mutex
+   mutex.ReleaseMutex();
+   ```
+
+3. **Mutex 的初始状态**：
+
+   Mutex 可以被创建为有初始状态的，如果 Mutex 是已锁定状态，那么等待它的线程会被阻塞。如果 Mutex 是未锁定状态，等待的线程可以立即获取 Mutex。
+
+   ```csharp
+   Mutex mutex = new Mutex(initiallyOwned: false); // 初始状态为未锁定
+   ```
+
+4. **使用 Mutex 的异常处理**：
+
+   Mutex 通常与 `try...finally` 块结合使用，以确保在任何情况下都会释放 Mutex。
+
+   ```csharp
+   Mutex mutex = new Mutex();
+   try
+   {
+       // 执行需要同步的操作
+   }
+   finally
+   {
+       mutex.ReleaseMutex(); // 无论发生什么，都会释放 Mutex
+   }
+   ```
+
+5. **使用 Mutex 的超时**：
+
+   你可以使用 `WaitOne` 方法的重载，允许你设置等待 Mutex 的最大时间。
+
+   ```csharp
+   if (mutex.WaitOne(TimeSpan.FromSeconds(5))) // 最多等待 5 秒
+   {
+       try
+       {
+           // 执行需要同步的操作
+       }
+       finally
+       {
+           mutex.ReleaseMutex();
+       }
+   }
+   else
+   {
+       // 在等待超时后处理
+   }
+   ```
+
+6. **使用 Mutex 的命名**：
+
+   如果你希望在不同的进程之间共享 Mutex，你可以为 Mutex 指定一个唯一的名称。
+
+   ```csharp
+   string mutexName = "MyGlobalMutex";
+   Mutex mutex = new Mutex(initiallyOwned: false, mutexName);
+   ```
+
+   这样可以在不同的程序实例之间共享 Mutex。
+
+7. **注意事项**：
+
+   - 使用 Mutex 时应小心死锁情况。确保你的线程在获取 Mutex 后，最终会释放它。
+   - 使用 `try...finally` 以确保资源被正确释放。
+   - 当 Mutex 用于跨进程同步时，要小心在资源释放时发生异常的情况，以免导致 Mutex 永远无法释放。
+
+总之，Mutex 是一种强大的同步机制，可用于控制多个线程对共享资源的访问。在多线程和跨进程的情况下，Mutex 能够有效地确保资源的安全访问。但要小心使用，以避免潜在的死锁和性能问题。
