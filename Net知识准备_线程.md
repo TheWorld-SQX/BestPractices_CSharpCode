@@ -356,7 +356,27 @@ Parallel.ForEach(numbers, number =>
 
    这样可以在不同的程序实例之间共享 Mutex。
 
-7. **注意事项**：
+
+   `Mutex` 构造函数中是否指定名称的区别在于 Mutex 的作用范围。
+
+*** 1. **不指定名称**：如果在构造 `Mutex` 对象时不指定名称，它将是一个**本地 Mutex**。本地 Mutex 的作用范围仅限于创建它的进程内部。这意味着不同进程中的本地 Mutex 是相互独立的，不能用于实现进程间的同步。
+
+   示例：
+   ```csharp
+   Mutex mutex = new Mutex(); // 创建本地 Mutex，只能在当前进程内使用
+   ```
+
+*** 2. **指定名称**：如果在构造 `Mutex` 对象时指定了名称，它将成为一个**全局 Mutex**。全局 Mutex 具有全局作用范围，不同进程中使用相同名称的全局 Mutex 可以用于实现进程间的同步，允许多个进程共享同一个 Mutex。
+
+   示例：
+   ```csharp
+   string mutexName = "MyGlobalMutex";
+   Mutex mutex = new Mutex(initiallyOwned: false, mutexName); // 创建全局 Mutex，可以在不同进程中使用
+   ```
+
+所以，区别在于是否需要在不同进程之间共享 Mutex。如果只需要在同一进程内部进行线程同步，可以使用不带名称的本地 Mutex。如果需要在不同进程之间进行同步，需要指定名称以创建全局 Mutex。
+
+8. **注意事项**：
 
    - 使用 Mutex 时应小心死锁情况。确保你的线程在获取 Mutex 后，最终会释放它。
    - 使用 `try...finally` 以确保资源被正确释放。
