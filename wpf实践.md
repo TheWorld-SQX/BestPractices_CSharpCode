@@ -887,3 +887,183 @@ dataService.GetData();
 6. **可扩展性**：通过使用`ViewModelLocator`，你可以轻松地添加新的视图模型或更改现有视图模型的创建方式，而无需修改大量视图代码。
 
 总的来说，`ViewModelLocator`是一种用于管理和提供视图模型的模式，它有助于使应用程序更易于维护、测试和扩展，并促进了良好的MVVM实践。但需要注意的是，具体的`ViewModelLocator`实现可能因应用程序的需求而异，因此在不同的应用程序中可能会有不同的用途和行为。
+
+
+##  
+```c#
+namespace HQ.SelfServiceSys.Client.ViewModel
+{
+    /// <summary>
+    /// This class contains static references to all the view models in the
+    /// application and provides an entry point for the bindings.
+    /// </summary>
+    public class ViewModelLocator
+    {
+        /// <summary>
+        /// Initializes a new instance of the ViewModelLocator class.
+        /// </summary>
+        public ViewModelLocator()
+        {
+            ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
+
+            ////if (ViewModelBase.IsInDesignModeStatic)
+            ////{
+            ////    // Create design time view services and models
+            ////    SimpleIoc.Default.Register<IDataService, DesignDataService>();
+            ////}
+            ////else
+            ////{
+            ////    // Create run time view services and models
+            ////    SimpleIoc.Default.Register<IDataService, DataService>();
+            ////}
+
+            #region 注册单实例 Model、接口等
+
+            //注册服务接口
+            SimpleIoc.Default.Register(() =>
+            {
+                ConfigManager config = ConfigManager.Instence;
+                ISelfServiceProvider provider = new SelfServiceProvider()
+                {
+                    ClientID = config.BaseSetting.UserName,
+                    Token = config.BaseSetting.UserPWD,
+                    HostIP = config.BaseSetting.HostIP,
+                    HostPort = config.BaseSetting.HostPort,
+                    TerminalIP = config.TerminalInfoSetting.TerminalIP,
+                    TerminalName = config.TerminalInfoSetting.TerminalName,
+                    DownloadServerIP = config.BaseSetting.HostIP,
+                    DownloadServerPort = config.BaseSetting.FTPPort,
+                    DownloadServerUserName = config.BaseSetting.FTPUserName,
+                    DownloadServerPassword = config.BaseSetting.FTPUserPWD
+                };
+                return provider;
+            }, true);
+            //注册打印服务接口
+            SimpleIoc.Default.Register(() =>
+            {
+                ConfigManager config = ConfigManager.Instence;
+                IPrintServiceProvider provider = new PrintServiceProvider()
+                {
+                    UsePdfDLL = config.BaseSetting.UsePdfDLL.ToString()
+                };
+
+                provider.ReportPrinterInfo.PrinterName = config.PrinterSetting.ReportPrinterName;
+
+                provider.FilmPrinterInfo.IP = config.PrinterSetting.DicomIP;
+                provider.FilmPrinterInfo.Port = config.PrinterSetting.DicomPort;
+                provider.FilmPrinterInfo.MasterAE = "SelfClient";
+                provider.FilmPrinterInfo.SlaveAE = config.PrinterSetting.AETitle;
+
+                return provider;
+            });
+            //注册读卡器服务接口
+            SimpleIoc.Default.Register(() =>
+            {
+                IReadCardServiceProvider provider = new ReadCardServiceProvider();
+                return provider;
+            });
+            //注册 PrinterModel
+            SimpleIoc.Default.Register<PrinterModel>();
+            //注册 TerminalModel
+            SimpleIoc.Default.Register<TerminalModel>();
+            //注册 TTSModel
+            SimpleIoc.Default.Register(() =>
+            {
+                ConfigManager config = ConfigManager.Instence;
+                return new TTSModel(config.SoundSetting.VoiceName, config.SoundSetting.VoiceRate, config.SoundSetting.VoiceVolume);
+            });
+            //注册 CameraModel
+            SimpleIoc.Default.Register<CameraModel>();
+            //注册 WebSocketModel
+            SimpleIoc.Default.Register(() =>
+            {
+                ConfigManager config = ConfigManager.Instence;
+                return new WebSocketModel(config.BaseSetting.HostIP, config.BaseSetting.WebSocketPort);
+            });
+            //注册 CardReaderModel
+            SimpleIoc.Default.Register<CardReaderModel>();
+
+            #endregion
+
+            #region 注册 ViewModel
+
+            SimpleIoc.Default.Register<MainViewModel>();
+            SimpleIoc.Default.Register<SettingViewModel>();
+            SimpleIoc.Default.Register<ProcessViewModel>();
+            SimpleIoc.Default.Register<NoticeAreaViewModel>();
+            SimpleIoc.Default.Register<InitViewModel>();
+
+            #endregion
+
+        }
+
+        #region ViewModel
+
+        public MainViewModel Main
+        {
+            get
+            {
+                return ServiceLocator.Current.GetInstance<MainViewModel>();
+            }
+        }
+
+        public SettingViewModel Setting
+        {
+            get
+            {
+                return ServiceLocator.Current.GetInstance<SettingViewModel>();
+                //return SimpleIoc.Default.GetInstanceWithoutCaching(typeof(SettingViewModel)) as SettingViewModel;
+            }
+        }
+
+        public ProcessViewModel Process
+        {
+            get
+            {
+                return ServiceLocator.Current.GetInstance<ProcessViewModel>();
+            }
+        }
+        public NoticeAreaViewModel NoticeArea
+        {
+            get
+            {
+                return ServiceLocator.Current.GetInstance<NoticeAreaViewModel>();
+            }
+        }
+        public InitViewModel Init
+        {
+            get
+            {
+                return ServiceLocator.Current.GetInstance<InitViewModel>();
+            }
+        }
+
+        #endregion
+
+        public static void Cleanup()
+        {
+            // TODO Clear the ViewModels
+        }
+    }
+}
+
+```
+
+
+
+##  代码设计思想解析
+这是一个典型的MVVM（Model-View-ViewModel）架构中的`ViewModelLocator`类。它的作用是为应用程序中的不同视图（View）提供相应的视图模型（ViewModel）。以下是代码的主要结构和功能：
+
+1. `ViewModelLocator`类是一个单例类，用于初始化和提供视图模型实例。
+
+2. 构造函数（`ViewModelLocator`）用于注册各种服务接口和视图模型。它使用了一个依赖注入容器（`SimpleIoc`）来管理和提供这些服务和视图模型。
+
+3. 注册服务接口部分：在这部分代码中，它注册了多个服务接口的实例，这些服务接口代表了应用程序中的不同功能模块，如自助服务、打印服务、读卡器服务等。这些服务通常包含了业务逻辑和与硬件或外部系统的交互。
+
+4. 注册视图模型部分：在这部分代码中，它注册了应用程序中的各个视图模型。每个视图模型对应一个UI界面，用于处理用户界面的逻辑和数据展示。
+
+5. 属性部分：`ViewModelLocator`类包含了一组属性，每个属性对应一个视图模型。这些属性通过依赖注入容器获取相应的视图模型实例，并可以在应用程序中用于数据绑定。
+
+6. `Cleanup`方法：这个方法通常用于清理和释放资源，但在代码中是一个空的TODO注释，需要根据应用程序的需要来实现。
+
+总的来说，`ViewModelLocator`类的目标是将视图和视图模型解耦，以便更好地组织和管理应用程序的代码。通过依赖注入容器，它提供了一种可扩展和可维护的方式来创建和访问视图模型。这有助于实现MVVM架构的最佳实践，使代码更加模块化和可测试。这段代码看起来很好地遵循了这些MVVM原则。
