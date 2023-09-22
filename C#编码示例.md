@@ -364,3 +364,62 @@ if (!pacsData.UPDATE_DATE.HasValue)
                     }
                 }
 ```
+
+
+## webservice超时
+在处理Web服务调用的重试机制时，以下是一些最佳实践和建议：
+
+1. **限制重试次数**：确定在哪些情况下应该触发重试，并设置最大的重试次数。通常，3到5次重试是一个合理的范围，但具体取决于你的应用程序需求和服务稳定性。避免无限重试，以防止无限循环。
+
+2. **设置重试间隔**：在重试之间设置适当的时间间隔，以避免连续快速的重试请求。重试间隔可以在每次重试之间逐渐增加，以减轻服务负载。
+
+3. **指数退避策略**：采用指数退避策略，即每次重试之间的时间间隔呈指数增加。这有助于减轻服务的压力，防止同时发起大量请求。例如，第一次重试等待1秒，第二次等待2秒，第三次等待4秒，以此类推。
+
+4. **记录重试操作**：在记录日志中包含重试操作的信息，以便后续分析和故障排除。记录哪些请求触发了重试以及重试的结果。
+
+5. **设置最大超时时间**：在进行重试时，考虑设置最大超时时间。如果总共的重试时间超过了最大超时时间，可以中止重试并处理超时情况。
+
+下面是一个示例，演示如何在C#中实现一个简单的重试机制：
+
+```csharp
+async Task<string> CallWebServiceWithRetryAsync()
+{
+    int maxRetries = 3;
+    TimeSpan retryInterval = TimeSpan.FromSeconds(1);
+    int currentRetry = 0;
+
+    while (currentRetry < maxRetries)
+    {
+        try
+        {
+            string responseXML = await pUB0008.QueryRisSelfPrintReportAsync(QueryRisSelfPrintReportInputTime(start.ToString("yyyy-MM-dd HH:mm:ss"), end.ToString("yyyy-MM-dd HH:mm:ss")));
+            // 成功获取响应
+            return responseXML;
+        }
+        catch (TimeoutException)
+        {
+            // 超时异常，等待一段时间后重试
+            await Task.Delay(retryInterval);
+            currentRetry++;
+        }
+        catch (WebException)
+        {
+            // Web异常，等待一段时间后重试
+            await Task.Delay(retryInterval);
+            currentRetry++;
+        }
+        catch (Exception)
+        {
+            // 其他异常，处理或记录日志
+            throw;
+        }
+    }
+
+    // 达到最大重试次数，处理重试失败情况
+    throw new Exception("重试失败");
+}
+```
+
+在上述示例中，我们定义了最大重试次数、重试间隔和一个重试循环来尝试调用Web服务。如果在最大重试次数内未成功获取响应，将抛出异常以处理重试失败情况。
+
+请根据你的具体需求和服务稳定性，调整重试次数和间隔以达到最佳的重试效果。此外，还可以根据服务的错误响应进行更精细的重试策略。
