@@ -423,3 +423,49 @@ async Task<string> CallWebServiceWithRetryAsync()
 在上述示例中，我们定义了最大重试次数、重试间隔和一个重试循环来尝试调用Web服务。如果在最大重试次数内未成功获取响应，将抛出异常以处理重试失败情况。
 
 请根据你的具体需求和服务稳定性，调整重试次数和间隔以达到最佳的重试效果。此外，还可以根据服务的错误响应进行更精细的重试策略。
+
+
+## 
+如果你是调用服务的一方，无法修改WebService并且需要实现超时重连，以下是一种推荐的方法：
+
+1. **使用异步方法**：确保你的WebService调用是异步的，这样可以更好地处理超时情况，避免阻塞主线程。
+
+2. **设置超时时间**：在调用WebService的地方，使用`Task.Delay`来实现自定义的超时机制。这样，你可以在指定的时间内等待服务响应，然后重试或处理超时情况。
+
+```csharp
+async Task<string> CallWebServiceWithTimeoutAsync()
+{
+    int maxRetries = 3; // 最大重试次数
+    TimeSpan timeout = TimeSpan.FromSeconds(30); // 超时时间为30秒
+
+    for (int retry = 0; retry < maxRetries; retry++)
+    {
+        var cts = new CancellationTokenSource();
+        var delayTask = Task.Delay(timeout, cts.Token);
+        
+        var webServiceTask = pUB0008.QueryRisSelfPrintReportAsync(QueryRisSelfPrintReportInputTime(start.ToString("yyyy-MM-dd HH:mm:ss"), end.ToString("yyyy-MM-dd HH:mm:ss")));
+        
+        // 等待第一个任务完成，要么是服务响应，要么是超时
+        var completedTask = await Task.WhenAny(webServiceTask, delayTask);
+        
+        if (completedTask == webServiceTask)
+        {
+            // 成功获取响应
+            return await webServiceTask;
+        }
+        else
+        {
+            // 超时处理
+            Log.Error("Web service call timed out.");
+            cts.Cancel(); // 取消等待任务
+        }
+    }
+
+    // 达到最大重试次数，处理重试失败情况
+    throw new Exception("重试失败");
+}
+```
+
+在上述代码中，我们使用`Task.Delay`来设置超时时间，并使用`Task.WhenAny`来等待第一个任务完成，要么是WebService响应，要么是超时。如果超时，我们取消等待任务并进行重试，最多重试指定次数。
+
+这种方法可以让你在无法修改WebService的情况下实现超时和重连，同时避免在异常处理中进行业务逻辑。你可以根据需要调整超时时间和重试次数。
