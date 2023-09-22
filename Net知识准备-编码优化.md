@@ -135,3 +135,123 @@ product.ShowInfo(); // 输出 "Product A"
 ```
 
 通过工厂模式，我们可以根据条件选择不同的工厂来创建对象，而不需要在代码中直接实例化对象。这提高了代码的可扩展性。
+
+
+## 使用工厂加策略优化if else
+结合工厂模式和策略模式可以进一步降低if-else语句的使用，提高代码的可扩展性。以下是结合工厂模式和策略模式的示例：
+
+首先，定义策略接口和多个实现该接口的策略类，以及产品接口和多个实现该接口的产品类：
+
+```csharp
+// 定义策略接口
+public interface IOperationStrategy
+{
+    int Execute(int a, int b);
+}
+
+// 实现具体的策略类
+public class AddOperation : IOperationStrategy
+{
+    public int Execute(int a, int b)
+    {
+        return a + b;
+    }
+}
+
+public class SubtractOperation : IOperationStrategy
+{
+    public int Execute(int a, int b)
+    {
+        return a - b;
+    }
+}
+
+// 定义产品接口
+public interface IProduct
+{
+    void ShowInfo();
+}
+
+// 实现具体产品类
+public class ConcreteProductA : IProduct
+{
+    public void ShowInfo()
+    {
+        Console.WriteLine("Product A");
+    }
+}
+
+public class ConcreteProductB : IProduct
+{
+    public void ShowInfo()
+    {
+        Console.WriteLine("Product B");
+    }
+}
+```
+
+接下来，定义工厂接口和多个实现该接口的工厂类，用于创建策略和产品：
+
+```csharp
+// 定义策略工厂接口
+public interface IOperationStrategyFactory
+{
+    IOperationStrategy CreateStrategy();
+}
+
+// 实现具体策略工厂类
+public class AddOperationFactory : IOperationStrategyFactory
+{
+    public IOperationStrategy CreateStrategy()
+    {
+        return new AddOperation();
+    }
+}
+
+public class SubtractOperationFactory : IOperationStrategyFactory
+{
+    public IOperationStrategy CreateStrategy()
+    {
+        return new SubtractOperation();
+    }
+}
+
+// 定义产品工厂接口
+public interface IProductFactory
+{
+    IProduct CreateProduct();
+}
+
+// 实现具体产品工厂类
+public class ConcreteProductAFactory : IProductFactory
+{
+    public IProduct CreateProduct()
+    {
+        return new ConcreteProductA();
+    }
+}
+
+public class ConcreteProductBFactory : IProductFactory
+{
+    public IProduct CreateProduct()
+    {
+        return new ConcreteProductB();
+    }
+}
+```
+
+最后，使用工厂模式创建策略和产品，并进行操作：
+
+```csharp
+// 使用策略工厂创建策略
+IOperationStrategyFactory strategyFactory = new AddOperationFactory(); // 根据条件选择工厂
+IOperationStrategy strategy = strategyFactory.CreateStrategy(); // 创建策略
+int result = strategy.Execute(5, 3); // 结果为 8
+
+// 使用产品工厂创建产品
+IProductFactory productFactory = new ConcreteProductAFactory(); // 根据条件选择工厂
+IProduct product = productFactory.CreateProduct(); // 创建产品
+product.ShowInfo(); // 输出 "Product A"
+```
+
+通过结合工厂模式和策略模式，我们可以根据条件选择不同的工厂来创建策略和产品，从而降低if-else语句的使用，使代码更加灵活和可扩展。
