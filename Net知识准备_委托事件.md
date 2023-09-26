@@ -15,6 +15,91 @@
 
 所以，当事件触发时，与事件相关的委托会调用与之关联的事件处理程序方法，从而执行特定的操作。这使得对象可以在特定情况下通知其他对象，并且其他对象可以对这些情况作出响应。事件和委托是 C# 中实现事件驱动编程的重要工具。
 
+## this.PropertyChanged?.Invoke(this, e);  属性自动更新时  这个事件被唤醒  ，注册到这个事件上哪些方法被调用了？用的是wpf MVVM light框架   我知道事件处理程序方法是通过 += 运算符订阅到事件上的。 但是我没找到具体代码，哪些方法绑定上了，然后将新的值赋值给属性
+
+在代码中，`this.PropertyChanged?.Invoke(this, e);` 是用于触发属性更改事件的语句，通常用于实现数据绑定和通知属性更改的机制。当属性发生变化时，此语句会调用与属性更改事件相关联的委托列表中的方法（事件处理程序）。
+
+在你的代码中，`PropertyChanged` 是一个事件，通常是 `INotifyPropertyChanged` 接口的一部分。该接口通常用于在数据绑定方案中通知 UI 控件或其他对象，某个属性的值已更改，以便它们可以更新自己的显示或执行其他操作。
+
+当你调用 `this.PropertyChanged?.Invoke(this, e);` 时，会触发与 `PropertyChanged` 事件关联的委托列表中的所有事件处理程序方法。这些事件处理程序方法是在对象订阅属性更改事件时注册的。通常情况下，开发人员会将需要在属性更改时执行的代码包装在这些事件处理程序方法中。
+
+例如，如果你有一个属性 `Name`，并希望在其更改时通知其他对象，你可以这样实现：
+
+```csharp
+private string name;
+
+public string Name
+{
+    get { return name; }
+    set
+    {
+        if (name != value)
+        {
+            name = value;
+            OnPropertyChanged(nameof(Name)); // 触发属性更改事件
+        }
+    }
+}
+
+public event PropertyChangedEventHandler PropertyChanged;
+
+protected virtual void OnPropertyChanged(string propertyName)
+{
+    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+}
+```
+
+在这个例子中，当 `Name` 属性的值发生更改时，`OnPropertyChanged` 方法会触发 `PropertyChanged` 事件，然后所有已订阅此事件的对象的事件处理程序方法将被调用，以执行相应的操作。这些操作可能包括更新 UI 控件的显示或执行其他自定义逻辑。
+
+具体来说，调用 `PropertyChanged?.Invoke(this, e);` 会执行 `PropertyChanged` 事件关联的委托列表中的所有方法。这些方法是在属性更改事件订阅时注册的，它们用于响应属性更改并执行相应的操作。
+
+
+## 数据绑定机制背后的工作是在视图和视图模型之间建立通信渠道，以便自动同步数据。这种机制使开发人员不必手动编写大量的事件处理程序代码，从而简化了应用程序的开发和维护。通常使用绑定（Data Binding）来连接视图（View）和视图模型（ViewModel）。这意味着不需要显式订阅事件  ，背后具体得工作是怎样的
+
+在MVVM Light框架中，通常会使用属性绑定来将UI元素（如TextBox、TextBlock等）与视图模型的属性关联起来，而不是手动编写事件处理程序来处理属性的更改。MVVM Light的绑定机制会自动处理属性的更新。
+
+下面是MVVM Light中属性绑定的一般工作方式：
+
+1. **定义属性**：首先，在你的视图模型中，你会定义需要在视图中绑定的属性。这些属性通常会实现`INotifyPropertyChanged`接口，以便通知UI属性的更改。
+
+```csharp
+private string _myProperty;
+
+public string MyProperty
+{
+    get { return _myProperty; }
+    set
+    {
+        if (_myProperty != value)
+        {
+            _myProperty = value;
+            RaisePropertyChanged(nameof(MyProperty)); // 通知属性更改
+        }
+    }
+}
+```
+
+2. **在XAML中绑定属性**：然后，在XAML中的UI元素中，你可以使用绑定表达式将这些属性与UI元素的属性关联起来。这通常在XAML中完成。
+
+```xml
+<TextBox Text="{Binding MyProperty, Mode=TwoWay}" />
+```
+
+在上面的示例中，`Text`属性与`MyProperty`属性绑定，`Mode=TwoWay`表示是双向绑定。
+
+3. **触发属性更改**：当你在视图模型中更改`MyProperty`的值时，即使没有手动编写事件处理程序，MVVM Light会自动处理属性更改通知，并通知绑定引擎属性已更改。
+
+```csharp
+MyProperty = "New Value"; // 这会自动更新TextBox中的文本
+```
+
+4. **自动UI更新**：绑定引擎会自动将新的属性值从视图模型传递到UI元素，以确保UI保持同步。
+
+需要注意的是，MVVM Light和其他MVVM框架已经封装了这些细节，以便开发人员不必手动处理事件和绑定。绑定机制负责管理属性更改通知和UI更新，从而实现了视图模型和视图之间的解耦和自动化。
+
+如果你希望查找绑定的具体代码，可以在XAML文件中查看绑定声明，或者检查视图模型类中是否有与属性相关的绑定。然而，这些代码通常是由MVVM框架和XAML引擎隐式处理的，不需要手动编写事件处理程序来实现属性的更新。
+
+
 
 ## 为什么叫注册呢  注册就 意味着我拥有了的意思吗   这只是我的提问不一定准确
 你提出的问题是一个通用的编程术语，"注册" 在编程上通常意味着将某些信息或对象添加到系统中以便管理或使用。它并不一定意味着你拥有了某物，而更多地是表示你将某物与系统中的特定操作或事件关联起来，以便在适当的时候执行相应的逻辑。
