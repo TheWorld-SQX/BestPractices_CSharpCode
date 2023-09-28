@@ -529,3 +529,43 @@ public IHttpActionResult GetPatientInfoFromPACS(string patientId, string accNo)
 上述代码中，我们首先尝试向 `DistributedLock` 表中插入一行锁信息，如果插入成功，则说明获取锁成功，可以访问数据，然后提交事务。如果插入失败，则说明其他终端正在访问相同的数据，我们回滚事务并返回冲突响应。在任何情况下，最后都会释放锁。
 
 请确保替换代码中的连接字符串和具体表结构以适应您的数据库环境和业务需求。这种方式可以确保在SQL Server上实现分布式锁，但需要谨慎处理并发情况和异常情况。
+
+
+## sql server  设置锁
+理解您的需求，您想要实现一种分布式锁的机制，其中一个终端获得锁时，能够通知其他终端该资源正在被占用，并在资源被释放后将状态更新。在 SQL Server 中，您可以通过以下步骤实现这一机制：
+
+1. **创建分布式锁表**：创建一个用于存储锁信息的表，包括资源名称、锁状态等字段。以下是一个示例表结构：
+
+```sql
+CREATE TABLE DistributedLock (
+    ResourceName NVARCHAR(255) PRIMARY KEY,
+    IsLocked BIT,
+    LockedBy NVARCHAR(255)
+);
+```
+
+在这个表中，`ResourceName` 字段用于标识资源，`IsLocked` 字段用于表示资源是否被锁定，`LockedBy` 字段用于表示哪个终端持有了锁。
+
+2. **获取锁**：在需要获取锁的地方，执行 SQL 更新语句，将资源标记为已锁定，并将锁的持有者设置为当前终端。如果资源已经被锁定，您可以选择等待或返回失败。
+
+```sql
+UPDATE DistributedLock
+SET IsLocked = 1, LockedBy = @CurrentClient
+WHERE ResourceName = @ResourceName AND IsLocked = 0;
+```
+
+3. **释放锁**：在不再需要锁时，执行 SQL 更新语句，将资源标记为未锁定，并清除锁的持有者。
+
+```sql
+UPDATE DistributedLock
+SET IsLocked = 0, LockedBy = NULL
+WHERE ResourceName = @ResourceName AND LockedBy = @CurrentClient;
+```
+
+4. **通知其他终端**：为了通知其他终端资源被占用，您可以在获取锁成功后发送一个通知或消息。这可以使用其他通信机制来实现，例如消息队列或WebSocket等。
+
+5. **监控锁的状态**：在应用程序中实现监控和轮询机制，以检查资源的锁状态。如果资源被锁定，您可以采取相应的操作，例如等待或显示相关消息。
+
+这种方式可以实现一种资源锁定机制，其中一个终端获取锁时，会将资源标记为占用中，并且其他终端可以检查资源的锁状态以确定资源是否被占用。通知其他终端资源状态变更通常需要使用额外的通信机制，例如消息队列，以确保及时的状态更新。
+
+请根据您的具体需求和应用程序架构来实现这些步骤，并确保处理并发情况和异常情况，以确保分布式锁的正确性和可靠性。
