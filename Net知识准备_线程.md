@@ -445,3 +445,87 @@ public class YourController
 在这个示例中，我们使用`SemaphoreSlim`来限制同时访问`GetPatientInfoFromPACS`方法的任务数量为1。当一个任务进入方法时，它会尝试获取信号量的许可，如果有可用的许可（也就是没有其他任务在执行），则允许执行资源操作，然后释放许可。如果已经有一个任务在执行，则新的任务将等待，直到许可可用。
 
 这种方法与Mutex类似，但更轻量级，可以用于实现同一时间只允许一个终端访问的效果。请注意，使用`await`关键字来等待许可是异步的，这意味着不会阻塞整个线程，从而提高了并发性能。
+
+## 分布式锁
+
+如果您的业务使用的是SQL Server，您可以考虑使用SQL Server本身提供的分布式锁机制，例如使用数据库中的表来实现分布式锁。
+
+以下是一种使用SQL Server表实现分布式锁的示例：
+
+1. 首先，创建一个用于存储锁信息的表。表结构可以如下所示：
+
+```sql
+CREATE TABLE DistributedLock (
+    LockName NVARCHAR(255) PRIMARY KEY,
+    LockedBy NVARCHAR(255),
+    LockTimestamp DATETIME
+);
+```
+
+2. 在您的API方法中，使用SQL Server来获取和释放锁：
+
+```csharp
+[HttpGet]
+public IHttpActionResult GetPatientInfoFromPACS(string patientId, string accNo)
+{
+    string lockName = "patient_info_lock"; // 锁的名称，可以根据需求修改
+    int lockTimeoutSeconds = 60; // 锁的超时时间，根据需求设置
+
+    using (var dbConnection = new SqlConnection("your_connection_string"))
+    {
+        dbConnection.Open();
+
+        using (var dbTransaction = dbConnection.BeginTransaction())
+        {
+            try
+            {
+                // 尝试获取锁
+                string acquireLockQuery = $@"
+                    INSERT INTO DistributedLock (LockName, LockedBy, LockTimestamp)
+                    VALUES (@LockName, @LockedBy, GETDATE())
+                    WHERE NOT EXISTS (
+                        SELECT 1
+                        FROM DistributedLock
+                        WHERE LockName = @LockName
+                    )";
+                
+                var parameters = new
+                {
+                    LockName = lockName,
+                    LockedBy = "API_Client" // 标识当前锁的持有者
+                };
+
+                int rowsAffected = dbConnection.Execute(acquireLockQuery, parameters, dbTransaction);
+
+                if (rowsAffected > 0)
+                {
+                    // 获取锁成功，可以访问数据
+                    // 具体资源操作代码
+                    // ...
+
+                    dbTransaction.Commit();
+                }
+                else
+                {
+                    // 获取锁失败，其他终端正在访问相同的数据
+                    dbTransaction.Rollback();
+                    return ResponseMessage(Request.CreateErrorResponse(HttpStatusCode.Conflict, "其他终端正在访问数据，请稍后重试。"));
+                }
+            }
+            catch (Exception ex)
+            {
+                dbTransaction.Rollback();
+                // 处理异常
+                return ResponseMessage(Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message));
+            }
+        }
+    }
+
+    // 返回操作成功的响应
+    return Ok("操作成功");
+}
+```
+
+上述代码中，我们首先尝试向 `DistributedLock` 表中插入一行锁信息，如果插入成功，则说明获取锁成功，可以访问数据，然后提交事务。如果插入失败，则说明其他终端正在访问相同的数据，我们回滚事务并返回冲突响应。在任何情况下，最后都会释放锁。
+
+请确保替换代码中的连接字符串和具体表结构以适应您的数据库环境和业务需求。这种方式可以确保在SQL Server上实现分布式锁，但需要谨慎处理并发情况和异常情况。
