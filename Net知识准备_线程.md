@@ -16,6 +16,54 @@
 
 最重要的是，性能的提升不仅仅取决于选择"Task"还是多线程，还取决于如何实现和管理任务，以及如何避免并发问题。因此，建议根据具体任务的性质和需求来选择适当的编程模型，并进行性能测试和优化。
 
+## 并发处理：充分利用多核处理器，使用多线程或任务并行处理，以加速计算密集型任务。  展开具体详细的代码方案  易维护高性能
+多线程和任务并行处理是提高计算密集型任务性能的有效方法。以下是一个示例，展示如何使用C#的多线程和任务并行库来处理计算密集型任务，同时保持代码易维护性：
+
+```csharp
+using System;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+
+class Program
+{
+    static void Main()
+    {
+        int numberOfTasks = Environment.ProcessorCount; // 根据处理器核心数设置任务数量
+        List<Task> tasks = new List<Task>();
+
+        for (int i = 0; i < numberOfTasks; i++)
+        {
+            tasks.Add(Task.Factory.StartNew(() =>
+            {
+                // 执行计算密集型任务
+                ComputeIntensiveTask();
+            }));
+        }
+
+        // 等待所有任务完成
+        Task.WhenAll(tasks).Wait();
+
+        Console.WriteLine("所有任务已完成。");
+    }
+
+    static void ComputeIntensiveTask()
+    {
+        // 这里执行计算密集型任务，可以是任何需要大量计算的工作
+        for (int i = 0; i < 100000000; i++)
+        {
+            double result = Math.Sqrt(i);
+        }
+    }
+}
+```
+
+这个示例创建了多个任务，每个任务都执行 `ComputeIntensiveTask` 方法，这个方法代表一个计算密集型任务。通过将任务分配给多个线程，可以充分利用多核处理器，从而提高性能。
+
+这种代码结构的优势在于它是相对易维护的。你可以轻松地控制任务的数量，并根据需要添加更多任务。同时，这些任务是并行执行的，不会阻塞主线程，因此它不会影响应用程序的响应性。
+
+请注意，这是一个简单示例，实际情况可能更复杂。在实际应用中，确保合理管理共享资源、异常处理、取消任务等方面是至关重要的，以确保代码的健壮性和可维护性。此外，你还可以使用更高级的并行库和模式，如`Parallel.ForEach`、`Task.Run`、TPL数据流等，根据任务的特性和需求进行选择。
+
+
 ## 并发处理：充分利用多核处理器，使用多线程或任务并行处理，以加速计算密集型任务。  展开具体详细的代码方案  易维护高性能  用线程相关类
 在C#中，你可以使用线程相关的类来实现多线程并行处理以加速计算密集型任务。下面是一个示例，展示如何使用C#中的`Thread`和`Monitor`类来执行并发处理，并注意易维护性和高性能。
 
