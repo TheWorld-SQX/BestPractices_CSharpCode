@@ -80,6 +80,7 @@ Modbus 协议是一种通信协议，最初是由 Modicon 公司于 1979 年创�
 Modbus 协议支持多种通信模式，其中两种最常见的是 Modbus RTU 和 Modbus ASCII，另外一种是 Modbus TCP。下面是对这些通信模式的简要解释：
 
 ### 1. Modbus RTU（Remote Terminal Unit）：
+"Remote Terminal Unit" 的中文翻译是 "远程终端单元"，通常缩写为 RTU。在工业自动化和监控系统中，RTU 是一种用于数据采集、监控和控制的设备。RTU 通常负责从传感器、仪表或其他设备中采集数据，并将这些数据传输到远程监控中心或控制中心。 RTU 也可能执行一些控制操作，例如通过信号发送控制命令。
 
 - **字符编码：** Modbus RTU 使用二进制编码，以二进制形式传输数据。
   
