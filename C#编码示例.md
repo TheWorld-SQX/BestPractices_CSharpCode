@@ -474,4 +474,4 @@ async Task<string> CallWebServiceWithTimeoutAsync()
 ## pdf转图片
 pdfiumviewer 开源；依赖pdfium不开源，需要x86和x32的pdfium.dll  
 依赖项配置示例图  
-![https://github.com/TheWorld-SQX/BestPractices_CSharpCode/blob/master/Image/pdfiumviewer%E4%BE%9D%E8%B5%96%E9%85%8D%E5%A5%97.jpg]
+![wpf示例](https://github.com/TheWorld-SQX/BestPractices_CSharpCode/blob/master/Image/pdfiumviewer%E4%BE%9D%E8%B5%96%E9%85%8D%E5%A5%97.jpg)
