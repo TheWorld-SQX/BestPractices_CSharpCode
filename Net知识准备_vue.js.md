@@ -14,7 +14,7 @@ Vue.js 和 Node.js 之间没有直接的依赖关系，但是在 Vue.js 项目�
 (5) undefined. https://www.gruntjs.net/.
 
 
-## 开发vue项目必须使用nodejs吗  为什么？为什么很多vue项目要用到nodejs？
+## 
 在Vue.js项目中使用Node.js并不是必须的，但通常情况下，它们经常结合使用。Vue.js是一个用于构建用户界面的JavaScript框架，而Node.js是一个用于构建服务器端应用程序的JavaScript运行时环境。以下是一些原因解释为什么Vue.js项目通常会涉及到Node.js：
 
 1. **开发环境和构建工具：** Vue.js项目通常使用一些构建工具，如Webpack或者Parcel，来打包、编译和优化前端代码。这些工具通常需要在Node.js环境中运行。
