@@ -28,3 +28,15 @@ Vue.js 和 Node.js 之间没有直接的依赖关系，但是在 Vue.js 项目�
 5. **一体化开发环境：** 使用Node.js可以实现前端和后端一体化的开发环境。例如，可以使用Express.js等Node.js框架搭建简单的后端服务器，与Vue.js前端项目进行协同开发。
 
 总体来说，使用Node.js能够提供一致性的开发环境，使得前端和后端的交互更加顺畅。然而，如果你的项目已经有一个独立的后端，并且不需要使用Node.js来构建服务器端逻辑，那么在Vue.js项目中使用Node.js并不是绝对必须的。
+
+
+## Vue_CLI又是什么呢  为什么vue项目要用到
+Vue CLI 是一个官方发布的命令行工具，用于快速搭建 Vue 项目。它提供了一整套的工具链和预设配置选项，使得项目的搭建和开发过程更加简单和高效。Vue CLI 可以通过 `vue create` 命令快速搭建一个新项目，或者直接通过 `vue serve` 构建新想法的原型。Vue CLI 还提供了一套完全图形化的创建和管理 Vue.js 项目的用户界面。Vue CLI 致力于将 Vue 生态中的工具基础标准化，确保了各种构建工具能够基于智能的默认配置即可平稳衔接，这样你可以专注在撰写应用上，而不必花好几天去纠结配置的问题。与此同时，它也为每个工具提供了调整配置的灵活性，无需 eject。²³⁴
+
+在 Vue.js 项目中，通常会使用 Node.js 来搭建开发环境、打包构建、服务器端渲染等。例如，Vue.js 项目中使用的 webpack 工具就是基于 Node.js 开发的。Vue CLI 依赖于 Node.js，因此在 Vue.js 项目中使用 Vue CLI 时需要安装 Node.js。¹²
+
+源: 与必应的对话， 2023/11/17  
+(1) vue，vue-cli和@vue/cli是什么关系？有什么区别？ - CSDN博客. https://bing.com/search?q=Vue_CLI%e6%98%af%e4%bb%80%e4%b9%88.  
+(2) vue，vue-cli和@vue/cli是什么关系？有什么区别？ - CSDN博客. https://blog.csdn.net/cs_zhao18/article/details/121642395.  
+(3) Vue ClI简单认识 - 知乎. https://zhuanlan.zhihu.com/p/364147103.   
+(4) 介绍 | Vue CLI. https://cli.vuejs.org/zh/guide/.  
