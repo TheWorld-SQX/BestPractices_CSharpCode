@@ -469,3 +469,9 @@ async Task<string> CallWebServiceWithTimeoutAsync()
 在上述代码中，我们使用`Task.Delay`来设置超时时间，并使用`Task.WhenAny`来等待第一个任务完成，要么是WebService响应，要么是超时。如果超时，我们取消等待任务并进行重试，最多重试指定次数。
 
 这种方法可以让你在无法修改WebService的情况下实现超时和重连，同时避免在异常处理中进行业务逻辑。你可以根据需要调整超时时间和重试次数。
+
+
+## pdf转图片
+pdfiumviewer 开源；依赖pdfium不开源，需要x86和x32的pdfium.dll  
+依赖项配置示例图  
+![https://github.com/TheWorld-SQX/BestPractices_CSharpCode/blob/master/Image/pdfiumviewer%E4%BE%9D%E8%B5%96%E9%85%8D%E5%A5%97.jpg]
