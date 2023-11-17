@@ -7,11 +7,11 @@ Node.js 是一个基于 Chrome V8 引擎的 JavaScript 运行环境，它使用�
 Vue.js 和 Node.js 之间没有直接的依赖关系，但是在 Vue.js 项目中，通常会使用 Node.js 来搭建开发环境、打包构建、服务器端渲染等。例如，Vue.js 项目中使用的 webpack 工具就是基于 Node.js 开发的。此外，Node.js 还提供了 npm 包管理工具，可以方便地管理 Vue.js 项目中所需的各种依赖包。因此，虽然 Vue.js 和 Node.js 之间没有必然的联系，但是在 Vue.js 项目中使用 Node.js 是非常常见的。¹²
 
 源: 与必应的对话， 2023/11/17
-(1) 前端开发 Vue Vue.js和Node.js的关系 - 942351507 - 博客园. https://www.cnblogs.com/hmit/p/12036587.html.
-(2) vue 和nodejs是什么关系？_vue和nodejs-CSDN博客. https://blog.csdn.net/xinsiyu2008/article/details/114284506.
-(3) vue.js开发的时候需要安装node.js,node.js的作用是什么？ - 知乎. https://www.zhihu.com/question/376427406.
-(4) undefined. https://www.npmjs.cn/.
-(5) undefined. https://www.gruntjs.net/.
+(1) 前端开发 Vue Vue.js和Node.js的关系 - 942351507 - 博客园. https://www.cnblogs.com/hmit/p/12036587.html.  
+(2) vue 和nodejs是什么关系？_vue和nodejs-CSDN博客. https://blog.csdn.net/xinsiyu2008/article/details/114284506.  
+(3) vue.js开发的时候需要安装node.js,node.js的作用是什么？ - 知乎. https://www.zhihu.com/question/376427406.  
+(4) undefined. https://www.npmjs.cn/.   
+(5) undefined. https://www.gruntjs.net/.   
 
 
 ## 
