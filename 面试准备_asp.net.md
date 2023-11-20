@@ -290,6 +290,121 @@ namespace YourNamespace.Controllers
 在这个示例中，`TransientService` 是瞬时服务，每次注入都会创建一个新的实例。`ScopedService` 是作用域服务，每个请求创建一个新的实例。`SingletonService` 是单例服务，整个应用程序生命周期内只有一个实例。在控制器中，通过构造函数注入这些服务，并在视图中使用它们的方法。
 
 
+## 这个例子太抽象了 用一个业务场景比如获取患者信息的接口再说明下
+理解了，让我们使用一个更具体的业务场景，假设你正在开发一个医疗信息系统，其中有一个获取患者信息的接口。我们将使用 ASP.NET Core 进行服务的注册和注入。
+
+**1. 创建患者服务接口和实现：**
+
+```csharp
+// IPatientService.cs
+
+public interface IPatientService
+{
+    Patient GetPatientById(int patientId);
+}
+```
+
+```csharp
+// PatientService.cs
+
+public class PatientService : IPatientService
+{
+    public Patient GetPatientById(int patientId)
+    {
+        // 在真实应用中，这里应该是从数据库或其他数据源获取患者信息的逻辑
+        // 这里简化为创建一个示例患者对象
+        return new Patient
+        {
+            PatientId = patientId,
+            Name = "John Doe",
+            Age = 30,
+            Diagnosis = "Some diagnosis",
+            // 其他患者信息...
+        };
+    }
+}
+```
+
+**2. 注册服务和配置Startup.cs：**
+
+```csharp
+// Startup.cs
+
+public class Startup
+{
+    public void ConfigureServices(IServiceCollection services)
+    {
+        // 注册患者服务
+        services.AddTransient<IPatientService, PatientService>();
+
+        // 添加MVC服务
+        services.AddControllers();
+    }
+
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    {
+        if (env.IsDevelopment())
+        {
+            app.UseDeveloperExceptionPage();
+        }
+        else
+        {
+            app.UseExceptionHandler("/Home/Error");
+            app.UseHsts();
+        }
+
+        app.UseHttpsRedirection();
+        app.UseStaticFiles();
+
+        app.UseRouting();
+
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapControllerRoute(
+                name: "default",
+                pattern: "{controller=Home}/{action=Index}/{id?}");
+        });
+    }
+}
+```
+
+**3. 创建控制器：**
+
+```csharp
+// PatientController.cs
+
+using Microsoft.AspNetCore.Mvc;
+
+public class PatientController : ControllerBase
+{
+    private readonly IPatientService _patientService;
+
+    public PatientController(IPatientService patientService)
+    {
+        _patientService = patientService;
+    }
+
+    [HttpGet("api/patient/{patientId}")]
+    public IActionResult GetPatient(int patientId)
+    {
+        // 调用患者服务获取患者信息
+        var patient = _patientService.GetPatientById(patientId);
+
+        if (patient == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(patient);
+    }
+}
+```
+
+在这个示例中，我们创建了一个 `IPatientService` 接口和其实现 `PatientService`，并在 `Startup.cs` 中注册为一个瞬时服务。然后，我们在 `PatientController` 控制器中通过构造函数注入了 `IPatientService`，并使用它来获取患者信息。
+
+这是一个简单的业务场景，真实的应用中可能涉及更复杂的逻辑和数据持久化，但这个例子足以演示如何在 ASP.NET Core 中进行服务的注册和注入。
+
+
 
 
 ## 优化Core WebApi性能的常见方案 缓存 压缩   展开详细说明
