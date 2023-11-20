@@ -147,3 +147,164 @@ app.MapGet("/myendpoint", ([FromServices] IMyService myService) => {
 9. **缓存响应数据**：如果某些响应数据不经常更改，可以缓存这些数据，避免每次请求都重新生成响应。这可以通过缓存库（如`MemoryCache`）来实现。
 
 总的来说，ASP.NET Core Web API性能的优化涉及多个方面，包括缓存、压缩、数据库优化、CDN使用、多线程处理等。根据应用程序的需求和性能瓶颈，你可以选择适当的优化策略。请注意，性能优化是一个持续的过程，需要不断监控和调整，以确保应用程序保持高性能。
+
+## get请求和post请求状态码
+HTTP GET 和 POST 请求都可以返回相同的 HTTP 状态码，这些状态码表示请求的处理结果。无论是 GET 还是 POST 请求，服务器都可以使用以下标准的 HTTP 状态码之一来指示请求的结果：
+
+- 200 OK：请求成功。无论是 GET 还是 POST 请求成功时都可以返回 200 状态码。
+- 201 Created：在服务器上创建了一个新资源，通常在 POST 请求成功时返回。
+- 204 No Content：请求成功，但响应没有主体内容。通常用于表示请求已经执行，但没有响应主体。
+- 400 Bad Request：请求无效。无论是 GET 还是 POST 请求中的参数或请求格式不符合规范时都可以返回。
+- 401 Unauthorized：需要身份验证。如果请求需要认证，但未提供有效的凭据，服务器可以返回此状态码。
+- 403 Forbidden：禁止访问资源。如果请求的资源对客户端不可用，服务器可以返回此状态码。
+- 404 Not Found：请求的资源不存在。无论是 GET 还是 POST 请求，如果请求的资源不存在，都应返回 404 状态码。
+- 405 Method Not Allowed：不允许使用指定的方法。如果客户端尝试使用不允许的 HTTP 方法，服务器可以返回此状态码。
+- 500 Internal Server Error：服务器遇到内部错误。如果服务器遇到无法处理的错误，无论是 GET 还是 POST 请求，都可以返回 500 状态码。
+
+这些状态码是通用的，与 HTTP 请求方法无关。它们用于指示请求的成功、失败或其他情况，无论是通过 GET 还是 POST 请求。服务器根据请求的性质和结果来选择适当的状态码来响应客户端。
+
+## GET请求和Post请求
+在 ASP.NET 中，GET 和 POST 是两种常用的 HTTP 请求方法，它们用于获取和提交数据到服务器。以下是它们的区别以及在 ASP.NET 中的代码示例说明：
+
+**GET 请求的特点**：
+
+1. 使用 URL 来传递参数，参数附加在 URL 的查询字符串中。
+2. 可以被书签保存，以及通过浏览器历史记录查看。
+3. 通常用于获取数据，不适合传递敏感信息，如密码。
+4. 默认情况下，GET 请求具有幂等性，多次请求相同的 URL 和参数应该产生相同的结果。
+
+**ASP.NET 中的 GET 请求示例**：
+
+在 ASP.NET 中，可以使用 ASP.NET MVC 或 ASP.NET Web Forms 来处理 GET 请求。以下是一个 ASP.NET MVC 控制器中处理 GET 请求的示例：
+
+```csharp
+// ASP.NET MVC 控制器中的 GET 请求处理方法
+public ActionResult GetUserInfo(string id)
+{
+    // 从数据库或其他数据源中获取用户信息
+    var user = GetUserFromDatabase(id);
+
+    if (user != null)
+    {
+        return View(user); // 返回用户信息视图
+    }
+    else
+    {
+        return HttpNotFound(); // 返回 404 Not Found 响应
+    }
+}
+```
+
+**POST 请求的特点**：
+
+1. 使用 HTTP 请求的消息体来传递参数，参数不可见于 URL。
+2. 不会被保存在书签或浏览器历史记录中。
+3. 通常用于向服务器提交数据，适合传递敏感信息。
+4. 默认情况下，POST 请求不具有幂等性，多次请求相同的 URL 和参数可能会产生不同的结果。
+
+**ASP.NET 中的 POST 请求示例**：
+
+在 ASP.NET 中，处理 POST 请求通常涉及表单提交或数据的创建、更新等操作。以下是一个 ASP.NET MVC 控制器中处理 POST 请求的示例：
+
+```csharp
+// ASP.NET MVC 控制器中的 POST 请求处理方法
+[HttpPost]
+public ActionResult CreateUserInfo(UserInfo user)
+{
+    if (ModelState.IsValid)
+    {
+        // 将用户信息保存到数据库
+        SaveUserToDatabase(user);
+        return RedirectToAction("UserList"); // 重定向到用户列表页面
+    }
+    else
+    {
+        return View(user); // 返回用户信息表单，显示验证错误信息
+    }
+}
+```
+
+在上述示例中，`[HttpPost]` 属性用于标记 POST 请求处理方法，该方法处理用户信息的创建操作。
+
+总之，GET 和 POST 请求在 ASP.NET 中的使用方式取决于您的应用程序需求。GET 通常用于获取数据，而 POST 用于提交数据。 ASP.NET 提供了丰富的工具和框架来处理这两种类型的请求。
+
+## C#调用示例
+在 C# 中，你可以使用 `HttpClient` 类来进行 GET 和 POST 请求。下面是具体的代码示例，演示了使用 `HttpClient` 发送 GET 和 POST 请求的区别：
+
+### 使用 `HttpClient` 发送 GET 请求：
+
+```csharp
+using System;
+using System.Net.Http;
+using System.Threading.Tasks;
+
+class Program
+{
+    static async Task Main()
+    {
+        using (HttpClient client = new HttpClient())
+        {
+            string url = "https://api.example.com/data";
+
+            HttpResponseMessage response = await client.GetAsync(url);
+
+            if (response.IsSuccessStatusCode)
+            {
+                string responseBody = await response.Content.ReadAsStringAsync();
+                Console.WriteLine("GET 请求成功: " + responseBody);
+            }
+            else
+            {
+                Console.WriteLine("GET 请求失败: " + response.ReasonPhrase);
+            }
+        }
+    }
+}
+```
+
+### 使用 `HttpClient` 发送 POST 请求：
+
+```csharp
+using System;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
+
+class Program
+{
+    static async Task Main()
+    {
+        using (HttpClient client = new HttpClient())
+        {
+            string url = "https://api.example.com/data";
+
+            // 构造要发送的数据
+            var requestData = new
+            {
+                param1 = "value1",
+                param2 = "value2"
+                // 其他参数...
+            };
+
+            string jsonRequest = Newtonsoft.Json.JsonConvert.SerializeObject(requestData);
+
+            // 构造 POST 请求
+            StringContent content = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
+
+            HttpResponseMessage response = await client.PostAsync(url, content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                string responseBody = await response.Content.ReadAsStringAsync();
+                Console.WriteLine("POST 请求成功: " + responseBody);
+            }
+            else
+            {
+                Console.WriteLine("POST 请求失败: " + response.ReasonPhrase);
+            }
+        }
+    }
+}
+```
+
+这些示例演示了如何使用 `HttpClient` 类来进行 GET 和 POST 请求。对于 POST 请求，我们需要构建一个包含请求参数的 JSON 字符串，并将其作为 `StringContent` 发送。在实际应用中，你可能需要更多的配置和错误处理，例如设置请求头、处理响应等。这取决于具体的需求和接口规范。
