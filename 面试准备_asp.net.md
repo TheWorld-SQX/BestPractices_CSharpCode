@@ -115,6 +115,183 @@ app.MapGet("/myendpoint", ([FromServices] IMyService myService) => {
 需要根据具体的应用程序需求和性能考虑来选择适当的生命周期选项。不同生命周期的选择会影响应用程序的性能、内存占用和并发行为，因此需要谨慎权衡。
 
 
+## `services.AddXXX()`方法来注册服务，其中`XXX`可以是`Scoped`、`Transient`、`Singleton`等生命周期选项。具体示例
+首先，在 ASP.NET Core 中注册服务需要使用 `IServiceCollection`，通常在 `Startup.cs` 文件的 `ConfigureServices` 方法中进行。然后，在控制器（Controller）类中，你可以通过构造函数注入这些服务。下面是一个简单的示例，演示如何在 `Startup.cs` 和控制器中注册和使用服务：
+
+**Startup.cs 示例：**
+
+```csharp
+// Startup.cs
+
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+
+namespace YourNamespace
+{
+    public class Startup
+    {
+        public IConfiguration Configuration { get; }
+
+        public Startup(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
+
+        public void ConfigureServices(IServiceCollection services)
+        {
+            // 注册服务
+            services.AddTransient<ITransientService, TransientService>();
+            services.AddScoped<IScopedService, ScopedService>();
+            services.AddSingleton<ISingletonService, SingletonService>();
+
+            // 添加MVC服务
+            services.AddControllersWithViews();
+        }
+
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                app.UseExceptionHandler("/Home/Error");
+                app.UseHsts();
+            }
+
+            app.UseHttpsRedirection();
+            app.UseStaticFiles();
+
+            app.UseRouting();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
+            });
+        }
+    }
+}
+```
+
+**服务接口和实现示例：**
+
+```csharp
+// IService.cs
+
+public interface ITransientService
+{
+    string GetServiceId();
+}
+
+public interface IScopedService
+{
+    string GetServiceId();
+}
+
+public interface ISingletonService
+{
+    string GetServiceId();
+}
+```
+
+```csharp
+// ServiceImplementations.cs
+
+public class TransientService : ITransientService
+{
+    private readonly Guid _serviceId;
+
+    public TransientService()
+    {
+        _serviceId = Guid.NewGuid();
+    }
+
+    public string GetServiceId()
+    {
+        return $"Transient Service: {_serviceId}";
+    }
+}
+
+public class ScopedService : IScopedService
+{
+    private readonly Guid _serviceId;
+
+    public ScopedService()
+    {
+        _serviceId = Guid.NewGuid();
+    }
+
+    public string GetServiceId()
+    {
+        return $"Scoped Service: {_serviceId}";
+    }
+}
+
+public class SingletonService : ISingletonService
+{
+    private readonly Guid _serviceId;
+
+    public SingletonService()
+    {
+        _serviceId = Guid.NewGuid();
+    }
+
+    public string GetServiceId()
+    {
+        return $"Singleton Service: {_serviceId}";
+    }
+}
+```
+
+**Controller 示例：**
+
+```csharp
+// YourController.cs
+
+using Microsoft.AspNetCore.Mvc;
+
+namespace YourNamespace.Controllers
+{
+    public class YourController : Controller
+    {
+        private readonly ITransientService _transientService;
+        private readonly IScopedService _scopedService;
+        private readonly ISingletonService _singletonService;
+
+        public YourController(
+            ITransientService transientService,
+            IScopedService scopedService,
+            ISingletonService singletonService)
+        {
+            _transientService = transientService;
+            _scopedService = scopedService;
+            _singletonService = singletonService;
+        }
+
+        public IActionResult Index()
+        {
+            // 使用服务
+            ViewBag.TransientServiceId = _transientService.GetServiceId();
+            ViewBag.ScopedServiceId = _scopedService.GetServiceId();
+            ViewBag.SingletonServiceId = _singletonService.GetServiceId();
+
+            return View();
+        }
+    }
+}
+```
+
+在这个示例中，`TransientService` 是瞬时服务，每次注入都会创建一个新的实例。`ScopedService` 是作用域服务，每个请求创建一个新的实例。`SingletonService` 是单例服务，整个应用程序生命周期内只有一个实例。在控制器中，通过构造函数注入这些服务，并在视图中使用它们的方法。
+
+
+
+
 ## 优化Core WebApi性能的常见方案 缓存 压缩   展开详细说明
 优化ASP.NET Core Web API性能是开发Web应用程序的关键任务之一，可以提供更快的响应时间和更好的用户体验。以下是常见的性能优化方案，包括缓存和压缩，以及详细说明：
 
