@@ -274,3 +274,100 @@ IoC 是一种设计原则，它是一种反转控制的概念，用于将对象�
 在 MVVM 架构中，使用 IoC 和依赖注入可以帮助解决 ViewModel 的创建和管理问题，以及在 ViewModel 中需要访问服务或其他依赖的情况。通过 IoC 容器，可以自动解决 ViewModel 的依赖并提供相应的实例，使代码更具可维护性、可测试性和松耦合性。
 
 在 WPF 中，你可以使用各种 IoC 容器库，如 Prism、Unity、Autofac 等，来帮助管理 MVVM 架构中的依赖注入和对象创建。这些库提供了一些机制来配置容器并在应用程序中使用依赖注入。
+
+## 实现依赖注入的关键是将接口类型当作参数类型  在需要注入服务的对象的构造函数上吗  
+是的，实现依赖注入的关键之一是通过构造函数将接口类型作为参数。这是因为 ASP.NET Core 使用构造函数注入的方式来完成依赖注入。当你在一个类的构造函数中声明一个接口类型的参数时，ASP.NET Core 的依赖注入容器会负责提供相应的实现。
+
+例如，如果你有一个服务接口 `IFooService` 和其实现类 `FooService`，你可以将 `IFooService` 作为其他类的构造函数参数，并在 `Startup` 类的 `ConfigureServices` 方法中注册服务。
+
+```csharp
+// 服务接口
+public interface IFooService
+{
+    void DoSomething();
+}
+
+// 服务实现类
+public class FooService : IFooService
+{
+    public void DoSomething()
+    {
+        // 实现具体的逻辑
+    }
+}
+```
+
+在 `Startup` 类的 `ConfigureServices` 方法中注册服务：
+
+```csharp
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddTransient<IFooService, FooService>();
+    // 其他服务的注册...
+}
+```
+
+然后，在你的控制器或其他类中，通过构造函数注入 `IFooService`：
+
+```csharp
+public class MyController : Controller
+{
+    private readonly IFooService _fooService;
+
+    public MyController(IFooService fooService)
+    {
+        _fooService = fooService;
+    }
+
+    // 在这里可以使用 _fooService
+}
+```
+
+ASP.NET Core 的依赖注入容器会自动解析 `IFooService`，并在创建 `MyController` 实例时提供 `FooService` 的实例。这种方式使得你可以方便地将服务注入到需要的地方，实现代码的解耦、可测试性和可维护性。
+
+## 除了构造函数注入外，ASP.NET Core 还支持以下几种依赖注入的方式：
+
+1. **属性注入：** 通过在类的属性上标记 `[FromServices]` 特性，你可以将服务注入到属性中。这种方式在某些情况下可能更为方便，但要注意属性注入在某些场景下可能不如构造函数注入直观。
+
+    ```csharp
+    public class MyController : Controller
+    {
+        [FromServices]
+        public IFooService FooService { get; set; }
+
+        public IActionResult MyAction()
+        {
+            FooService.DoSomething();
+            return View();
+        }
+    }
+    ```
+
+2. **方法注入：** 通过在方法的参数上标记 `FromServices` 特性，你可以将服务注入到方法中。这种方式适用于只在特定方法中需要使用某个服务的情况。
+
+    ```csharp
+    public class MyController : Controller
+    {
+        public IActionResult MyAction([FromServices] IFooService fooService)
+        {
+            fooService.DoSomething();
+            return View();
+        }
+    }
+    ```
+
+3. **直接从容器获取服务：** 在某些场景下，你可以通过直接从容器获取服务。这种方式在控制器的构造函数中无法使用，因为容器在构造函数调用之前可能还未完全初始化。你可以通过 `HttpContext.RequestServices` 获取容器，然后获取服务。
+
+    ```csharp
+    public class MyController : Controller
+    {
+        public IActionResult MyAction()
+        {
+            var fooService = HttpContext.RequestServices.GetService<IFooService>();
+            fooService.DoSomething();
+            return View();
+        }
+    }
+    ```
+
+虽然这些方式在某些场景下是可行的，但构造函数注入通常是推荐的方式。它具有清晰的语法，使得依赖关系在类的构造函数中一目了然，便于维护和测试。其他方式在一些特定情况下可能更为方便，但也可能引入一些不太直观的依赖关系。选择合适的方式取决于你的具体需求和偏好。
