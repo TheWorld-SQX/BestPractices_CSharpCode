@@ -647,6 +647,134 @@ public class Startup
 
 
 
+## 示例；如果你要使用第三方提供的 Web 服务
+如果你要使用第三方提供的 Web 服务，你通常不需要在 ASP.NET Core 中注册该服务。相反，你需要在代码中调用第三方服务的 API。以下是一个简单的示例，展示如何调用第三方 Web 服务：
+
+假设有一个名为 `ThirdPartyPatientService` 的服务，提供获取患者信息的功能：
+
+```csharp
+// 定义患者类
+public class Patient
+{
+    public int PatientId { get; set; }
+    public string Name { get; set; }
+    // 其他患者信息...
+}
+
+// 第三方患者服务接口
+public interface IThirdPartyPatientService
+{
+    Patient GetPatientById(int patientId);
+}
+
+// 第三方患者服务实现
+public class ThirdPartyPatientService : IThirdPartyPatientService
+{
+    public Patient GetPatientById(int patientId)
+    {
+        // 调用第三方 Web 服务的 API，获取患者信息
+        // 这里简化为创建一个示例患者对象
+        return new Patient
+        {
+            PatientId = patientId,
+            Name = "John Doe from ThirdParty",
+            // 其他患者信息...
+        };
+    }
+}
+```
+
+在这个例子中，`ThirdPartyPatientService` 实现了 `IThirdPartyPatientService` 接口，其中包含一个方法用于获取患者信息。
+
+接下来，你可以在控制器或其他地方使用这个服务：
+
+```csharp
+[ApiController]
+[Route("api/[controller]")]
+public class PatientController : ControllerBase
+{
+    private readonly IThirdPartyPatientService _thirdPartyPatientService;
+
+    public PatientController(IThirdPartyPatientService thirdPartyPatientService)
+    {
+        _thirdPartyPatientService = thirdPartyPatientService;
+    }
+
+    [HttpGet("{patientId}")]
+    public IActionResult GetPatient(int patientId)
+    {
+        // 调用第三方患者服务获取患者信息
+        var patient = _thirdPartyPatientService.GetPatientById(patientId);
+
+        if (patient == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(patient);
+    }
+}
+```
+
+在这个控制器中，我们通过构造函数注入了 `IThirdPartyPatientService`，然后在 `GetPatient` 方法中调用了该服务的方法。这是一个简单的例子，实际上你可能需要处理更复杂的逻辑，例如处理返回结果、错误处理等。
+
+请注意，对于第三方服务，通常不需要在 `Startup` 类中注册，因为这是一个外部服务，不在 ASP.NET Core 的依赖注入容器中。相反，你只需将其接口或实现注入到需要的地方，并在代码中调用其方法。
+
+
+
+## 什么样的服务需要注册到依赖注入容器中
+在 ASP.NET Core 中，你可以将各种服务注册到依赖注入容器中。通常，你需要在容器中注册那些在整个应用程序中需要共享、重复使用的服务。以下是一些通常需要注册的服务类型：
+
+1. **数据库上下文：** 如果你使用 Entity Framework Core 或其他 ORM 框架，通常会将数据库上下文注册到依赖注入容器中，以便在整个应用程序中共享数据库连接和会话。
+
+    ```csharp
+    services.AddDbContext<ApplicationDbContext>(options =>
+        options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+    ```
+
+2. **业务逻辑服务：** 你的应用程序可能包含一些业务逻辑，例如数据处理、计算等。将这些服务注册到容器中，以便在控制器、中间件或其他类中使用。
+
+    ```csharp
+    services.AddTransient<IBusinessLogicService, BusinessLogicService>();
+    ```
+
+3. **第三方服务封装：** 如果你有一个用于调用第三方 API 的服务，你可能会将其封装并注册到容器中。
+
+    ```csharp
+    services.AddTransient<IThirdPartyService, ThirdPartyService>();
+    ```
+
+4. **身份验证服务：** 如果你使用 ASP.NET Core Identity 或其他身份验证框架，可能需要注册相关的服务。
+
+    ```csharp
+    services.AddIdentity<ApplicationUser, IdentityRole>()
+            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultTokenProviders();
+    ```
+
+5. **日志服务：** 将日志服务注册到容器中，以便在整个应用程序中记录日志。
+
+    ```csharp
+    services.AddLogging();
+    ```
+
+6. **HttpClient：** 如果你需要在应用程序中进行 HTTP 请求，可以注册 `HttpClient`。
+
+    ```csharp
+    services.AddHttpClient();
+    ```
+
+7. **自定义服务：** 任何你自己编写的服务，不论是用于处理文件上传、发送电子邮件还是其他用途，都可以注册到依赖注入容器中。
+
+    ```csharp
+    services.AddTransient<IMyCustomService, MyCustomService>();
+    ```
+
+这些服务通常在整个应用程序生命周期内需要被共享，而依赖注入容器的作用是为你管理这些服务的生命周期、创建实例并在需要的地方注入它们。一旦注册到容器中，你就可以在控制器、中间件、过滤器等地方方便地使用它们，实现代码的解耦和可维护性。
+
+
+
+
 
 ## 优化Core WebApi性能的常见方案 缓存 压缩   展开详细说明
 优化ASP.NET Core Web API性能是开发Web应用程序的关键任务之一，可以提供更快的响应时间和更好的用户体验。以下是常见的性能优化方案，包括缓存和压缩，以及详细说明：
