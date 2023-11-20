@@ -514,6 +514,137 @@ public class SingletonAppointmentService : IAppointmentService
 
 
 
+## 在控制器、中间件和其他地方演示如何使用这些注册的服务。
+让我们以一个假设的医疗信息系统为例，假设你在 `Startup` 类的 `ConfigureServices` 方法中注册了依赖注入、日志服务、数据库上下文、身份验证服务以及第三方 `PatientService` 服务。我们将在控制器、中间件和其他地方演示如何使用这些注册的服务。
+
+**1. 注册服务 - `Startup.ConfigureServices` 方法：**
+
+```csharp
+// Startup.cs
+
+public class Startup
+{
+    public void ConfigureServices(IServiceCollection services)
+    {
+        // 注册依赖注入
+        services.AddTransient<IDependencyService, DependencyService>();
+
+        // 注册日志服务
+        services.AddLogging();
+
+        // 注册数据库上下文
+        services.AddDbContext<ApplicationDbContext>(options =>
+            options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+        // 注册身份验证服务
+        services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                // 配置 JWT 身份验证
+            });
+
+        // 注册第三方 PatientService 服务
+        services.AddTransient<IPatientService, ThirdPartyPatientService>();
+
+        // 添加其他服务和配置...
+    }
+}
+```
+
+**2. 使用服务 - 在控制器中使用服务：**
+
+```csharp
+// PatientController.cs
+
+[ApiController]
+[Route("api/[controller]")]
+public class PatientController : ControllerBase
+{
+    private readonly IDependencyService _dependencyService;
+    private readonly ILogger<PatientController> _logger;
+    private readonly ApplicationDbContext _dbContext;
+    private readonly IPatientService _patientService;
+
+    public PatientController(
+        IDependencyService dependencyService,
+        ILogger<PatientController> logger,
+        ApplicationDbContext dbContext,
+        IPatientService patientService)
+    {
+        _dependencyService = dependencyService;
+        _logger = logger;
+        _dbContext = dbContext;
+        _patientService = patientService;
+    }
+
+    [HttpGet("{patientId}")]
+    public IActionResult GetPatient(int patientId)
+    {
+        // 使用注册的服务
+        _dependencyService.DoSomething();
+        _logger.LogInformation("Log message from PatientController");
+        var patient = _patientService.GetPatientById(patientId);
+
+        if (patient == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(patient);
+    }
+}
+```
+
+**3. 使用服务 - 在中间件中使用服务：**
+
+```csharp
+// Middleware/CustomMiddleware.cs
+
+public class CustomMiddleware
+{
+    private readonly RequestDelegate _next;
+    private readonly IDependencyService _dependencyService;
+
+    public CustomMiddleware(RequestDelegate next, IDependencyService dependencyService)
+    {
+        _next = next;
+        _dependencyService = dependencyService;
+    }
+
+    public async Task Invoke(HttpContext context)
+    {
+        // 在中间件中使用服务
+        _dependencyService.DoSomething();
+
+        // 调用下一个中间件
+        await _next(context);
+    }
+}
+```
+
+在 `Startup.Configure` 方法中使用中间件：
+
+```csharp
+// Startup.cs
+
+public class Startup
+{
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    {
+        // 添加自定义中间件
+        app.UseMiddleware<CustomMiddleware>();
+
+        // 添加其他中间件和配置...
+    }
+}
+```
+
+这些例子演示了如何在控制器和中间件中使用通过 `Startup.ConfigureServices` 方法注册的服务。这种模块化的设计使得你可以轻松地将服务注入到需要的地方，实现解耦和可测试性。
+
 
 
 
