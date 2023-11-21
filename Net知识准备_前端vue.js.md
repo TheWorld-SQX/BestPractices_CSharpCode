@@ -187,3 +187,18 @@ TypeScript的主要特性包括：
 
 ## Sass工具安装命令
 npm install sass-loader node-sass --save
+
+
+##
+```scss
+<style lang="scss">
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 60px;
+}
+</style>
+```
