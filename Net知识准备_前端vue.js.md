@@ -112,7 +112,7 @@ TypeScript的主要特性包括：
 
 
 
-## Sass
+## Sass 
 在Vue项目中使用Sass（Syntactically Awesome Stylesheets）是为了改进和扩展CSS的一种方式。Sass是一种CSS预处理器，它引入了许多有用的功能，使得样式表的编写更加高效和灵活。以下是Sass提供的一些主要功能：
 
 1. **嵌套规则：** Sass允许你使用嵌套规则，使得样式表更具层次结构，更易于阅读和维护。
@@ -184,3 +184,6 @@ TypeScript的主要特性包括：
     ```
 
 在Vue项目中，你可以通过安装相应的loader（例如`sass-loader`和`node-sass`）来使项目支持Sass。这样，你可以在Vue组件的样式部分使用Sass语法，充分发挥Sass提供的强大功能。
+
+## Sass工具安装命令
+npm install sass-loader node-sass --save
