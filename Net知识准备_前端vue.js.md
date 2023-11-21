@@ -208,7 +208,7 @@ npm install sass-loader node-sass --save
 
 
 
-##  Element  vue 项目为什么用element element是什么
+##  Element Plus(支持vue3) 项目为什么用element element是什么  
 在Vue项目中使用Element UI是为了方便快速地构建用户界面。Element UI是一套基于Vue.js的组件库，它提供了一系列高质量的UI组件，包括按钮、表格、表单、对话框等，这些组件使得开发者能够轻松构建具有现代、漂亮、响应式设计的Web应用。
 
 一些主要的原因和优势，为什么在Vue项目中使用Element UI，包括：
