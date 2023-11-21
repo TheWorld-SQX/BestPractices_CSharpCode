@@ -202,3 +202,6 @@ npm install sass-loader node-sass --save
 }
 </style>
 ```
+
+## VS code  控制台命令
+键盘上下键切换命令
