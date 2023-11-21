@@ -40,3 +40,40 @@ Vue CLI 是一个官方发布的命令行工具，用于快速搭建 Vue 项目�
 (2) vue，vue-cli和@vue/cli是什么关系？有什么区别？ - CSDN博客. https://blog.csdn.net/cs_zhao18/article/details/121642395.  
 (3) Vue ClI简单认识 - 知乎. https://zhuanlan.zhihu.com/p/364147103.   
 (4) 介绍 | Vue CLI. https://cli.vuejs.org/zh/guide/.  
+
+
+
+## 使用`vue create`命令新建的Vue项目的主要文件和目录
+使用`vue create`命令创建Vue.js项目时，会生成一个包含各种文件和目录的标准项目结构。下面是一个通常情况下新建的Vue项目的主要文件和目录，以及它们的作用：
+
+1. **`node_modules/`：** 存放项目依赖的第三方Node.js模块，这些模块通常通过npm进行安装。
+
+2. **`public/`：** 包含静态资源，这些资源不需要被webpack处理。通常包含`index.html`文件，是应用的入口页面。其他静态资源如图片、字体等也可以放在这个目录。
+
+3. **`src/`：** 主要包含应用程序的源代码。
+
+    - **`assets/`：** 存放静态资源，例如图片、样式文件等。
+  
+    - **`components/`：** 存放Vue组件文件。
+
+    - **`views/`：** 存放页面级别的Vue组件，每个文件一般对应一个页面。
+
+    - **`App.vue`：** 应用的主组件，包含应用的整体结构和布局。
+
+    - **`main.js`：** 应用的入口文件，初始化Vue实例并挂载到DOM元素上。
+
+4. **`babel.config.js`：** Babel配置文件，用于配置Babel编译器的设置，例如转译ES6+语法为ES5。
+
+5. **`package.json`：** 项目的配置文件，包含项目的元信息、依赖管理、脚本等信息。
+
+6. **`README.md`：** 项目的说明文档，包含有关项目的基本信息和如何启动、构建项目的指南。
+
+7. **`vue.config.js`：** Vue CLI的配置文件，用于配置webpack和其他构建工具的行为。你可以在这里自定义构建配置。
+
+8. **`.gitignore`：** Git版本控制忽略文件配置，指定不被Git跟踪的文件和目录。
+
+9. **`public/index.html`：** 应用的入口HTML文件，Vue.js会将编译后的JavaScript自动注入到这个HTML文件中。
+
+10. **`src/main.js`：** 应用的主入口文件，初始化Vue实例并挂载到DOM。
+
+这只是一个通用的结构，具体的项目可能根据需要进行调整。在Vue CLI创建的项目中，你可以通过配置文件等方式进行个性化定制。
