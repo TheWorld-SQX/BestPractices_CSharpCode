@@ -109,3 +109,78 @@ TypeScript的主要特性包括：
 - **装饰器：** 类似于注解，用于在类声明、方法、属性等上附加元数据和行为。
 
 总体而言，TypeScript是一种强类型的、可选的、面向对象的编程语言，旨在提高大型应用程序的可维护性和开发效率。
+
+
+
+## Sass
+在Vue项目中使用Sass（Syntactically Awesome Stylesheets）是为了改进和扩展CSS的一种方式。Sass是一种CSS预处理器，它引入了许多有用的功能，使得样式表的编写更加高效和灵活。以下是Sass提供的一些主要功能：
+
+1. **嵌套规则：** Sass允许你使用嵌套规则，使得样式表更具层次结构，更易于阅读和维护。
+
+    ```scss
+    // 使用Sass的嵌套规则
+    .container {
+      width: 100%;
+      .header {
+        background-color: #333;
+        color: #fff;
+      }
+      .content {
+        padding: 20px;
+      }
+    }
+    ```
+
+2. **变量：** Sass支持变量，允许你定义一些值，然后在整个样式表中引用它们。这样在需要修改颜色、字体等值时更加方便。
+
+    ```scss
+    // 使用Sass的变量
+    $primary-color: #3498db;
+    
+    .button {
+      background-color: $primary-color;
+    }
+    ```
+
+3. **混合（Mixins）：** 混合是一种可以包含一组样式规则的Sass功能，类似于函数。你可以在需要的地方引用混合。
+
+    ```scss
+    // 使用Sass的混合
+    @mixin border-radius($radius) {
+      border-radius: $radius;
+    }
+    
+    .box {
+      @include border-radius(10px);
+    }
+    ```
+
+4. **继承：** Sass允许样式规则从另一个规则继承，提高了样式表的重用性。
+
+    ```scss
+    // 使用Sass的继承
+    .base-button {
+      padding: 10px;
+      font-size: 16px;
+    }
+    
+    .primary-button {
+      @extend .base-button;
+      background-color: #3498db;
+      color: #fff;
+    }
+    ```
+
+5. **导入：** Sass支持将样式表分成多个文件，并通过导入来组织代码。
+
+    ```scss
+    // 使用Sass的导入
+    @import 'variables';
+    @import 'mixins';
+    
+    .box {
+      // 样式规则
+    }
+    ```
+
+在Vue项目中，你可以通过安装相应的loader（例如`sass-loader`和`node-sass`）来使项目支持Sass。这样，你可以在Vue组件的样式部分使用Sass语法，充分发挥Sass提供的强大功能。
