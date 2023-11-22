@@ -228,3 +228,6 @@ npm install sass-loader node-sass --save
 
 ##
 前端开发，快速，官网案例直接粘贴再修改下
+
+##
+npm  尽量在文件夹命令行工具配置element-plus包，vs code命令行配置可能会安装失败；
