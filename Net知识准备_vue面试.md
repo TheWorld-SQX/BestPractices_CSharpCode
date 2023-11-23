@@ -34,6 +34,31 @@ Vue 和 .NET 是两个不同的技术领域，分别涉及到前端和后端的�
 (4) Vue面试题 70道题目及答案（重排） - CSDN博客. https://blog.csdn.net/SSWmouse/article/details/120699589.
 (5) 2023年最新50道Vue全套vue2+vue3面试题带答案汇总 .... https://blog.csdn.net/tangdou369098655/article/details/131872419.
 
+
+
+## Vue 的生命周期有哪些阶段，每个阶段都做了什么事情？
+Vue 的生命周期是指 Vue 实例从创建到销毁的过程，它包括以下几个阶段：
+
+- beforeCreate：在 Vue 实例创建之前，data 和 methods 等还没有初始化，此时可以做一些初始化之前的操作，比如配置插件，设置全局变量等¹。
+- created：在 Vue 实例创建之后，data 和 methods 等已经初始化，此时可以做一些数据的获取，方法的调用，事件的监听等¹。
+- beforeMount：在 Vue 实例挂载到 DOM 之前，模板已经编译完成，但是页面中的元素还没有被替换，此时可以做一些模板相关的操作，比如修改模板，添加动画等¹。
+- mounted：在 Vue 实例挂载到 DOM 之后，页面中的元素已经被替换，此时可以做一些 DOM 操作，比如获取元素，绑定事件，使用第三方库等¹。
+- beforeUpdate：在 Vue 实例即将因为一个响应式状态变更而更新其 DOM 树之前调用，此时可以做一些更新前的操作，比如访问旧的 DOM 状态，设置更新标志等²。
+- updated：在 Vue 实例因为一个响应式状态变更而更新其 DOM 树之后调用，此时可以做一些更新后的操作，比如访问新的 DOM 状态，清除更新标志等²。
+- beforeUnmount：在 Vue 实例卸载之前调用，此时可以做一些卸载前的操作，比如移除事件监听器，取消定时器，清理资源等²。
+- unmounted：在 Vue 实例卸载之后调用，此时可以做一些卸载后的操作，比如释放内存，删除引用，记录日志等²。
+
+以上是我根据我搜索的结果¹²³，为你总结的 Vue 的生命周期的阶段和作用，希望对你有所帮助。如果你想了解更多的细节，你可以点击这些链接，或者直接在网上搜索 Vue 的生命周期。
+
+源: 与必应的对话， 2023/11/23
+(1) 生命周期钩子 | Vue.js. https://cn.vuejs.org/guide/essentials/lifecycle.html.
+(2) 生命周期选项 | Vue.js. https://cn.vuejs.org/api/options-lifecycle.html.
+(3) Vue - 生命周期详解 - 简书. https://www.jianshu.com/p/672e967e201c.
+
+
+
+
+
 ## vue 第一次页面加载会触发那几个钩子，什么是钩子，为什么叫hook，钩子有什么作用，一般是怎样实现的
 Vue 第一次页面加载会触发以下四个钩子：
 
