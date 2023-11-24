@@ -18,6 +18,8 @@
 
 
 ## task 一个 async 方法中多个 await 表达式
+
+###
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -48,6 +50,94 @@ class Program
         Console.WriteLine("End");
     }
 }
+
+### 
+当你需要从数据库中读取数据并保存到 PDF 文件时，异步编程可以帮助确保你的应用程序在等待数据库读取或文件写入时不会被阻塞。下面是一个使用异步方法的简单示例，其中使用了 Entity Framework Core 来从数据库读取数据，以及使用 PdfSharp 来创建 PDF 文件。
+
+首先，确保你已经安装了 Entity Framework Core 和 PdfSharp 的相关包。你可以通过 NuGet 包管理器或 .NET CLI 来安装它们。
+
+```bash
+dotnet add package Microsoft.EntityFrameworkCore
+dotnet add package PdfSharp
+```
+
+然后，考虑以下代码示例：
+
+```csharp
+using System;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using PdfSharp.Drawing;
+using PdfSharp.Pdf;
+
+class Program
+{
+    static async Task Main()
+    {
+        await GeneratePdfAsync();
+    }
+
+    static async Task GeneratePdfAsync()
+    {
+        using (var dbContext = new MyDbContext())
+        {
+            // 异步从数据库中读取数据
+            var dataFromDatabase = await dbContext.MyEntities.ToListAsync();
+
+            // 异步保存数据到 PDF 文件
+            await SaveDataToPdfAsync(dataFromDatabase);
+        }
+    }
+
+    static async Task SaveDataToPdfAsync(IEnumerable<MyEntity> data)
+    {
+        var pdfFileName = "output.pdf";
+
+        using (var document = new PdfDocument())
+        {
+            var page = document.AddPage();
+            var graphics = XGraphics.FromPdfPage(page);
+
+            // 将数据写入 PDF 文件
+            foreach (var item in data)
+            {
+                // 这里使用 PdfSharp 的绘图功能将数据写入 PDF
+                graphics.DrawString($"{item.Id}: {item.Name}", new XFont("Arial", 12), XBrushes.Black, new XRect(10, 10, page.Width, page.Height), XStringFormats.TopLeft);
+            }
+
+            // 异步保存 PDF 文件
+            await Task.Run(() => document.Save(pdfFileName));
+        }
+
+        Console.WriteLine($"PDF file '{pdfFileName}' generated successfully.");
+    }
+}
+
+// 数据库实体类
+class MyEntity
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
+}
+
+// 数据库上下文类
+class MyDbContext : DbContext
+{
+    public DbSet<MyEntity> MyEntities { get; set; }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        // 配置数据库连接字符串等
+        optionsBuilder.UseSqlServer("your_connection_string");
+    }
+}
+```
+
+在上述示例中，`GeneratePdfAsync` 方法使用异步方式从数据库读取数据，然后调用 `SaveDataToPdfAsync` 方法异步地将数据保存到 PDF 文件中。在 `SaveDataToPdfAsync` 方法中，使用了 PdfSharp 库来创建 PDF 文件，并在其中绘制了从数据库读取的数据。
+
+请注意，异步方法通常以 "Async" 结尾，并返回 `Task` 或 `Task<T>`，以便能够在等待异步操作时挂起。在实际的应用程序中，你需要根据自己的情况调整代码，并确保适当地处理异常和资源释放。
 
 
 
