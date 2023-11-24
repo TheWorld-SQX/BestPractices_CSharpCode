@@ -65,6 +65,64 @@ OFFSET 40 ROWS FETCH NEXT 20 ROWS ONLY;
 
 每种分页方法都有其适用的场景和优缺点，选择合适的方法取决于你的应用程序需求、数据量和性能要求。重要的是在实际情况中评估各种选项，并选择最适合你的场景的分页方法。
 
+## 分页
+在 SQL Server 中，使用游标进行分页是一种实现分页查询的方法。游标允许你在结果集中按照一定的顺序逐行移动，从而实现对结果集的逐行处理。以下是一个使用游标进行分页的简单示例。
+
+首先，假设有一个名为 `YourTable` 的表，包含一些数据，我们将使用游标来实现分页查询。
+
+```sql
+-- 创建存储过程
+CREATE PROCEDURE GetPagedData
+    @PageSize INT,
+    @PageNumber INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DECLARE @StartRow INT, @EndRow INT;
+
+    -- 计算起始行和结束行
+    SET @StartRow = (@PageNumber - 1) * @PageSize + 1;
+    SET @EndRow = @PageNumber * @PageSize;
+
+    -- 创建游标
+    DECLARE pagingCursor CURSOR FOR
+    SELECT Column1, Column2, ...
+    FROM YourTable
+    ORDER BY YourOrderByColumn;
+
+    -- 声明变量来存储查询结果
+    DECLARE @Column1 DataType1, @Column2 DataType2, ...;
+
+    -- 打开游标
+    OPEN pagingCursor;
+
+    -- 将游标移到起始行
+    FETCH ABSOLUTE @StartRow FROM pagingCursor INTO @Column1, @Column2, ...;
+
+    -- 循环获取指定页的数据
+    WHILE @@FETCH_STATUS = 0 AND @@ROWCOUNT <= @PageSize
+    BEGIN
+        -- 在这里处理获取到的数据，可以通过 SELECT 或其他操作
+
+        -- 输出获取到的数据
+        PRINT 'Column1: ' + CAST(@Column1 AS NVARCHAR(MAX)) + ', Column2: ' + CAST(@Column2 AS NVARCHAR(MAX));
+
+        -- 将游标移到下一行
+        FETCH NEXT FROM pagingCursor INTO @Column1, @Column2, ...;
+    END
+
+    -- 关闭游标
+    CLOSE pagingCursor;
+    DEALLOCATE pagingCursor;
+END
+```
+
+在这个存储过程中，`@PageSize` 和 `@PageNumber` 是输入参数，表示每页的记录数和要查询的页数。游标按照指定的排序列（`YourOrderByColumn`）对结果集进行排序，并通过 `FETCH ABSOLUTE` 和 `FETCH NEXT` 命令逐行获取数据。
+
+你可以根据你的实际表结构和需求修改上述示例中的表名、列名以及排序列。这只是一个基本的例子，实际使用时请注意性能和查询优化。在某些情况下，也可以使用 `OFFSET` 和 `FETCH` 子句来实现简单的分页，这是 SQL Server 2012 及更高版本引入的标准分页语法。
+
+
 ## 干了这么多年C#，后悔没早点用这种“分页”，简单/高效/易维护，比其它的分页方式强多了， 哪些方案优化 最佳实践 比较好的做法
 C# 中的分页是一个常见的任务，而且确实有一些最佳实践和优化策略可以帮助你编写更简单、高效和易于维护的分页代码。以下是一些关于如何优化 C# 分页的最佳实践：
 
