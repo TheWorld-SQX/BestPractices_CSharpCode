@@ -16,6 +16,42 @@
 
 最重要的是，性能的提升不仅仅取决于选择"Task"还是多线程，还取决于如何实现和管理任务，以及如何避免并发问题。因此，建议根据具体任务的性质和需求来选择适当的编程模型，并进行性能测试和优化。
 
+
+## task 一个 async 方法中多个 await 表达式
+using System;
+using System.Net.Http;
+using System.Threading.Tasks;
+
+class Program
+{
+    static async Task Main()
+    {
+        await ExampleAsync();
+    }
+
+    static async Task ExampleAsync()
+    {
+        Console.WriteLine("Start");
+
+        // 使用 await 等待第一个异步操作
+        await Task.Delay(1000);
+        Console.WriteLine("After first await");
+
+        // 使用 await 等待第二个异步操作
+        await Task.Delay(2000);
+        Console.WriteLine("After second await");
+
+        // 使用 await 等待第三个异步操作
+        await Task.Delay(3000);
+        Console.WriteLine("After third await");
+
+        Console.WriteLine("End");
+    }
+}
+
+
+
+
 ## 并发处理：充分利用多核处理器，使用多线程或任务并行处理，以加速计算密集型任务。  展开具体详细的代码方案  易维护高性能
 多线程和任务并行处理是提高计算密集型任务性能的有效方法。以下是一个示例，展示如何使用C#的多线程和任务并行库来处理计算密集型任务，同时保持代码易维护性：
 
