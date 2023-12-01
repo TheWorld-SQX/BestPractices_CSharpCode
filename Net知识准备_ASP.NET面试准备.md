@@ -49,6 +49,70 @@ class MedicalKiosk : ILocalization
 
 总之，显式接口实现通常用于处理多接口情况、控制接口的细粒度访问和多语言支持。在医疗自助机系统中，这些应用场景有助于增加系统的灵活性、可维护性和安全性，以满足不同的需求和要求。它们允许系统以更加精细的方式管理接口和接口成员的实现。
 
+### 在 C# 中，接口实现可以通过显式接口实现和隐式接口实现两种方式来完成。以下是它们的基本区别和示例：
+
+### 1. 隐式接口实现：
+
+隐式接口实现是指在类或结构体中实现接口的方式，最常见的方式。在类或结构体中实现接口的成员时，可以直接使用成员名而不需要显式指定接口名。
+
+```csharp
+public interface IExample
+{
+    void SomeMethod();
+}
+
+public class MyClass : IExample
+{
+    public void SomeMethod()
+    {
+        Console.WriteLine("Implementation of SomeMethod");
+    }
+}
+
+// 调用
+MyClass myObject = new MyClass();
+myObject.SomeMethod();  // 直接调用
+```
+
+### 2. 显式接口实现：
+
+显式接口实现是指在类或结构体中实现接口的方式，但在实现的成员上使用接口名进行显式标识。这通常用于解决接口之间的成员名称冲突问题。
+
+```csharp
+public interface IExample1
+{
+    void SomeMethod();
+}
+
+public interface IExample2
+{
+    void SomeMethod();
+}
+
+public class MyClass : IExample1, IExample2
+{
+    // 显式接口实现
+    void IExample1.SomeMethod()
+    {
+        Console.WriteLine("Implementation of IExample1.SomeMethod");
+    }
+
+    // 显式接口实现
+    void IExample2.SomeMethod()
+    {
+        Console.WriteLine("Implementation of IExample2.SomeMethod");
+    }
+}
+
+// 调用
+MyClass myObject = new MyClass();
+((IExample1)myObject).SomeMethod();  // 调用 IExample1 的实现
+((IExample2)myObject).SomeMethod();  // 调用 IExample2 的实现
+```
+
+在显式接口实现中，使用 `(InterfaceName)instance.MemberName` 的形式调用接口的成员，以明确指定要调用哪个接口的实现。
+
+总的来说，隐式接口实现是一种更常见的方式，而显式接口实现通常用于处理接口之间的成员冲突。选择使用哪种方式取决于您的具体需求。
 
 
 ## [HttpGet]每次请求都会创建一个线程吗
