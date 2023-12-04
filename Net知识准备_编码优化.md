@@ -37,7 +37,7 @@ catch (Exception ex)
 
 
 ##  判空
-linq  查询对象不能为空，时间对象赋值要判空  
+linq  查询对象不能为空，时间对象赋值要判空 ，确保不会尝试在 null 对象上访问属性。 
 
 ```csharp
                 if (RisReportModel.Get(RisReport.PatientID, RisReport.AccNo, RisReport.ReportType ?? "") != null)
