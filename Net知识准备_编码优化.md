@@ -36,6 +36,28 @@ catch (Exception ex)
 对象的生命周期是类中还是方法中的还是判断分支中的？
 
 
+##  判空
+linq  查询对象不能为空，时间对象赋值要判空  
+
+```csharp
+                if (RisReportModel.Get(RisReport.PatientID, RisReport.AccNo, RisReport.ReportType ?? "") != null)
+                {
+                    hadDeleteReport = RisReportModel.Get(RisReport.PatientID, RisReport.AccNo, RisReport.ReportType ?? "")?.Where(r => r.State == 4)?.FirstOrDefault();
+                }
+
+                if (existResult.Item1 == false)//数据库中不存在
+                {
+                    if (hadDeleteReport.ExamineTime != null)
+                    {
+                        RisReport.ExamineTime = hadDeleteReport.ExamineTime != null ? hadDeleteReport.ExamineTime : DateTime.Now.AddMinutes(-2);
+                    }
+                    RisReport.ExamineTime = existResult.Item2 != null ? existResult.Item2.ExamineTime : DateTime.Now.AddMinutes(-2);
+                    logger.Info($"PatientId:{RisReport.PatientID}, AccNo:{RisReport.AccNo}--> 执行数据插入");
+                    RisReport.Add();
+                }
+```
+
+
 ## 顺序，判断（分支），循环  程序基本结构
 是的，本质上条件语句（如if-else）用于根据不同的条件来执行不同的逻辑，以返回不同的结果。不同的优化方法和设计模式都旨在使这种条件分支结构更加清晰、可维护和灵活。无论使用哪种方法，最终目标都是根据条件执行适当的操作。不同的方法和模式提供了不同的方式来组织和管理这些条件，以使代码更易于理解和维护。
 
