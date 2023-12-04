@@ -57,6 +57,37 @@ linq  查询对象不能为空，时间对象赋值要判空
                 }
 ```
 
+###
+在给定的 LINQ 查询中，`.Where(r => r.State == 4).FirstOrDefault()` 通常不会引发异常。这是一种查询模式，用于从集合中获取符合特定条件的第一个元素，而且如果没有符合条件的元素，它将返回默认值（对于引用类型，默认值是 `null`）。
+
+然而，在某些情况下，可能会发生异常：
+
+1. **集合为 `null`：** 如果你调用这个查询的对象是 `null`，那么会引发 `NullReferenceException`。确保调用这个查询的对象不为 `null`。
+
+   ```csharp
+   List<MyClass> myList = null;
+   var result = myList.Where(r => r.State == 4).FirstOrDefault(); // 这里将引发 NullReferenceException
+   ```
+
+2. **元素为 `null`：** 如果集合中的元素（`MyClass` 对象）有可能为 `null`，而且你在后续代码中尝试访问一个可能为空的属性或方法，也可能引发 `NullReferenceException`。
+
+   ```csharp
+   List<MyClass> myList = new List<MyClass> { new MyClass(), null, new MyClass() };
+   var result = myList.Where(r => r.State == 4).FirstOrDefault();
+
+   // 下面的语句可能引发 NullReferenceException，如果 result 是 null
+   var someValue = result.SomeProperty;
+   ```
+
+为了避免这种情况，你可以使用安全导航操作符（`?.`）来检查是否为 `null`：
+
+```csharp
+var someValue = result?.SomeProperty;
+```
+
+总的来说，`.Where(r => r.State == 4).FirstOrDefault()` 通常是安全的，但确保在调用它的对象不为 `null` 的情况下使用，并在后续代码中处理可能为空的情况。
+
+
 
 ## 顺序，判断（分支），循环  程序基本结构
 是的，本质上条件语句（如if-else）用于根据不同的条件来执行不同的逻辑，以返回不同的结果。不同的优化方法和设计模式都旨在使这种条件分支结构更加清晰、可维护和灵活。无论使用哪种方法，最终目标都是根据条件执行适当的操作。不同的方法和模式提供了不同的方式来组织和管理这些条件，以使代码更易于理解和维护。
