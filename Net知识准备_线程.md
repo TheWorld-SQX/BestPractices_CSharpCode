@@ -142,6 +142,61 @@ class MyDbContext : DbContext
 
 
 
+## 使用 `Task.Run` 包装 `foreach` 循环
+在使用 `Task.Run` 包装 `foreach` 循环时，可以将循环体内的操作异步化，以便在每次迭代中都能以异步的方式执行。这样可以提高程序的并发性，充分利用系统资源，尤其是当某些操作可能是I/O密集型时。以下是使用 `Task.Run` 的示例：
+
+```csharp
+List<Task> tasks = new List<Task>();
+
+foreach (var dicom in dicomPrints)
+{
+    tasks.Add(Task.Run(async () =>
+    {
+        List<PatInfo> infos = EntityConvert.Instance.ConvertToPatInfo(dicom.PatientID);
+
+        if (infos != null && infos.Count > 0)
+        {
+            foreach (var info in infos)
+            {
+                string fileName = ReportConfig.FileName;
+                
+                try
+                {
+                    if (!DownFile.DownPdfByFtp(info.PdfUrl, Path.Combine(ReportConfig.PdfPath, info.PatientID), fileName))
+                    {
+                        DataLogic.Instance.UpdatePatient(info.PatientID, "PDFURL有问题", null, info);
+                        _logger.Error($"检查号：{info.PatientID},报告下载失败。");
+                    }
+                    else
+                    {
+                        if (DataLogic.Instance.SaveData(out string df, out string di, info, fileName, out bool tag))
+                        {
+                            _logger.Info($"检查号：{info.PatientID},报告下载完成,信息插入成功。");
+                        }
+                        else
+                        {
+                            FileOperate.DeleteFile(Path.Combine(ReportConfig.PdfPath, info.PatientID, fileName));
+                            _logger.Error($"检查号：{info.PatientID},信息保存失败,已删除下载的报告文件。");
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // 处理异常
+                    _logger.Error($"发生异常：{ex.Message}");
+                }
+            }
+        }
+    }));
+}
+
+// 等待所有任务完成
+await Task.WhenAll(tasks);
+```
+
+在这个示例中，使用 `Task.Run` 包装了 `foreach` 循环，使得 `foreach` 循环内的每次迭代都可以异步执行。同时，通过 `Task.WhenAll` 等待所有任务的完成。需要注意的是，异步操作中发生的异常需要适当地进行处理。
+
+
 
 ## 并发处理：充分利用多核处理器，使用多线程或任务并行处理，以加速计算密集型任务。  展开具体详细的代码方案  易维护高性能
 多线程和任务并行处理是提高计算密集型任务性能的有效方法。以下是一个示例，展示如何使用C#的多线程和任务并行库来处理计算密集型任务，同时保持代码易维护性：
