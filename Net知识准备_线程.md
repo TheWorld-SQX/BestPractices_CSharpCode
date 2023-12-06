@@ -526,6 +526,111 @@ Parallel.ForEach(numbers, number =>
 因此，`Parallel.ForEach` 简化了并行编程，减少了编写复杂多线程代码的难度，因为它抽象了底层线程管理的细节，使你能够更容易地编写高性能且可读性良好的代码，而不必担心线程安全或其他并发问题。这使得并行编程更加容易上手，并且降低了出错的风险。
 
 
+
+## 
+`Parallel.ForEach` 是用于在集合上并行执行操作的方法，它可以替代传统的 `foreach` 循环，以提高性能。以下是使用 `Parallel.ForEach` 的一般步骤：
+
+1. **引入命名空间：** 首先确保你的代码文件中引入了 `System.Threading.Tasks` 命名空间。
+
+   ```csharp
+   using System.Threading.Tasks;
+   ```
+
+2. **创建集合：** 准备一个要并行迭代的集合。
+
+   ```csharp
+   List<int> myCollection = new List<int> { 1, 2, 3, 4, 5 };
+   ```
+
+3. **定义并行循环体：** 使用 `Parallel.ForEach` 方法，传递集合、并行选项和一个委托作为循环体。
+
+   ```csharp
+   Parallel.ForEach(myCollection, item =>
+   {
+       // 在这里编写并行循环体的操作，使用 item 表示当前集合元素
+       Console.WriteLine($"Processing item: {item}");
+   });
+   ```
+
+   在循环体中，可以执行并行操作，每个线程处理集合中的一个元素。`item` 表示当前正在处理的集合元素。
+
+4. **设置并行选项（可选）：** 如果需要，可以通过 `ParallelOptions` 对象设置并行选项，例如最大并行度（`MaxDegreeOfParallelism`）。
+
+   ```csharp
+   ParallelOptions options = new ParallelOptions
+   {
+       MaxDegreeOfParallelism = 4 // 设置最大并行度为 4
+   };
+
+   Parallel.ForEach(myCollection, options, item =>
+   {
+       // 并行循环体的操作
+   });
+   ```
+
+   在上述例子中，最大并行度被设置为 4，表示最多同时执行 4 个线程。
+
+注意事项：
+- 在并行循环体内，确保任何共享的数据结构都是线程安全的，或者使用适当的同步机制。
+- 并行执行的操作应该是相对独立的，以充分发挥并行性。
+- 在处理异常时，需要注意异常的处理方式。`Parallel.ForEach` 会将异常收集到 `AggregateException` 中，需要适当地处理这个异常。
+
+总体而言，`Parallel.ForEach` 是一个方便的工具，可以在很多情况下简化并行编程。
+
+
+
+## Parallel.ForEach  一般怎么给他传参数
+在 `Parallel.ForEach` 中传递参数，你可以通过使用 lambda 表达式的参数列表来实现。具体而言，你可以通过两种方式传递参数：
+
+1. **将参数作为外部变量传递：**
+   ```csharp
+   var myParameter = "Hello, World!";
+
+   Parallel.ForEach(myCollection, new ParallelOptions() { MaxDegreeOfParallelism = 6 }, item =>
+   {
+       // 在这里可以使用 myParameter
+       Console.WriteLine($"{item} - {myParameter}");
+   });
+   ```
+
+2. **使用元组或自定义类：**
+   ```csharp
+   public class MyData
+   {
+       public string Parameter1 { get; set; }
+       public int Parameter2 { get; set; }
+   }
+
+   var myData = new MyData { Parameter1 = "Hello", Parameter2 = 42 };
+
+   Parallel.ForEach(myCollection, new ParallelOptions() { MaxDegreeOfParallelism = 6 }, item =>
+   {
+       // 在这里可以使用 myData.Parameter1 和 myData.Parameter2
+       Console.WriteLine($"{item} - {myData.Parameter1} - {myData.Parameter2}");
+   });
+   ```
+
+在使用第一种方法时，要注意多线程环境下的线程安全性，确保外部变量是只读的或是被适当地锁定。在使用第二种方法时，你可以将所有需要传递的参数封装到一个对象中，并确保这个对象是线程安全的。
+
+需要注意的是，Parallel.ForEach 并不总是适用于所有场景，特别是当迭代之间存在数据依赖性时。在某些情况下，考虑使用 PLINQ (Parallel LINQ) 或其他并行编程模型可能更为合适。
+
+
+## 在 Parallel.ForEach 中使用其他参数，你可以使用外部变量
+如果你需要在 Parallel.ForEach 中使用其他参数，你可以使用外部变量或通过使用闭包来捕获其他值。例如：
+
+```csharp
+
+int someValue = 10;
+
+Parallel.ForEach(myCollection, new ParallelOptions() { MaxDegreeOfParallelism = 6 }, item =>
+{
+    Console.WriteLine($"Processing item: {item}, SomeValue: {someValue}");
+    // 在这里可以使用 item 和 someValue
+});
+```
+在这个例子中，someValue 是外部变量，但需要注意线程安全性。如果 someValue 可能被多个线程同时修改，你可能需要采取额外的步骤来确保线程安全。
+
+
 ## Parallel.ForEach 简化了这个过程。你只需提供一个操作（Action<TSource>），然后它会自动创建和管理线程   如何做到的 很好奇
 `Parallel.ForEach` 如何简化并行处理过程以及如何自动创建和管理线程的背后原理涉及到.NET Framework 中的并行编程库和线程池的工作方式。
 
