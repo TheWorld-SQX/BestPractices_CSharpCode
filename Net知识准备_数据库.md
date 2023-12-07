@@ -33,6 +33,49 @@ OFFSET 40 ROWS FETCH NEXT 20 ROWS ONLY;
 
 依此类推，通过调整 OFFSET 子句的值，你可以实现分页显示每页 20 行数据的功能。
 
+
+
+## SQL Server 中，使用 `OFFSET` 和 `FETCH` 子句来实现分页查询
+在 SQL Server 中，你可以使用 `OFFSET` 和 `FETCH` 子句来实现分页查询。以下是一个示例，假设有一个名为 `Patient` 的表，其中包含 `ID` 和 `Name` 列：
+
+```sql
+SELECT ID, Name
+FROM Patient
+ORDER BY ID  -- 你可以根据需要选择合适的排序列
+OFFSET 0 ROWS  -- 跳过的行数（页数-1 * 每页行数）
+FETCH NEXT 10 ROWS ONLY;  -- 每页的行数
+```
+
+上述查询表示从 `Patient` 表中按照 `ID` 列的升序顺序获取第一页（偏移量为0，表示第一页）的10行记录。你可以根据实际情况修改 `ORDER BY` 子句以及 `OFFSET` 和 `FETCH` 子句的参数。
+
+如果你希望实现动态的分页，可以将偏移量和每页行数作为参数传递给查询。例如，使用存储过程：
+
+```sql
+CREATE PROCEDURE GetPatientsPaged
+    @PageSize INT,
+    @PageNumber INT
+AS
+BEGIN
+    DECLARE @Offset INT = @PageSize * (@PageNumber - 1);
+
+    SELECT ID, Name
+    FROM Patient
+    ORDER BY ID
+    OFFSET @Offset ROWS
+    FETCH NEXT @PageSize ROWS ONLY;
+END;
+```
+
+然后，你可以调用存储过程并传递相应的参数：
+
+```sql
+EXEC GetPatientsPaged @PageSize = 10, @PageNumber = 1;
+```
+
+这将返回第一页的10行记录。
+
+
+
 ## 常见数据库管理系统对分页查询的支持
 不是所有的数据库管理系统都支持 `OFFSET` 和 `FETCH` 子句，或者它们可能使用不同的语法。这种分页查询语法通常在支持 ANSI SQL 标准的主流数据库管理系统中可用，如：
 
