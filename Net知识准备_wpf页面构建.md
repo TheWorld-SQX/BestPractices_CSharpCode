@@ -109,7 +109,7 @@ namespace YourNamespace
 
 
 
-## xam;页面控制Grid元素
+## xaml页面控制Grid元素
 确保在`Grid`中更精确地控制行和列的大小、以及UI元素的位置，并提高布局的可控性和可维护性的关键在于明确定义`RowDefinitions`和`ColumnDefinitions`，并使用具体的尺寸和设置来调整布局。以下是一些建议：
 
 ### 1. 定义`RowDefinitions`和`ColumnDefinitions`：
