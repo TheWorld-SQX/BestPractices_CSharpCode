@@ -154,3 +154,26 @@ namespace YourNamespace
 在某些情况下，`Grid`可能不是最适合的布局容器。考虑使用其他面板，例如`StackPanel`、`DockPanel`、`WrapPanel`等，根据实际情况选择最合适的布局方式。
 
 通过合理使用这些技术，你可以更精确地控制行和列的大小、UI元素的位置，提高布局的可控性和可维护性。
+
+
+
+## `Grid`布局中，`*` 是一个相对值
+在WPF的`Grid`布局中，`*` 是一个相对值，表示占据可用空间的相对比例。当你设置 `ColumnDefinition` 或 `RowDefinition` 的 `Width` 或 `Height` 属性为 `*` 时，它会占据剩余的可用空间的相对比例。
+
+具体地说，如果有多个列或行的 `Width` 或 `Height` 属性设置为 `*`，它们将按照设置的相对比例分配可用空间。例如，如果有两个列，一个宽度设置为 `2*`，另一个设置为 `3*`，那么第二个列的宽度将是第一个列的 1.5 倍。
+
+下面是一个简单的例子：
+
+```xaml
+<Grid>
+    <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="2*" />
+        <ColumnDefinition Width="3*" />
+    </Grid.ColumnDefinitions>
+    <!-- 具体的 UI 元素放置在列中 -->
+</Grid>
+```
+
+在这个例子中，第一个列的宽度占据了可用空间的 2/5，而第二个列的宽度占据了可用空间的 3/5。
+
+使用 `*` 可以使布局更具灵活性，尤其是当你希望列或行占据相对比例而不是固定的像素值时。
