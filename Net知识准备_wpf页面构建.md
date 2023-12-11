@@ -189,3 +189,54 @@ namespace YourNamespace
 3. **支持自动调整大小：** Grid布局支持自动调整单元格的大小，使其适应内容或父容器的大小。这种特性使得布局更加灵活，适应不同的用户界面需求。
 
 总体而言，虽然在表达上 `Grid.Row` 和 `Grid.Column` 的设置看起来类似于坐标点的设定，但在实际使用中，它们更侧重于元素在网格中的相对位置，而不是绝对坐标。这种相对性使得WPF的布局系统更加灵活、可扩展，并更好地适应各种屏幕尺寸和分辨率。
+
+
+
+
+## StackPanel（堆栈面板） 什么时候用
+`StackPanel` 是 WPF 中的一种面板控件，它按照垂直或水平方向堆叠（或排列）其子元素。这种控件对于实现简单的垂直或水平布局非常有用。以下是一些适合使用 `StackPanel` 的场景：
+
+1. **垂直或水平布局：** 当你需要在垂直或水平方向上堆叠多个控件时，`StackPanel` 是一个方便的选择。它会根据其 `Orientation` 属性的设置，将子元素依次排列。
+
+   ```xaml
+   <StackPanel Orientation="Vertical">
+       <Button Content="按钮1" />
+       <Button Content="按钮2" />
+       <Button Content="按钮3" />
+   </StackPanel>
+   ```
+
+2. **简单的控件排列：** 当你希望以一种简单直观的方式排列控件，而不涉及复杂的布局需求时，`StackPanel` 提供了一种轻量级的方式。
+
+   ```xaml
+   <StackPanel Orientation="Horizontal">
+       <TextBlock Text="姓名：" />
+       <TextBox />
+   </StackPanel>
+   ```
+
+3. **自适应大小：** `StackPanel` 会根据其子元素的大小自动调整大小，这使得它适用于那些不需要详细布局控制的简单场景。
+
+   ```xaml
+   <StackPanel Orientation="Vertical">
+       <Label Content="标题" />
+       <TextBox />
+       <Button Content="提交" />
+   </StackPanel>
+   ```
+
+4. **嵌套使用：** 你可以嵌套多个 `StackPanel` 以创建更复杂的布局。例如，一个垂直的 `StackPanel` 中包含若干水平的 `StackPanel`，以形成多列布局。
+
+   ```xaml
+   <StackPanel Orientation="Vertical">
+       <StackPanel Orientation="Horizontal">
+           <!-- 第一行的内容 -->
+       </StackPanel>
+       <StackPanel Orientation="Horizontal">
+           <!-- 第二行的内容 -->
+       </StackPanel>
+       <!-- 更多行的内容 -->
+   </StackPanel>
+   ```
+
+总的来说，`StackPanel` 适用于简单的、线性的布局，但当涉及到更复杂的布局需求时，可能需要考虑使用其他面板或布局容器。
