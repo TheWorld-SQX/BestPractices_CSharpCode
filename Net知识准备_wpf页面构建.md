@@ -300,3 +300,73 @@ namespace YourNamespace
 ```
 
 在这个例子中，五个按钮分别停靠在 `DockPanel` 的顶部、底部、左侧、右侧和中心。
+
+
+
+
+## `WrapPanel` 子控件按从左到右的顺序放置，在当前行上的空间不足时换行到下一行。
+`WrapPanel` 是 WPF 中的一种布局容器，它以流式方式按行或按列排列其子元素。当空间不足以容纳所有子元素时，`WrapPanel` 会自动换行，将多余的子元素放到新的行或列中。以下是关于 `WrapPanel` 的一些细节：
+
+### 1. **Orientation（方向）属性：**
+   - `WrapPanel` 具有 `Orientation` 属性，用于定义子元素的排列方向。默认为 `Horizontal`，即按照水平方向排列。你也可以将其设置为 `Vertical`，以按照垂直方向排列。
+
+     ```xaml
+     <WrapPanel Orientation="Horizontal">
+         <!-- 子元素按照水平方向排列 -->
+     </WrapPanel>
+
+     <WrapPanel Orientation="Vertical">
+         <!-- 子元素按照垂直方向排列 -->
+     </WrapPanel>
+     ```
+
+### 2. **FlowDirection 属性：**
+   - `FlowDirection` 属性用于定义子元素的流动方向。默认为 `LeftToRight`，即从左到右。你也可以将其设置为 `RightToLeft`，以改变流动方向为从右到左。
+
+     ```xaml
+     <WrapPanel FlowDirection="LeftToRight">
+         <!-- 子元素从左到右流动 -->
+     </WrapPanel>
+
+     <WrapPanel FlowDirection="RightToLeft">
+         <!-- 子元素从右到左流动 -->
+     </WrapPanel>
+     ```
+
+### 3. **HorizontalAlignment 和 VerticalAlignment：**
+   - 通过设置 `HorizontalAlignment` 和 `VerticalAlignment` 属性，你可以控制 `WrapPanel` 在其容器中的水平和垂直对齐方式。
+
+     ```xaml
+     <WrapPanel HorizontalAlignment="Center" VerticalAlignment="Top">
+         <!-- 在容器中水平居中，垂直居上 -->
+     </WrapPanel>
+     ```
+
+### 4. **ItemWidth 和 ItemHeight 属性：**
+   - `ItemWidth` 和 `ItemHeight` 属性用于指定子元素的宽度和高度。设置了这两个属性后，`WrapPanel` 会将所有子元素限制为相同的宽度或高度，并在达到行尾时自动换行。
+
+     ```xaml
+     <WrapPanel ItemWidth="100">
+         <!-- 所有子元素宽度限制为 100 像素，自动换行 -->
+     </WrapPanel>
+
+     <WrapPanel ItemHeight="50">
+         <!-- 所有子元素高度限制为 50 像素，自动换行 -->
+     </WrapPanel>
+     ```
+
+### 示例：
+
+```xaml
+<WrapPanel Orientation="Horizontal" FlowDirection="LeftToRight" ItemWidth="100">
+    <Button Content="按钮1" />
+    <Button Content="按钮2" />
+    <Button Content="按钮3" />
+    <Button Content="按钮4" />
+    <Button Content="按钮5" />
+    <Button Content="按钮6" />
+    <!-- 宽度为 100，自动换行 -->
+</WrapPanel>
+```
+
+在这个例子中，按钮按照水平方向排列，当宽度不足以容纳所有按钮时，按钮会自动换行到新的行。
