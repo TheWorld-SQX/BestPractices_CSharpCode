@@ -245,3 +245,58 @@ namespace YourNamespace
 
 ## `StackPanel` 布局控件
 确切地说，`StackPanel` 里的子元素是按顺序布局的，不允许重叠，在方向上依次排列，并根据需要自动换行。但`StackPanel` 不会像一些绝对定位的面板（如`Canvas`）那样允许子元素完全重叠。
+
+
+
+
+##  `DockPanel`子控件与面板的边缘对齐。
+`DockPanel` 是 WPF 中的一种布局容器，它允许将控件停靠在面板的边缘或中心。`DockPanel` 控制子元素的停靠方式，支持上、下、左、右、中等方向。以下是一些关于 `DockPanel` 的重要特性和用法：
+
+### 1. **Dock 属性：**
+   - 子元素的停靠方式通过设置 `DockPanel.Dock` 属性来指定。`Dock` 属性可设置为 `Top`、`Bottom`、`Left`、`Right` 或 `Center`，分别表示子元素停靠在面板的顶部、底部、左侧、右侧或中心。
+
+     ```xaml
+     <DockPanel>
+         <Button Content="顶部" DockPanel.Dock="Top" />
+         <Button Content="底部" DockPanel.Dock="Bottom" />
+         <Button Content="左侧" DockPanel.Dock="Left" />
+         <Button Content="右侧" DockPanel.Dock="Right" />
+         <Button Content="中心" />
+     </DockPanel>
+     ```
+
+### 2. **最后一个子元素：**
+   - 如果没有指定 `Dock` 属性，最后一个添加到 `DockPanel` 的子元素会占据未被其他元素占用的全部空间。这意味着你可以将一个元素放在中心，而其他元素停靠在边缘。
+
+     ```xaml
+     <DockPanel>
+         <Button Content="左侧" DockPanel.Dock="Left" />
+         <Button Content="中心" />
+         <Button Content="右侧" DockPanel.Dock="Right" />
+     </DockPanel>
+     ```
+
+### 3. **其他属性：**
+   - `LastChildFill`：默认情况下，`DockPanel` 的最后一个子元素会填充剩余的空间。如果将 `LastChildFill` 设置为 `false`，则最后一个子元素将不会自动填充空间，其他子元素将按照 `Dock` 属性的设置进行布局。
+
+     ```xaml
+     <DockPanel LastChildFill="False">
+         <Button Content="左侧" DockPanel.Dock="Left" />
+         <Button Content="右侧" DockPanel.Dock="Right" />
+         <Button Content="中心" />
+     </DockPanel>
+     ```
+
+### 示例：
+
+```xaml
+<DockPanel>
+    <Button Content="顶部" DockPanel.Dock="Top" />
+    <Button Content="底部" DockPanel.Dock="Bottom" />
+    <Button Content="左侧" DockPanel.Dock="Left" />
+    <Button Content="右侧" DockPanel.Dock="Right" />
+    <Button Content="中心" />
+</DockPanel>
+```
+
+在这个例子中，五个按钮分别停靠在 `DockPanel` 的顶部、底部、左侧、右侧和中心。
