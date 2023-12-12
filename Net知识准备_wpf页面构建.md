@@ -370,3 +370,55 @@ namespace YourNamespace
 ```
 
 在这个例子中，按钮按照水平方向排列，当宽度不足以容纳所有按钮时，按钮会自动换行到新的行。
+
+
+
+
+## canvas 子控件提供其自己的布局。
+`Canvas` 是 WPF 中的一种布局容器，它提供了绝对定位的方式，允许你通过指定子元素的坐标来摆放它们。以下是关于 `Canvas` 的一些详细信息：
+
+### 1. **绝对定位：**
+   - `Canvas` 允许你以绝对坐标的方式放置子元素。通过设置 `Canvas.Left` 和 `Canvas.Top` 属性，你可以指定元素左上角相对于 `Canvas` 左上角的水平和垂直位置。
+
+     ```xaml
+     <Canvas>
+         <Button Content="按钮" Canvas.Left="50" Canvas.Top="50" />
+         <!-- 按钮左上角相对于 Canvas 左上角偏移 (50, 50) -->
+     </Canvas>
+     ```
+
+### 2. **层叠顺序：**
+   - 子元素的层叠顺序由 `Canvas.ZIndex` 属性控制。具有较高 `ZIndex` 值的元素会出现在具有较低 `ZIndex` 值的元素上面。
+
+     ```xaml
+     <Canvas>
+         <Button Content="按钮1" Canvas.Left="50" Canvas.Top="50" Canvas.ZIndex="1" />
+         <Button Content="按钮2" Canvas.Left="100" Canvas.Top="100" Canvas.ZIndex="0" />
+         <!-- 按钮1 在按钮2 上面 -->
+     </Canvas>
+     ```
+
+### 3. **AutoSize：**
+   - `Canvas` 不会自动调整子元素的大小。子元素的大小由其自身的 `Width` 和 `Height` 属性决定。
+
+     ```xaml
+     <Canvas>
+         <Rectangle Fill="Blue" Width="50" Height="50" Canvas.Left="50" Canvas.Top="50" />
+         <!-- 蓝色矩形，宽度和高度分别为 50 像素 -->
+     </Canvas>
+     ```
+
+### 4. **定位单位：**
+   - `Canvas` 使用设备独立单位来表示位置和大小。这意味着，你可以使用像素、英寸或其他单位来指定位置和大小，而系统会将其转换为适当的设备独立单位。
+
+### 示例：
+
+```xaml
+<Canvas>
+    <Ellipse Fill="Red" Width="50" Height="50" Canvas.Left="50" Canvas.Top="50" />
+    <Rectangle Fill="Green" Width="80" Height="60" Canvas.Left="100" Canvas.Top="100" />
+    <Button Content="按钮" Canvas.Left="200" Canvas.Top="150" />
+</Canvas>
+```
+
+在这个例子中，`Ellipse`（椭圆）位于 `(50, 50)` 处，`Rectangle`（矩形）位于 `(100, 100)` 处，`Button` 位于 `(200, 150)` 处。每个元素的位置都是相对于 `Canvas` 左上角的坐标。
