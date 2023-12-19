@@ -179,7 +179,7 @@ namespace YourNamespace
 使用 `*` 可以使布局更具灵活性，尤其是当你希望列或行占据相对比例而不是固定的像素值时。
 
 
-## Grid布局控件 Grid.Row 和 Grid.Column 属性这样跟坐标点很像
+## `Grid布局控件` Grid.Row 和 Grid.Column 属性这样跟坐标点很像
 你是对的，虽然在WPF的Grid中使用`Grid.Row`和`Grid.Column`属性来设置元素的位置，这个方式看起来和传统的坐标点（x, y）设置相似，但实际上有一些关键的区别。
 
 1. **相对位置而非绝对坐标：** 在WPF中，`Grid.Row`和`Grid.Column`属性是相对于所在Grid的行和列的索引而言的，而不是绝对坐标。这种相对定位方式使得布局更加灵活，适应不同大小和分辨率的屏幕。
