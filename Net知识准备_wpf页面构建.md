@@ -179,7 +179,7 @@ namespace YourNamespace
 使用 `*` 可以使布局更具灵活性，尤其是当你希望列或行占据相对比例而不是固定的像素值时。
 
 
-## `Grid布局控件` Grid.Row 和 Grid.Column 属性这样跟坐标点很像
+## `Grid布局控件`（网格） Grid.Row 和 Grid.Column 属性这样跟坐标点很像 
 你是对的，虽然在WPF的Grid中使用`Grid.Row`和`Grid.Column`属性来设置元素的位置，这个方式看起来和传统的坐标点（x, y）设置相似，但实际上有一些关键的区别。
 
 1. **相对位置而非绝对坐标：** 在WPF中，`Grid.Row`和`Grid.Column`属性是相对于所在Grid的行和列的索引而言的，而不是绝对坐标。这种相对定位方式使得布局更加灵活，适应不同大小和分辨率的屏幕。
@@ -243,13 +243,13 @@ namespace YourNamespace
 
 
 
-## `StackPanel` 布局控件
+## `StackPanel` 布局控件  堆栈叠面板
 确切地说，`StackPanel` 里的子元素是按顺序布局的，不允许重叠，在方向上依次排列，并根据需要自动换行。但`StackPanel` 不会像一些绝对定位的面板（如`Canvas`）那样允许子元素完全重叠。
 
 
 
 
-##  `DockPanel`子控件与面板的边缘对齐。
+##  `DockPanel`子控件与面板的边缘对齐。 （停靠面板）
 `DockPanel` 是 WPF 中的一种布局容器，它允许将控件停靠在面板的边缘或中心。`DockPanel` 控制子元素的停靠方式，支持上、下、左、右、中等方向。以下是一些关于 `DockPanel` 的重要特性和用法：
 
 ### 1. **Dock 属性：**
@@ -304,7 +304,7 @@ namespace YourNamespace
 
 
 
-## `WrapPanel` 子控件按从左到右的顺序放置，在当前行上的空间不足时换行到下一行。
+## `WrapPanel` 子控件按从左到右的顺序放置，在当前行上的空间不足时换行到下一行。（流式面板）
 `WrapPanel` 是 WPF 中的一种布局容器，它以流式方式按行或按列排列其子元素。当空间不足以容纳所有子元素时，`WrapPanel` 会自动换行，将多余的子元素放到新的行或列中。以下是关于 `WrapPanel` 的一些细节：
 
 ### 1. **Orientation（方向）属性：**
@@ -426,7 +426,7 @@ namespace YourNamespace
 
 
 
-## `Canvas`场景使用
+## `Canvas`场景使用 （画布）
 `Canvas` 通常在以下场景下使用：
 
 1. **绝对定位要求：** 当你需要精确控制子元素的位置，而不希望受到网格单元的约束时，`Canvas` 是一个不错的选择。例如，当你需要实现自定义的绘图或图形编辑器时，可以使用 `Canvas` 来定位和管理图形元素。
@@ -443,7 +443,7 @@ namespace YourNamespace
 
 
 
-## UniformGrid 
+## UniformGrid （均匀网格）
 在 `<UniformGrid>` 中，不需要显式地为每个子元素指定 `Row` 和 `Column` 属性，因为 `UniformGrid` 会自动处理子元素的布局，使它们在网格中均匀分布。`UniformGrid` 会按照从左到右、从上到下的顺序依次填充子元素，直到达到指定的行数和列数。
 
 在你的例子中，`UniformGrid` 设置了 `Rows="2"` 和 `Columns="3"`，意味着这个 `UniformGrid` 将会是一个2行3列的网格。当你添加了6个 `Button` 作为子元素时，`UniformGrid` 会自动将它们放置到网格中。由于 `UniformGrid` 的工作方式是均匀分布，因此它会自动为每个子元素分配一个位置，而不需要手动指定 `Row` 和 `Column`。
