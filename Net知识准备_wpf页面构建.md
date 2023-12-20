@@ -440,3 +440,15 @@ namespace YourNamespace
 5. **绘制图形：** `Canvas` 是一个适合绘制图形和自定义绘图的场所。你可以在 `Canvas` 上使用 `Path`、`Ellipse`、`Rectangle` 等元素来创建自定义图形。
 
 虽然 `Canvas` 在某些场景下很有用，但在许多常规布局的情况下，`Grid` 更为方便和常用，因为 `Grid` 提供了灵活的网格布局，适用于大多数界面设计。因此，通常在需要精确控制位置或需要自由定位元素的特定情况下才会选择使用 `Canvas`。
+
+
+
+## UniformGrid 
+在 `<UniformGrid>` 中，不需要显式地为每个子元素指定 `Row` 和 `Column` 属性，因为 `UniformGrid` 会自动处理子元素的布局，使它们在网格中均匀分布。`UniformGrid` 会按照从左到右、从上到下的顺序依次填充子元素，直到达到指定的行数和列数。
+
+在你的例子中，`UniformGrid` 设置了 `Rows="2"` 和 `Columns="3"`，意味着这个 `UniformGrid` 将会是一个2行3列的网格。当你添加了6个 `Button` 作为子元素时，`UniformGrid` 会自动将它们放置到网格中。由于 `UniformGrid` 的工作方式是均匀分布，因此它会自动为每个子元素分配一个位置，而不需要手动指定 `Row` 和 `Column`。
+
+如果你想要手动指定 `Row` 和 `Column`，你可以使用普通的 `Grid`，这样你就可以更灵活地控制子元素的位置。但是在 `UniformGrid` 中，均匀分布是这个控件的特性，不需要显式指定位置。
+
+
+
