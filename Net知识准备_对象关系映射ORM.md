@@ -1,3 +1,97 @@
+##  获取视图中的字段
+是的，如果你已经成功连接到数据库，你可以通过查询数据库的系统表或视图来获取视图中的字段信息。在C#中，你可以使用ADO.NET来执行查询并检索字段信息。
+
+以下是一个简单的示例，演示如何使用C#和ADO.NET获取数据库视图的字段信息：
+
+```csharp
+using System;
+using System.Data.SqlClient;
+using System.Data;
+
+class Program
+{
+    static void Main()
+    {
+        string connectionString = "YourConnectionString"; // 替换为实际的数据库连接字符串
+
+        using (SqlConnection connection = new SqlConnection(connectionString))
+        {
+            connection.Open();
+
+            // 替换 "YourViewName" 为实际的数据库视图名
+            string viewName = "YourViewName";
+
+            // 查询获取视图的字段信息
+            string query = $"SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{viewName}'";
+
+            using (SqlCommand command = new SqlCommand(query, connection))
+            {
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        string columnName = reader["COLUMN_NAME"].ToString();
+                        Console.WriteLine($"Column Name: {columnName}");
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+在这个示例中，我们使用 `INFORMATION_SCHEMA.COLUMNS` 系统视图来获取指定视图的字段信息。请确保替换代码中的 `YourConnectionString`、`YourViewName` 为实际的数据库连接字符串和视图名。
+
+这段代码执行查询并输出视图的字段名。你可以根据需要修改代码以满足你的具体要求，比如将字段名存储在集合中供后续使用。
+
+##
+对于 Oracle 数据库，你可以使用类似的方法来获取数据库视图的字段名。以下是一个使用 C# 和 ADO.NET 连接到 Oracle 数据库并获取字段名的简单示例：
+
+```csharp
+using System;
+using System.Data;
+using System.Data.Common;
+using Oracle.ManagedDataAccess.Client;
+
+class Program
+{
+    static void Main()
+    {
+        string connectionString = "YourConnectionString"; // 替换为实际的 Oracle 数据库连接字符串
+
+        using (DbConnection connection = new OracleConnection(connectionString))
+        {
+            connection.Open();
+
+            // 替换 "YourViewName" 为实际的数据库视图名
+            string viewName = "YourViewName";
+
+            // 获取表的元数据信息
+            DataTable tableSchema = connection.GetSchema("Columns", new[] { connection.Database, null, viewName });
+
+            // 输出字段名
+            foreach (DataRow row in tableSchema.Rows)
+            {
+                string columnName = row["COLUMN_NAME"].ToString();
+                Console.WriteLine($"Column Name: {columnName}");
+            }
+        }
+    }
+}
+```
+
+请确保你的项目引用了 Oracle 数据库的 ADO.NET 提供程序。你可以使用 Oracle Data Provider for .NET (ODP.NET)，该提供程序可通过 NuGet 包管理器安装。
+
+```bash
+Install-Package Oracle.ManagedDataAccess
+```
+
+替换示例代码中的 `YourConnectionString` 为实际的 Oracle 数据库连接字符串，并将 `YourViewName` 替换为要查询的视图名。
+
+同样，确保连接字符串中的账户具有足够的权限来执行元数据查询。如果使用用户名和密码进行身份验证，提供的用户需要有足够的权限。
+
+
+
 ## 如果您希望根据数据库的列名动态创建类，并且符合开闭原则，C#  我可以使用 sqlsugar吗
 SqlSugar 是一个轻量级的ORM（对象关系映射）库，它可以用于数据库操作。虽然 SqlSugar 提供了动态建表和动态查询的功能，但它主要用于操作已经存在的数据库表，而不是动态创建类。SqlSugar 的主要功能是映射数据库表到.NET对象，而不是根据数据库的列名动态创建类。
 
