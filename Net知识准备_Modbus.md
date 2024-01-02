@@ -638,3 +638,7 @@ class AsynchronousSerialCommunication
 2. **异步通信：**
    - 使用 `WriteDataAsync` 和 `ReadDataAsync` 实现异步写入和读取。
    - 异步通信提供了更好的响应性，特别适用于需要同时处理多个任务的场景，避免了主线程阻塞。
+
+
+## 
+串口通信 兼容多种型号的第三方设备，是使用了怎样的设计技术支持多种设备的，发送AT命令是为了干嘛？
