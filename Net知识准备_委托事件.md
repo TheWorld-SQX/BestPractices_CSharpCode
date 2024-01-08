@@ -83,6 +83,94 @@ public class Program
 所以，尽管在代码中并没有显式使用“策略模式”这个术语，但委托的应用使得代码体现了策略模式的核心思想，即定义一系列算法，将它们封装起来，并使它们可以相互替换。希望这样的解释更能清晰地传达策略模式的概念。
 
 
+## 
+确实，如果想要按字典顺序排序，Lambda 表达式可能不够灵活。为了支持更多的排序策略，可以考虑使用实现 `IComparer<int>` 接口的自定义比较器类。这样，每个排序策略都可以由一个单独的类来实现，而不需要在主要的排序逻辑中引入大量的条件语句。
+
+以下是一个示例，演示如何使用比较器实现字典排序：
+
+```csharp
+using System;
+using System.Collections.Generic;
+
+public class Sorter
+{
+    public void BubbleSort(int[] array, IComparer<int> comparer)
+    {
+        int n = array.Length;
+
+        for (int i = 0; i < n - 1; i++)
+        {
+            for (int j = 0; j < n - i - 1; j++)
+            {
+                if (comparer.Compare(array[j], array[j + 1]) > 0)
+                {
+                    // 交换元素
+                    int temp = array[j];
+                    array[j] = array[j + 1];
+                    array[j + 1] = temp;
+                }
+            }
+        }
+    }
+}
+
+public class DictionaryOrderComparer : IComparer<int>
+{
+    public int Compare(int x, int y)
+    {
+        return x.ToString().CompareTo(y.ToString());
+    }
+}
+
+public class Program
+{
+    static void Main()
+    {
+        int[] numbers = { 5, 2, 9, 1, 5, 6 };
+
+        Sorter sorter = new Sorter();
+
+        // 升序排序
+        sorter.BubbleSort(numbers, Comparer<int>.Default);
+
+        Console.WriteLine("Ascending Order:");
+        PrintArray(numbers);
+
+        // 降序排序
+        sorter.BubbleSort(numbers, new ReverseComparer());
+
+        Console.WriteLine("Descending Order:");
+        PrintArray(numbers);
+
+        // 字典顺序排序
+        sorter.BubbleSort(numbers, new DictionaryOrderComparer());
+
+        Console.WriteLine("Dictionary Order:");
+        PrintArray(numbers);
+    }
+
+    static void PrintArray(int[] array)
+    {
+        foreach (var item in array)
+        {
+            Console.Write(item + " ");
+        }
+        Console.WriteLine();
+    }
+}
+
+public class ReverseComparer : IComparer<int>
+{
+    public int Compare(int x, int y)
+    {
+        return y.CompareTo(x);
+    }
+}
+```
+
+在这个例子中，我们创建了一个实现 `IComparer<int>` 接口的 `DictionaryOrderComparer` 类，它负责定义字典顺序的比较规则。然后通过将这个比较器传递给 `BubbleSort` 方法，我们可以实现按字典顺序排序。同时，为了保留原有的升序和降序排序，我们使用了 `Comparer<int>.Default` 和 `ReverseComparer`。这种方式使得每个排序策略都由一个单独的类来实现，提高了代码的可维护性和可扩展性。
+
+
 
 ## ？将 "delegate" 翻译成 "委托" 
 将 "delegate" 翻译成 "委托" 的原因主要是为了准确表达其在编程领域的概念和作用。在中文中，"委托" 这个词汇更能传达 "delegate" 的含义和用途。
