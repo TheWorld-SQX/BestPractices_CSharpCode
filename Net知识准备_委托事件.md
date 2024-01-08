@@ -1,6 +1,89 @@
 ## 
 某件事发生，（某些关注这件事对象）作出一连串的反应
 
+## 一个例子
+确实，如果要实现不同的排序方式，每次都复制一份代码或者通过增加大量的条件语句并不是一个好的解决方案。这样的代码可读性差，维护困难，并且容易引入错误。为了解决这个问题，可以使用委托和策略模式来实现更灵活的排序方式，而不需要大量的条件语句。
+
+以下是一个使用委托和策略模式的示例：
+
+```csharp
+using System;
+using System.Collections.Generic;
+
+public class Sorter
+{
+    public delegate bool ComparisonDelegate(int x, int y);
+
+    public void BubbleSort(int[] array, ComparisonDelegate comparison)
+    {
+        int n = array.Length;
+
+        for (int i = 0; i < n - 1; i++)
+        {
+            for (int j = 0; j < n - i - 1; j++)
+            {
+                if (comparison(array[j], array[j + 1]))
+                {
+                    // 交换元素
+                    int temp = array[j];
+                    array[j] = array[j + 1];
+                    array[j + 1] = temp;
+                }
+            }
+        }
+    }
+}
+
+public class Program
+{
+    static void Main()
+    {
+        int[] numbers = { 5, 2, 9, 1, 5, 6 };
+
+        Sorter sorter = new Sorter();
+
+        // 升序排序
+        sorter.BubbleSort(numbers, (x, y) => x > y);
+
+        Console.WriteLine("Ascending Order:");
+        PrintArray(numbers);
+
+        // 降序排序
+        sorter.BubbleSort(numbers, (x, y) => x < y);
+
+        Console.WriteLine("Descending Order:");
+        PrintArray(numbers);
+    }
+
+    static void PrintArray(int[] array)
+    {
+        foreach (var item in array)
+        {
+            Console.Write(item + " ");
+        }
+        Console.WriteLine();
+    }
+}
+```
+
+在这个示例中，`Sorter` 类的 `BubbleSort` 方法接受一个 `ComparisonDelegate` 委托参数，该委托定义了一个比较的规则。然后在 `Main` 方法中，我们分别使用升序和降序的委托来调用 `BubbleSort` 方法，实现了不同排序方式的灵活切换。这样的设计使得可以轻松地添加新的排序规则，而不需要修改排序算法的代码。
+
+
+## 
+看出来你用委托了，但是没看出来你用了策略阿   
+
+对不起，我的解释可能不够清晰。在这个示例中，使用了**策略模式**，具体体现在以下几个方面：
+
+1. **委托作为策略：** 在这里，`ComparisonDelegate` 委托就是一个策略，它定义了不同的比较规则。通过使用不同的委托实例，我们实现了不同的排序策略。
+
+2. **可插拔的排序算法：** `BubbleSort` 方法允许传入不同的比较策略，即委托。这使得排序算法与具体的比较规则解耦，从而支持了不同的排序策略。
+
+3. **扩展性：** 如果需要添加新的排序策略，只需定义一个新的委托实例，而无需修改排序算法的源代码。这符合策略模式的设计思想，即允许在不修改客户端代码的情况下定义新的策略。
+
+所以，尽管在代码中并没有显式使用“策略模式”这个术语，但委托的应用使得代码体现了策略模式的核心思想，即定义一系列算法，将它们封装起来，并使它们可以相互替换。希望这样的解释更能清晰地传达策略模式的概念。
+
+
+
 ## ？将 "delegate" 翻译成 "委托" 
 将 "delegate" 翻译成 "委托" 的原因主要是为了准确表达其在编程领域的概念和作用。在中文中，"委托" 这个词汇更能传达 "delegate" 的含义和用途。
 
