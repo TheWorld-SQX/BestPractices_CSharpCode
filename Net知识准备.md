@@ -278,6 +278,42 @@ public void MyMethod()
 
 总之，虽然两种情况下都使用了 `in` 关键字，但其含义和用法在方法参数和委托参数中略有不同。在方法参数中，它表示只读，而在委托中，它表示委托可以接受逆变的参数类型。
 
+
+## `yield return` 和 `return` 
+`yield return` 和 `return` 是在 C# 中用于从方法中返回值的两个关键字，它们在功能和使用场景上有很大的区别。
+
+1. **`return` 关键字：**
+   - `return` 用于在方法中立即返回值，并结束方法的执行。
+   - 当方法执行到 `return` 语句时，方法的执行将立即终止，不再执行后续的代码。
+   - `return` 语句将一个值传递给调用方。
+
+   ```csharp
+   public int GetValue()
+   {
+       int result = 42;
+       return result; // 返回值并结束方法
+   }
+   ```
+
+2. **`yield return` 关键字：**
+   - `yield return` 用于在迭代器方法（方法返回 `IEnumerable` 或 `IEnumerable<T>`）中产生一个序列的值，并暂时挂起方法的执行。
+   - `yield return` 的使用使得方法能够多次产生值，每次产生一个值后暂停，等待下一次迭代。
+   - 迭代器方法可以在后续调用中继续执行，并从上一次挂起的位置继续执行。
+
+   ```csharp
+   public IEnumerable<int> GetValues()
+   {
+       yield return 1;
+       yield return 2;
+       yield return 3;
+   }
+   ```
+
+在总体上，`return` 适用于普通的方法，而 `yield return` 适用于迭代器方法，它们分别用于不同的场景。使用 `yield return` 的迭代器方法可以在枚举时按需产生序列的值，而不一次性生成整个序列，这在处理大量数据或无限序列时非常有用。
+
+
+
+
 <a name="在VS上C#编写的程序是如何运行的"></a>
 ## 在VS上C#编写的程序是如何运行的
 - 源代码编写： 在VS中，程序员使用C#语言编写源代码，实现程序的逻辑和功能。
