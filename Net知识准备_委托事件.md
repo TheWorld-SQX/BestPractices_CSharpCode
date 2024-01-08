@@ -38,6 +38,61 @@
 (5) C#委托和事件的探秘(二) - 知乎 - 知乎专栏. https://zhuanlan.zhihu.com/p/26392360.## 
 
 
+## 事件由谁触发，事件触发了谁做出反应？事件发生时 是订阅者做出反应 还是发布者作出反应 ？ 
+在事件驱动的架构中，事件发生时通常是由发布者（Publisher）触发事件，而订阅者（Subscriber）对事件做出反应。这符合观察者模式（Observer Pattern）的基本思想。
+
+具体来说，事件的触发通常是由发布者对象引发的，而订阅者对象负责注册到发布者对象的事件，并在事件发生时执行相应的处理逻辑。这样的设计允许发布者和订阅者之间的解耦，使得系统更加灵活和可扩展。
+
+举例来说，考虑一个按钮点击事件的情景：
+
+1. **发布者（Publisher）：** 按钮对象是发布者，它会定义并触发“点击事件”。
+   
+   ```csharp
+   public class Button
+   {
+       public event EventHandler Click;
+
+       public void OnClick()
+       {
+           // 触发点击事件
+           Click?.Invoke(this, EventArgs.Empty);
+       }
+   }
+   ```
+
+2. **订阅者（Subscriber）：** 某个对象可能希望在按钮被点击时执行一些特定的操作。这个对象会注册到按钮的“点击事件”上，以便在事件发生时做出反应。
+
+   ```csharp
+   public class SomeObject
+   {
+       public void HandleButtonClick(object sender, EventArgs e)
+       {
+           // 响应按钮点击事件的逻辑
+           Console.WriteLine("Button clicked!");
+       }
+   }
+   ```
+
+3. **订阅过程：** 在合适的地方，订阅者对象将自己注册到按钮的点击事件上。
+
+   ```csharp
+   // 创建按钮和订阅者对象
+   Button myButton = new Button();
+   SomeObject myObject = new SomeObject();
+
+   // 订阅按钮的点击事件
+   myButton.Click += myObject.HandleButtonClick;
+   ```
+
+4. **事件触发：** 当按钮被点击时，发布者触发了按钮的点击事件，所有订阅者的相关处理方法将被调用。
+
+   ```csharp
+   // 触发按钮的点击事件
+   myButton.OnClick(); // 输出 "Button clicked!"
+   ```
+
+总之，事件驱动的设计中，发布者负责引发事件，而订阅者则负责在事件发生时做出相应的反应。这种模式提供了一种松耦合的方式，使得系统的不同部分能够独立演化而不影响彼此。
+
 
 
 ## 我想知道  事件被触发 其实是 跟事件有关的委托在做一些事情，然后是跟委托相关的某些方法在做一些事情 对吗
