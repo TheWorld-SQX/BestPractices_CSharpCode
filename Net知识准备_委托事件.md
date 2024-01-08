@@ -171,6 +171,92 @@ public class ReverseComparer : IComparer<int>
 在这个例子中，我们创建了一个实现 `IComparer<int>` 接口的 `DictionaryOrderComparer` 类，它负责定义字典顺序的比较规则。然后通过将这个比较器传递给 `BubbleSort` 方法，我们可以实现按字典顺序排序。同时，为了保留原有的升序和降序排序，我们使用了 `Comparer<int>.Default` 和 `ReverseComparer`。这种方式使得每个排序策略都由一个单独的类来实现，提高了代码的可维护性和可扩展性。
 
 
+##  
+如果不使用 Lambda 表达式，可以通过创建具有相同签名的普通方法，并将这些方法的引用传递给 `BubbleSort` 方法。下面是一个示例：
+
+```csharp
+using System;
+
+public class Sorter
+{
+    public delegate int ComparisonDelegate(int x, int y);
+
+    public void BubbleSort(int[] array, ComparisonDelegate comparison)
+    {
+        int n = array.Length;
+
+        for (int i = 0; i < n - 1; i++)
+        {
+            for (int j = 0; j < n - i - 1; j++)
+            {
+                if (comparison(array[j], array[j + 1]) > 0)
+                {
+                    // 交换元素
+                    int temp = array[j];
+                    array[j] = array[j + 1];
+                    array[j + 1] = temp;
+                }
+            }
+        }
+    }
+}
+
+public class Program
+{
+    static void Main()
+    {
+        int[] numbers = { 5, 2, 9, 1, 5, 6 };
+
+        Sorter sorter = new Sorter();
+
+        // 升序排序
+        sorter.BubbleSort(numbers, CompareAscending);
+
+        Console.WriteLine("Ascending Order:");
+        PrintArray(numbers);
+
+        // 降序排序
+        sorter.BubbleSort(numbers, CompareDescending);
+
+        Console.WriteLine("Descending Order:");
+        PrintArray(numbers);
+
+        // 字典顺序排序
+        sorter.BubbleSort(numbers, CompareDictionaryOrder);
+
+        Console.WriteLine("Dictionary Order:");
+        PrintArray(numbers);
+    }
+
+    static int CompareAscending(int x, int y)
+    {
+        return x.CompareTo(y);
+    }
+
+    static int CompareDescending(int x, int y)
+    {
+        return y.CompareTo(x);
+    }
+
+    static int CompareDictionaryOrder(int x, int y)
+    {
+        return x.ToString().CompareTo(y.ToString());
+    }
+
+    static void PrintArray(int[] array)
+    {
+        foreach (var item in array)
+        {
+            Console.Write(item + " ");
+        }
+        Console.WriteLine();
+    }
+}
+```
+
+在这个示例中，我们创建了三个具有相同签名的方法 `CompareAscending`、`CompareDescending` 和 `CompareDictionaryOrder`，用于分别表示升序、降序和字典顺序的比较规则。然后，我们将这些方法的引用传递给 `BubbleSort` 方法，实现了相同的效果。这样，即便不使用 Lambda 表达式，依然可以通过方法引用来传递比较规则。
+
+
 
 ## ？将 "delegate" 翻译成 "委托" 
 将 "delegate" 翻译成 "委托" 的原因主要是为了准确表达其在编程领域的概念和作用。在中文中，"委托" 这个词汇更能传达 "delegate" 的含义和用途。
