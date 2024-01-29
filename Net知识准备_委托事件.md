@@ -347,6 +347,44 @@ MyDelegate objectDelegate = stringDelegate;
 在委托中使用协变性，可以使代码更具灵活性，允许更具体的委托实例在期望更一般返回类型的委托实例的地方使用。
 
 
+## 
+在泛型参数上使用 `in` 和 `out` 关键字，以及它们在委托或接口中的选择，涉及到对协变性（Covariance）和逆变性（Contravariance）的考虑。
+
+1. **使用 `out` 关键字:**
+   - `out` 关键字用于指定协变性。在接口或委托中，`out` 表示类型参数只能用作输出，即它只能用于返回值。
+   - 在委托中，返回类型是协变的，这意味着可以将具有更具体返回类型的委托实例隐式转换为具有更一般返回类型的委托实例。
+
+   示例：
+   ```csharp
+   public delegate TResult CovariantDelegate<out TResult>();
+
+   interface ICovariant<out T>
+   {
+       T GetItem();
+   }
+   ```
+
+   使用 `out` 暗示着类型参数在此处是协变的，可以隐式转换为更一般的类型。
+
+2. **使用 `in` 关键字:**
+   - `in` 关键字用于指定逆变性。在接口或委托中，`in` 表示类型参数只能用作输入，即它只能用于参数类型。
+   - 在委托中，参数类型是逆变的，这意味着可以将具有更一般参数类型的委托实例隐式转换为具有更具体参数类型的委托实例。
+
+   示例：
+   ```csharp
+   public delegate void ContravariantDelegate<in T>(T item);
+
+   interface IContravariant<in T>
+   {
+       void SetItem(T item);
+   }
+   ```
+
+   使用 `in` 暗示着类型参数在此处是逆变的，可以隐式转换为更具体的类型。
+
+总体而言，选择 `in` 或 `out` 反映了对类型参数在委托或接口中的协变性或逆变性的意图。这样的选择使得在使用这些接口或委托时，更容易理解类型参数是如何用于输入和输出的。
+
+
 
 ## ？将 "delegate" 翻译成 "委托" 
 将 "delegate" 翻译成 "委托" 的原因主要是为了准确表达其在编程领域的概念和作用。在中文中，"委托" 这个词汇更能传达 "delegate" 的含义和用途。
