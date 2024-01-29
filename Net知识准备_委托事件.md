@@ -257,6 +257,96 @@ public class Program
 在这个示例中，我们创建了三个具有相同签名的方法 `CompareAscending`、`CompareDescending` 和 `CompareDictionaryOrder`，用于分别表示升序、降序和字典顺序的比较规则。然后，我们将这些方法的引用传递给 `BubbleSort` 方法，实现了相同的效果。这样，即便不使用 Lambda 表达式，依然可以通过方法引用来传递比较规则。
 
 
+## 关于类型参数的子父类转变 协变和逆变
+协变（covariance）和逆变（contravariance）是泛型类型系统中的两个重要概念，涉及到类型参数的子类型关系。
+
+1. **协变（Covariance）:**
+   - 协变是指在类型参数的继承关系中保持相同方向。
+   - 在协变中，子类型的泛型实例可以隐式转换为父类型的泛型实例。
+   - 协变通常涉及返回类型。例如，如果 `B` 是 `A` 的子类型，那么 `Func<B>` 是 `Func<A>` 的子类型。
+
+   示例（C# 中的协变）：
+   ```csharp
+   // 定义一个协变接口
+   interface ICovariant<out T>
+   {
+       T GetItem();
+   }
+
+   // 协变使用示例
+   ICovariant<string> stringCovariant = new CovariantImplementation<string>();
+   ICovariant<object> objectCovariant = stringCovariant; // 协变允许这种隐式转换
+   ```
+
+2. **逆变（Contravariance）:**
+   - 逆变是指在类型参数的继承关系中反转方向。
+   - 在逆变中，父类型的泛型实例可以隐式转换为子类型的泛型实例。
+   - 逆变通常涉及参数类型。例如，如果 `B` 是 `A` 的子类型，那么 `Action<A>` 是 `Action<B>` 的子类型。
+
+   示例（C# 中的逆变）：
+   ```csharp
+   // 定义一个逆变接口
+   interface IContravariant<in T>
+   {
+       void SetItem(T item);
+   }
+
+   // 逆变使用示例
+   IContravariant<object> objectContravariant = new ContravariantImplementation<object>();
+   IContravariant<string> stringContravariant = objectContravariant; // 逆变允许这种隐式转换
+   ```
+
+这些概念主要涉及到在使用泛型类型时，子类型和父类型之间的关系以及它们对泛型类型参数的影响。在 C# 中，使用 `out` 关键字表示协变，使用 `in` 关键字表示逆变。
+
+
+
+## 协变性
+协变性（Covariance）是指在类型系统中，子类型的关系保持与类型参数的关系一致。具体来说，在协变性中，可以将包含更具体类型参数的类型实例隐式转换为包含更一般类型参数的类型实例。
+
+协变性通常涉及到泛型类型，其中泛型类型的参数类型在继承关系中表现出协变性。在协变性中，子类型的泛型实例可以被隐式地转换为父类型的泛型实例。
+
+在编程语言中，特别是在支持泛型的语言中，协变性通常通过关键字（例如，C# 中的 `out`）来指定。这个关键字表明在某个地方，类型参数是协变的。
+
+一个简单的示例是在 C# 中的协变性使用 `out` 关键字的接口：
+
+```csharp
+interface ICovariant<out T>
+{
+    T GetItem();
+}
+
+// 示例：协变性允许将包含更具体类型参数的实例隐式转换为更一般类型参数的实例
+ICovariant<string> stringCovariant = new CovariantImplementation<string>();
+ICovariant<object> objectCovariant = stringCovariant; // 协变性允许这种隐式转换
+```
+
+在这个例子中，`ICovariant` 接口使用了 `out` 关键字来表示泛型参数 `T` 是协变的。这允许将实现 `ICovariant<string>` 的实例隐式转换为类型为 `ICovariant<object>` 的变量，因为 `string` 是 `object` 的子类型。
+
+协变性在许多编程场景中都很有用，它使得代码更加灵活，允许更具体的类型实例在期望更一般类型实例的地方使用。
+
+
+
+## 委托中的协变性
+在委托中，协变性（covariance）指的是委托类型参数的协变性。具体来说，如果一个委托的返回类型是协变的，那么可以将这个委托隐式转换为具有更一般返回类型的委托。在 C# 中，协变性通常涉及到委托的返回类型。
+
+以下是一个简单的示例：
+
+```csharp
+// 定义一个委托类型
+delegate object MyDelegate();
+
+// 创建一个返回 string 类型的委托实例
+MyDelegate stringDelegate = () => "Hello, World!";
+
+// 将具有更一般返回类型的委托隐式转换为原始委托
+MyDelegate objectDelegate = stringDelegate;
+```
+
+在这个例子中，`MyDelegate` 是一个返回 `object` 类型的委托，而`stringDelegate` 是一个返回 `string` 类型的委托。由于返回类型是协变的，所以可以将 `stringDelegate` 隐式转换为类型为 `object` 的 `objectDelegate`。
+
+在委托中使用协变性，可以使代码更具灵活性，允许更具体的委托实例在期望更一般返回类型的委托实例的地方使用。
+
+
 
 ## ？将 "delegate" 翻译成 "委托" 
 将 "delegate" 翻译成 "委托" 的原因主要是为了准确表达其在编程领域的概念和作用。在中文中，"委托" 这个词汇更能传达 "delegate" 的含义和用途。
