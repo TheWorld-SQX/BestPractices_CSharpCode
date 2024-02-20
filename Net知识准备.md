@@ -1544,6 +1544,18 @@ public class PdfTemplateFactory
 以上是一些常用的反射编码技巧和写法，可以根据具体的需求和场景进行使用。同时，在使用反射时也要注意性能问题，尽量避免过多的反射操作，合理使用缓存和其他优化手段来提升性能。
 
 <a name= "使用ADO.NET和LINQ进行数据库查询和操作"></a>
+
+## 
+.NET Framework 数据提供程序；  
+用于 SQL Server 的 .NET Framework 数据访问接口	提供 Microsoft SQL Server 的数据访问。 使用 System.Data.SqlClient 命名空间。  
+用于 OLE DB 的 .NET Framework 数据提供程序	提供对使用 OLE DB 公开的数据源中数据的访问。 使用 System.Data.OleDb 命名空间。  
+用于 ODBC 的 .NET Framework 数据提供程序	提供对使用 ODBC 公开的数据源中数据的访问。 使用 System.Data.Odbc 命名空间。   
+用于 Oracle 的 .NET Framework 数据提供程序	适用于 Oracle 数据源。 用于 Oracle 的 .NET Framework 数据提供程序支持 Oracle 客户端软件 8.1.7 和更高版本，并使用 System.Data.OracleClient 命名空间。  
+EntityClient 提供程序	提供对实体数据模型 (EDM) 应用程序的数据访问。 使用 System.Data.EntityClient 命名空间。  
+用于 SQL Server Compact 4.0 的 .NET Framework 数据提供程序。	提供 Microsoft SQL Server Compact 4.0 的数据访问。 使用 System.Data.SqlServerCe 命名空间。  
+
+
+
 ## 使用ADO.NET和LINQ进行数据库查询和操作，掌握关系型数据库基本知识
 
 * ADO.NET 是一组向NET Framework 程席员公开数据访问服务的类。ADO.NET 为创建分布式数据共享应用程序提供了一组丰富的组件。它提供了对关系数据、XML 和应用程序数据的访问，因此是.NETFramework 中不可缺少的一部分。ADO.NET 支持多种开发需求，包括创建由应用程序、工具、语言或Internet 浏览器使用的前端数据库客户端和中间层业务对象。
