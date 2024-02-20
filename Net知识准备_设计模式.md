@@ -273,3 +273,60 @@ class Program
 在这种情况下，如果您修改了服务注册逻辑，只需重新启动应用程序即可使更改生效，而不需要重新编译和发布应用程序。这是因为依赖注入容器在应用程序启动时会重新读取注册逻辑并应用更改，而不需要重新生成应用程序的可执行文件。
 
 重新发布应用程序通常涉及重新编译应用程序，并将生成的可执行文件部署到目标环境中。重新发布通常用于更新应用程序的代码、配置或资源文件，或者添加新的功能模块。但是，如果只是修改了服务注册逻辑而没有修改应用程序的代码，重新发布可能是不必要的，因为重新启动应用程序就足以使更改生效。
+
+
+
+
+## “修改服务注册逻辑而没有修改应用程序的代码”
+当我提到“修改服务注册逻辑而没有修改应用程序的代码”时，我指的是只修改应用程序的配置，而不修改应用程序的源代码。具体来说，这意味着您可以通过修改应用程序的配置文件或其他配置方式来更改服务的注册逻辑，而不必直接修改应用程序的代码。
+
+在依赖注入容器中，服务的注册逻辑通常在应用程序的启动代码中完成，但这些注册逻辑可能是从配置文件中读取的，而不是直接硬编码在代码中。这样做的好处是，可以通过修改配置文件来更改服务的注册逻辑，而不必修改代码并重新编译应用程序。
+
+具体来说，在ASP.NET Core应用程序中，您可以使用 `appsettings.json` 或其他配置文件来配置依赖注入容器。然后，在应用程序的启动代码中，您可以读取配置文件并根据配置来注册服务。这样，当您需要更改服务的注册逻辑时，只需修改配置文件而不必修改代码，从而实现了修改服务注册逻辑而没有修改应用程序的代码。
+
+下面是一个简单的示例，演示如何在ASP.NET Core中使用配置文件来配置服务的注册逻辑：
+
+```csharp
+// Startup.cs
+
+public class Startup
+{
+    private IConfiguration Configuration { get; }
+
+    public Startup(IConfiguration configuration)
+    {
+        Configuration = configuration;
+    }
+
+    public void ConfigureServices(IServiceCollection services)
+    {
+        // 从配置文件中读取服务注册逻辑
+        var serviceType = Configuration["ServiceType"];
+        
+        // 根据配置注册服务
+        switch (serviceType)
+        {
+            case "TypeA":
+                services.AddSingleton<IService, ServiceTypeA>();
+                break;
+            case "TypeB":
+                services.AddSingleton<IService, ServiceTypeB>();
+                break;
+            default:
+                throw new InvalidOperationException("Invalid service type specified in configuration.");
+        }
+    }
+
+    // 其他代码...
+}
+```
+
+```json
+// appsettings.json
+
+{
+  "ServiceType": "TypeA"
+}
+```
+
+在这个示例中，我们通过 `appsettings.json` 配置文件指定了要注册的服务类型。然后，在 `Startup` 类的 `ConfigureServices` 方法中，根据配置来注册服务。这样，当您需要更改服务的注册逻辑时，只需修改配置文件而不必修改代码，从而实现了修改服务注册逻辑而没有修改应用程序的代码。
