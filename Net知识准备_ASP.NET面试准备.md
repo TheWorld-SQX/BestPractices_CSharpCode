@@ -1127,3 +1127,38 @@ Cookies（Cookie）和Session（会话）是用于在Web应用程序中维护状
 - **有状态/无状态：** Cookies 是无状态的，Session 是有状态的，可以存储关于用户或应用程序状态的更多信息。
 
 在实际应用中，Cookies 和 Session 经常结合使用。通常，服务器会使用一个小的标识符（Session ID）存储在客户端的 Cookie 中，以关联客户端和服务器端的会话数据。这样可以兼顾浏览器端的状态维护（通过 Cookies）和服务器端的状态维护（通过 Session）。
+
+
+
+## C#  jwt  鉴权授权涉及到的关键步骤和关键类对象
+在C#中进行JWT（JSON Web Token）鉴权授权涉及以下关键步骤和关键类对象：
+
+1. **生成JWT Token**：
+   - 使用合适的JWT库（如Microsoft.IdentityModel.Tokens）创建JWT Token，该Token包含用户信息和权限声明等。
+   - 关键类对象：`JwtSecurityTokenHandler`、`JwtSecurityToken`
+
+2. **验证JWT Token**：
+   - 对接收到的JWT Token进行验证，确保其完整性和有效性。
+   - 关键类对象：`JwtSecurityTokenHandler`
+
+3. **解析JWT Token**：
+   - 解析JWT Token，提取其中的用户信息和权限声明等关键信息。
+   - 关键类对象：`JwtSecurityTokenHandler`
+
+4. **授权策略**：
+   - 基于JWT中的用户信息和权限声明，实现授权策略，确定用户是否有权执行特定操作。
+   - 关键类对象：自定义的授权策略类、`ClaimsPrincipal`、`ClaimsIdentity`
+
+5. **认证中间件**：
+   - 在应用程序中配置JWT认证中间件，用于验证传入请求的JWT Token，并将用户信息添加到请求上下文中。
+   - 关键类对象：`AuthenticationHandler`、`JwtBearerOptions`
+
+6. **用户管理**：
+   - 实现用户管理功能，包括用户注册、登录等，生成并返回JWT Token给客户端。
+   - 关键类对象：自定义的用户管理类、`IdentityUser`、`UserManager`
+
+7. **权限控制**：
+   - 实现权限控制功能，根据用户的角色和权限决定是否允许执行特定的操作。
+   - 关键类对象：自定义的权限管理类、角色类、权限类
+
+通过以上步骤和关键类对象，你可以在C#应用程序中实现JWT鉴权授权功能，保护你的API和应用程序资源。
