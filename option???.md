@@ -106,6 +106,7 @@
 客户端：
 扫码枪传入扫码号；调用服务端的api查询患者相关信息;
 触发器检测状态；收费接口状态查询检测；
+MvvmLight框架和 MvvmCommunityToolKit框架变化，一些关键对象observableObject; ViewModelLocator里面使用各种服务依赖注入；
 物联网模块，串口通信，AT命令启动三方nb卡，辅着到网络分配ip（设备状态有没有故障,有没有卡片）向服务器发送胶片打印信息；
 
 
