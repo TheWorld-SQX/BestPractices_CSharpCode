@@ -108,6 +108,7 @@
 触发器检测状态；收费接口状态查询检测；
 物联网模块，串口通信，AT命令启动三方nb卡，辅着到网络分配ip（设备状态有没有故障,有没有卡片）向服务器发送胶片打印信息；
 wpf常见布局控件，触发器的使用，对wpf的理解，MvvmLight框架和 MvvmCommunityToolKit框架变化，一些关键对象observableObject; ViewModelLocator里面使用各种服务依赖注入；
+属性通知，命令绑定，事件处理；
 
 
 
