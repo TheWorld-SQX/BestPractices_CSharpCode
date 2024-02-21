@@ -934,7 +934,7 @@ public class PatientController : ControllerBase
 
 
 
-## get请求和post请求状态码
+## HTTP请求状态码
 HTTP GET 和 POST 请求都可以返回相同的 HTTP 状态码，这些状态码表示请求的处理结果。无论是 GET 还是 POST 请求，服务器都可以使用以下标准的 HTTP 状态码之一来指示请求的结果：
 
 - 200 OK：请求成功。无论是 GET 还是 POST 请求成功时都可以返回 200 状态码。
