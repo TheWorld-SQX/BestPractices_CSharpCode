@@ -318,4 +318,91 @@ class Program
 在这个示例中，我们定义了一个名为 `Product` 的实体类，表示数据库中的产品表，然后创建了一个继承自 `DbContext` 的数据上下文类 `AppDbContext`，用于与数据库交互。在 `Main` 方法中，我们使用数据上下文对象 `dbContext` 执行了新增产品和查询产品列表的操作，并在操作完成后释放了数据上下文对象的资源。
 
 
+## EF事务，C#代码示例
+在医院业务场景中，假设有一个需要同时更新多个相关表的操作，例如同时更新患者信息表、病历记录表和医疗费用表。在这种情况下，需要使用 EF 提供的事务管理功能来确保一组操作要么全部成功提交，要么全部回滚，以维护数据库的一致性。
 
+以下是一个使用 EF 的事务管理功能来处理数据库事务的 C# 代码示例：
+
+```csharp
+using System;
+using System.Linq;
+using System.Transactions;
+using YourHospitalNamespace.Models; // 假设你的实体模型命名空间为 YourHospitalNamespace.Models
+
+public class HospitalService
+{
+    public void UpdatePatientInfoAndRecordsAndFees(int patientId, PatientInfo newInfo, MedicalRecord newRecord, MedicalFee newFee)
+    {
+        using (var transactionScope = new TransactionScope())
+        {
+            try
+            {
+                using (var context = new YourHospitalDbContext()) // 假设你的数据库上下文类名为 YourHospitalDbContext
+                {
+                    // 获取患者信息
+                    var patient = context.Patients.FirstOrDefault(p => p.Id == patientId);
+                    if (patient == null)
+                    {
+                        throw new Exception("患者信息不存在");
+                    }
+
+                    // 更新患者信息
+                    patient.Name = newInfo.Name;
+                    patient.Age = newInfo.Age;
+                    // 其他更新操作...
+
+                    // 添加或更新病历记录
+                    context.MedicalRecords.Add(newRecord);
+                    // 其他更新操作...
+
+                    // 添加或更新医疗费用
+                    context.MedicalFees.Add(newFee);
+                    // 其他更新操作...
+
+                    // 保存更改
+                    context.SaveChanges();
+                }
+
+                // 提交事务
+                transactionScope.Complete();
+            }
+            catch (Exception ex)
+            {
+                // 发生异常时回滚事务
+                Console.WriteLine($"操作失败：{ex.Message}");
+                transactionScope.Dispose(); // 可以省略，using 块会自动调用 Dispose 方法
+            }
+        }
+    }
+}
+```
+
+在这个示例中，通过 `TransactionScope` 创建了一个事务范围，在事务范围内执行了更新患者信息、添加或更新病历记录和添加或更新医疗费用等操作。如果在执行过程中发生异常，会自动回滚事务，确保一组操作要么全部成功提交，要么全部回滚，以维护数据库的一致性。
+
+
+
+## 数据库里操作事务
+在数据库中使用事务是确保一组数据库操作要么全部成功提交要么全部回滚的重要机制之一。通常，数据库管理系统（DBMS）提供了特定的语法和命令来控制事务。以下是在关系型数据库中使用事务的一般步骤：
+
+1. **启动事务**：使用事务命令开始一个新的事务。在大多数关系型数据库中，可以使用类似于 `BEGIN TRANSACTION` 或 `START TRANSACTION` 的命令来启动事务。
+
+2. **执行数据库操作**：在事务范围内执行数据库操作，如插入、更新、删除等。所有这些操作都将被视为单个逻辑单元，要么全部成功执行，要么全部回滚。
+
+3. **提交事务**：如果所有的数据库操作都成功执行，可以使用 `COMMIT` 命令提交事务，使得所有更改永久生效。
+
+4. **回滚事务**：如果发生错误或异常，需要撤销事务中的所有数据库操作，可以使用 `ROLLBACK` 命令回滚事务，使得所有更改都不会生效。
+
+下面是一个示例，演示了如何在关系型数据库中使用事务：
+
+```sql
+BEGIN TRANSACTION; -- 启动事务
+
+-- 执行数据库操作
+UPDATE Employees SET Salary = Salary * 1.1 WHERE Department = 'Finance';
+DELETE FROM AuditLogs WHERE Date < '2023-01-01';
+
+-- 提交事务
+COMMIT;
+```
+
+在上述示例中，`BEGIN TRANSACTION` 开始了一个新的事务，在事务范围内执行了更新员工工资和删除审核日志的操作，最后使用 `COMMIT` 提交事务。如果任何操作失败，可以使用 `ROLLBACK` 回滚事务。
