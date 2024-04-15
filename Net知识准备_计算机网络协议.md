@@ -84,3 +84,56 @@ TCP/IP模型将网络协议分为四个层次，从低到高分别是：
 这种封装的方式有助于将不同层次的协议进行有效地组合，同时确保数据在通信链路上的正确传输。每个协议层负责自己的任务，而底层的传输协议则负责将整个数据包传送到目的地。
 
 在实际应用中，TCP/IP协议栈是一个典型的例子。在这个协议栈中，数据从应用层（如HTTP）传输到传输层（TCP），然后通过网络层（IP）和链路层（Ethernet）最终发送到物理介质上。每一层协议都有自己的头部和尾部信息，以便在接收端正确解析和处理。
+
+
+## HttpContent
+"MultipartFormDataContent"是一个类，通常在使用C#编写的应用程序中用于创建HTTP请求的主体部分。在这个类中，可以添加多个HttpContent对象作为不同部分的内容，从而实现HTTP请求的多部分传输。
+
+通常情况下，当需要向服务器发送包含多个部分的数据（例如上传文件和其他表单数据）时，就会使用这种方式构造HTTP请求。每个部分都可以是不同类型的数据，例如文本、二进制文件等。
+
+以下是一个简单的示例，展示了如何使用C#创建一个包含多个部分的HTTP请求主体：
+
+```csharp
+using System;
+using System.Net.Http;
+using System.Threading.Tasks;
+
+class Program
+{
+    static async Task Main(string[] args)
+    {
+        // 创建一个包含多个部分的HTTP请求主体
+        var content = new MultipartFormDataContent();
+
+        // 添加文本部分
+        var textContent = new StringContent("Hello, World!");
+        content.Add(textContent, "text");
+
+        // 添加文件部分
+        var fileContent = new ByteArrayContent(System.IO.File.ReadAllBytes("example.jpg"));
+        fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/jpeg");
+        content.Add(fileContent, "file", "example.jpg");
+
+        // 创建HTTP请求客户端
+        using (var client = new HttpClient())
+        {
+            // 发送POST请求
+            var response = await client.PostAsync("http://example.com/upload", content);
+
+            // 处理响应
+            if (response.IsSuccessStatusCode)
+            {
+                Console.WriteLine("Upload successful.");
+            }
+            else
+            {
+                Console.WriteLine("Upload failed. Status code: " + response.StatusCode);
+            }
+        }
+    }
+}
+```
+
+在这个示例中，我们创建了一个MultipartFormDataContent对象，并向其中添加了两个部分：一个文本部分和一个文件部分。然后，我们使用HttpClient类发送了一个POST请求，将这个多部分内容作为请求主体发送到服务器。
+
+在实际应用中，根据需要可能会添加更多的部分，并设置适当的内容类型、文件名等信息。
