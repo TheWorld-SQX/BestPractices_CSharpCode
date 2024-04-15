@@ -644,7 +644,8 @@ class AsynchronousSerialCommunication
 串口通信 兼容多种型号的第三方设备，是使用了怎样的设计技术支持多种设备的，发送AT命令是为了干嘛？
 
 
-## 温度
+## 温度控制
+
 一、先做验证原型
 
 stm32开发板+ spi接传感器 用面包板就行
