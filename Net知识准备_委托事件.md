@@ -724,6 +724,57 @@ MyProperty = "New Value"; // 这会自动更新TextBox中的文本
 ##
 事件发生，执行相关方法（某些跟这个事件有关系的）方法被执行
 
+## 两个预定义委托
+在C#类库中，`Action` 和 `Func` 是两种常用的委托类型，它们在委托的应用场景和设计目的上有一些关键不同。
+
+### Action 委托
+
+`Action` 是一个泛型委托，它表示一个无返回值（void）的方法，可以包含零个或多个参数。其定义如下：
+
+```csharp
+public delegate void Action();
+public delegate void Action<in T>(T obj);
+public delegate void Action<in T1, in T2>(T1 arg1, T2 arg2);
+// 更多重载...
+```
+
+**应用场景**：
+
+- 用于表示不返回值的方法，通常用于执行操作而不需要返回结果。
+- 可以用于触发事件、执行异步操作、执行回调等。
+
+**设计目的**：
+
+- Action 委托设计的初衷是为了方便定义和调用不需要返回值的方法，它强调了方法的执行动作而不关注返回结果。
+
+### Func 委托
+
+`Func` 也是一个泛型委托，它表示一个带有返回值的方法，可以包含零个或多个参数。最后一个泛型参数表示方法的返回值类型。其定义如下：
+
+```csharp
+public delegate TResult Func<out TResult>();
+public delegate TResult Func<in T, out TResult>(T arg);
+public delegate TResult Func<in T1, in T2, out TResult>(T1 arg1, T2 arg2);
+// 更多重载...
+```
+
+**应用场景**：
+
+- 用于表示具有返回值的方法，其返回值类型由委托的最后一个泛型参数指定。
+- 可以用于定义和执行需要返回结果的方法，如查询、计算等。
+
+**设计目的**：
+
+- Func 委托的设计目的是为了方便定义和调用需要返回结果的方法，它强调了方法的返回值类型和参数类型。
+
+### 总结
+
+- Action 和 Func 都是委托类型，用于表示方法。
+- Action 用于表示无返回值的方法，而 Func 用于表示有返回值的方法。
+- Action 和 Func 的泛型参数用于指定方法的参数类型，Func 的最后一个泛型参数用于指定返回值类型。
+- 使用 Action 和 Func 可以更加灵活地定义和调用方法，提高了代码的可读性和可维护性。
+
+
 ## `Action<in T>` 预定义委托(类型)_public delegate void Action<in T>(T obj);
 ```csharp
 
