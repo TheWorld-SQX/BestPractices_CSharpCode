@@ -1,4 +1,6 @@
-```
+查看目录名，tree tree /Full
+
+``` scss
 <el-table-column label="操作" width="120" align="center">
         <template #default="scope">
           <!-- <el-button type="success" size="small" icon="edit" circle plain title="编辑" v-hasPermi="['prodmatlistmanage:mesprodmatlistmanage:edit']" @click="handleUpdate(scope.row)"></el-button>
