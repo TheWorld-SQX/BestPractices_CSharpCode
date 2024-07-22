@@ -231,3 +231,161 @@ npm install sass-loader node-sass --save
 
 ##
 npm  尽量在文件夹命令行工具配置element-plus包，vs code命令行配置可能会安装失败；
+
+
+## 
+下拉列表   
+```js
+// 根据字典类型查询字典数据信息
+export function getDicts(dictType) {
+  if (typeof (dictType) === "object") {
+    return request({
+      url: '/system/dict/data/types',
+      data: dictType,
+      method: 'post'
+    })
+  } else {
+    return request({
+      url: '/system/dict/data/type/' + dictType,
+      method: 'get'
+    })
+  }
+}
+```
+## 
+学习如何使用字典
+main.js文件里  import { getDicts } from '@/api/system/dict/data';
+app.config.globalProperties.getDicts = getDicts;// 全局方法挂载
+\src\api\system\dict\data.js里面里// 查询字典数据详细
+export function getData(dictCode) {
+  return request({
+    url: '/system/dict/data/info/' + dictCode,
+    method: 'get'
+  })
+}
+
+// 根据字典类型查询字典数据信息
+export function getDicts(dictType) {
+  if (typeof (dictType) === "object") {
+    return request({
+      url: '/system/dict/data/types',
+      data: dictType,
+      method: 'post'
+    })
+  } else {
+    return request({
+      url: '/system/dict/data/type/' + dictType,
+      method: 'get'
+    })
+  }
+}
+
+src\views\masterData\mesMaterialMaster里面里var dictParams = [
+  { dictType: "mes_unit" },
+  { dictType: "mes_material_properties" },
+]
+
+proxy.getDicts(dictParams).then((response) => {
+  response.data.forEach((element) => {
+    state.options[element.dictType] = element.list
+  })
+})；
+我使用的是若以框架，VUE3+elementplus
+
+##
+
+`const { proxy } = getCurrentInstance()` 是 Vue 3 中 `getCurrentInstance` 函数的一部分。`getCurrentInstance` 返回当前组件实例的上下文对象，其中 `proxy` 是对组件实例的代理。这允许你在 `<script setup>` 中访问和调用挂载在全局的属性和方法。
+
+### 1. `getCurrentInstance` 和 `proxy`
+
+`getCurrentInstance` 是一个 Vue 3 的 Composition API 函数，返回当前组件实例。`proxy` 是该实例的代理对象，允许你访问组件的属性和方法。
+
+```javascript
+import { getCurrentInstance } from 'vue'
+
+const { proxy } = getCurrentInstance()
+```
+
+### 2. 使用 `proxy` 访问全局挂载的方法
+
+在 `main.js` 中，全局挂载方法后，你可以通过 `proxy` 来访问这些全局方法。例如，如果你在 `main.js` 中挂载了 `getDicts` 方法：
+
+```javascript
+// main.js
+import { createApp } from 'vue'
+import App from './App.vue'
+import { getDicts } from '@/api/system/dict/data'
+
+const app = createApp(App)
+
+// 全局方法挂载
+app.config.globalProperties.$getDicts = getDicts
+
+app.mount('#app')
+```
+
+在你的组件中，你可以通过 `proxy` 来调用这个全局方法：
+
+```javascript
+<template>
+  <div>
+    <!-- 示例：展示字典数据 -->
+    <el-select v-model="selectedUnit" placeholder="请选择单位">
+      <el-option
+        v-for="option in options['mes_unit']"
+        :key="option.value"
+        :label="option.label"
+        :value="option.value"
+      />
+    </el-select>
+    <el-select v-model="selectedMaterialProperty" placeholder="请选择物料属性">
+      <el-option
+        v-for="option in options['mes_material_properties']"
+        :key="option.value"
+        :label="option.label"
+        :value="option.value"
+      />
+    </el-select>
+  </div>
+</template>
+
+<script setup>
+import { reactive, onMounted, getCurrentInstance } from 'vue'
+
+const state = reactive({
+  options: {
+    mes_unit: [],
+    mes_material_properties: []
+  },
+  selectedUnit: '',
+  selectedMaterialProperty: ''
+})
+
+const dictParams = [
+  { dictType: 'mes_unit' },
+  { dictType: 'mes_material_properties' }
+]
+
+// 获取当前组件实例的代理对象
+const { proxy } = getCurrentInstance()
+
+onMounted(() => {
+  // 使用全局方法获取字典数据
+  proxy.$getDicts(dictParams).then(response => {
+    response.data.forEach(element => {
+      state.options[element.dictType] = element.list
+    })
+  })
+})
+</script>
+
+<style scoped>
+/* 你的样式 */
+</style>
+```
+
+在这个例子中，通过 `getCurrentInstance` 获取当前组件实例，然后通过 `proxy` 访问挂载在全局的 `getDicts` 方法。这样你可以在任意组件中调用全局挂载的方法，而无需在每个组件中单独导入这些方法。
+
+### 总结
+
+使用 `getCurrentInstance` 和 `proxy`，你可以在 Vue 3 的 `<script setup>` 中访问挂载在全局的属性和方法。这种方法简化了代码，使得全局方法在所有组件中都可以方便地调用。
