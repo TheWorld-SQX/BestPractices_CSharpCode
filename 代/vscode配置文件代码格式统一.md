@@ -1,4 +1,4 @@
-{
+``{
     "emmet.triggerExpansionOnTab": true,
     "fittencode.languagePreference.displayPreference": "zh-cn",
     "fittencode.languagePreference.commentPreference": "zh-cn",
@@ -59,4 +59,4 @@
     },
 
     "editor.rulers": []
-}
+}``
